@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { HiCheck, HiChevronDown } from 'react-icons/hi2';
+import { HiCheck, HiChevronUpDown } from 'react-icons/hi2';
 import { useTheme } from 'contexts/ThemeContext';
 import { useI18n } from 'contexts/I18nContext';
 import { useUser } from 'contexts/UserContext';
@@ -10,60 +10,90 @@ const Container = styled.div`
   position: relative;
 `;
 
-// Single- and multi-org share this box so both variants look identical; only
-// the chevron on the right marks the switchable one.
+// Workspace button at the top of the sidebar. Single- and multi-org share the
+// same box; only the chevron marks the switchable one.
 const Trigger = styled.button`
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 6px;
-  max-width: 220px;
-  height: 32px;
-  padding: 0 10px;
-  border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  background-color: ${({ theme }) => theme.colors.surface};
+  gap: 10px;
+  min-height: 46px;
+  padding: ${({ $collapsed }) => ($collapsed ? '0' : '6px 10px 6px 8px')};
+  justify-content: ${({ $collapsed }) => ($collapsed ? 'center' : 'flex-start')};
+  border-radius: ${({ theme }) => theme.radii.sm};
+  border: 1px solid ${({ $collapsed, theme }) => ($collapsed ? 'transparent' : theme.colors.border)};
+  background-color: ${({ $collapsed, theme }) => ($collapsed ? 'transparent' : theme.colors.surface)};
+  box-shadow: ${({ $collapsed, theme }) => ($collapsed ? 'none' : theme.shadows.card)};
   color: ${({ theme }) => theme.colors.primary};
-  font-size: 13px;
-  font-weight: 600;
+  text-align: left;
   cursor: ${({ $interactive }) => ($interactive ? 'pointer' : 'default')};
-  transition: border-color 0.2s ease;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
 
   &:hover {
-    border-color: ${({ $interactive, theme }) =>
-      $interactive ? theme.colors.primary : theme.colors.border};
+    background-color: ${({ $interactive, $collapsed, theme }) =>
+      $interactive ? theme.colors.hover : $collapsed ? 'transparent' : theme.colors.surface};
   }
+`;
 
-  span {
+const Avatar = styled.span`
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: ${({ theme }) => theme.radii.xs};
+  background: ${({ theme }) => theme.colors.accentSoft};
+  color: ${({ theme }) => (theme.mode === 'dark' ? theme.colors.accentNeon : theme.colors.accent)};
+  font-size: 13px;
+  font-weight: 700;
+`;
+
+const Names = styled.span`
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  line-height: 1.25;
+
+  strong {
+    font-size: 13.5px;
+    font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  svg {
-    flex-shrink: 0;
-    color: ${({ theme }) => theme.colors.secondary};
+  small {
+    font-size: 11.5px;
+    color: ${({ theme }) => theme.colors.muted};
   }
+`;
+
+const Chevrons = styled(HiChevronUpDown)`
+  flex-shrink: 0;
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 const DropdownMenu = styled.div`
   position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 240px;
+  z-index: 1100;
+  top: ${({ $collapsed }) => ($collapsed ? '0' : 'calc(100% + 6px)')};
+  left: ${({ $collapsed }) => ($collapsed ? 'calc(100% + 8px)' : '0')};
+  min-width: ${({ $collapsed }) => ($collapsed ? '240px' : '100%')};
   background-color: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 8px;
-  z-index: 1000;
+  border-radius: ${({ theme }) => theme.radii.md};
+  box-shadow: ${({ theme }) => theme.shadows.pop};
+  padding: 6px;
 `;
 
 const SectionLabel = styled.div`
-  padding: 6px 12px 4px;
-  font-size: 11px;
+  padding: 8px 10px 6px;
+  font-size: 11.5px;
   font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: ${({ theme }) => theme.colors.muted};
 `;
 
@@ -74,24 +104,24 @@ const OrgList = styled.div`
 
 const OrgButton = styled.button`
   width: 100%;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 8px 10px;
+  border-radius: ${({ theme }) => theme.radii.xs};
   border: none;
-  background-color: transparent;
+  background-color: ${({ $current, theme }) => ($current ? theme.colors.accentSoft : 'transparent')};
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   color: ${({ theme }) => theme.colors.primary};
   cursor: ${({ $current, disabled }) => ($current || disabled ? 'default' : 'pointer')};
-  font-size: 13px;
+  font-size: 13.5px;
+  font-weight: ${({ $current }) => ($current ? 600 : 450)};
   text-align: left;
-  transition: background-color 0.15s ease;
   opacity: ${({ disabled, $current }) => (disabled && !$current ? 0.6 : 1)};
 
   &:hover {
     background-color: ${({ $current, disabled, theme }) =>
-      $current || disabled ? 'transparent' : theme.colors.hover};
+      $current ? theme.colors.accentSoft : disabled ? 'transparent' : theme.colors.hover};
   }
 
   span {
@@ -107,12 +137,12 @@ const OrgButton = styled.button`
 `;
 
 const OrgStatus = styled.div`
-  padding: 4px 12px 8px;
+  padding: 6px 10px 8px;
   font-size: 12px;
-  color: ${({ $error, theme }) => ($error ? '#ef4444' : theme.colors.secondary)};
+  color: ${({ $error, theme }) => ($error ? theme.colors.danger : theme.colors.secondary)};
 `;
 
-export const OrgSwitcher = () => {
+export const OrgSwitcher = ({ collapsed = false }) => {
   const { theme } = useTheme();
   const { t } = useI18n();
   const user = useUser();
@@ -177,14 +207,21 @@ export const OrgSwitcher = () => {
         theme={theme}
         type="button"
         $interactive={multi}
+        $collapsed={collapsed}
         onClick={multi ? () => setOpen((v) => !v) : undefined}
         title={currentName}
       >
-        <span>{currentName}</span>
-        {multi && <HiChevronDown size={14} />}
+        <Avatar theme={theme}>{currentName.trim()[0]?.toUpperCase()}</Avatar>
+        {!collapsed && (
+          <Names theme={theme}>
+            <strong>{currentName}</strong>
+            <small>{t('userMenu.organization')}</small>
+          </Names>
+        )}
+        {!collapsed && multi && <Chevrons theme={theme} size={16} />}
       </Trigger>
       {multi && open && (
-        <DropdownMenu theme={theme}>
+        <DropdownMenu theme={theme} $collapsed={collapsed}>
           <SectionLabel theme={theme}>{t('userMenu.organization')}</SectionLabel>
           <OrgList>
             {orgs.map((org) => {

@@ -24,8 +24,8 @@ const Trigger = styled.button`
   border: 1px solid ${({ $open, theme }) => ($open ? theme.colors.accent : theme.colors.border)};
   border-radius: 50%;
   background: ${({ $open, theme }) => ($open ? theme.colors.accent : 'transparent')};
-  color: ${({ $open, theme }) => ($open ? '#fff' : theme.colors.secondary)};
-  font-size: 10px;
+  color: ${({ $open, theme }) => ($open ? '#FFFFFF' : theme.colors.secondary)};
+  font-size: 12px;
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
@@ -34,7 +34,7 @@ const Trigger = styled.button`
 
   &:hover {
     border-color: ${({ theme }) => theme.colors.accent};
-    color: ${({ $open, theme }) => ($open ? '#fff' : theme.colors.accent)};
+    color: ${({ $open, theme }) => ($open ? '#FFFFFF' : theme.colors.accent)};
   }
 `;
 
@@ -52,8 +52,8 @@ const Popover = styled.div`
   color: ${({ theme }) => theme.colors.primary};
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  border-radius: ${({ theme }) => theme.radii.md};
+  box-shadow: ${({ theme }) => theme.shadows.pop};
 `;
 
 export const HelpTip = ({ text }) => {

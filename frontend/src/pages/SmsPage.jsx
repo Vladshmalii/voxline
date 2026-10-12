@@ -56,7 +56,7 @@ const EMPTY_FILTERS = {
 };
 const AgentCell = styled.div`
   min-width: 100px;
-  small { display: block; color: ${({ theme }) => theme.colors.secondary}; margin-top: 4px; font-size: 11px; }
+  small { display: block; color: ${({ theme }) => theme.colors.secondary}; margin-top: 4px; font-size: 12px; }
 `;
 
 const DetailGrid = styled.div`
@@ -70,8 +70,6 @@ const DetailKey = styled.div`
   font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 `;
 
 const DetailValue = styled.div`
@@ -545,7 +543,7 @@ const SmsDetail = ({ data, theme, t, routeLabel, agentLabel, showAdminFields }) 
       {data.provider_ref && <Field label={t('sms.detail.providerRef')}>{data.provider_ref}</Field>}
       {data.error && (
         <Field label={t('sms.detail.error')}>
-          <span style={{ color: '#dc2626' }}>{data.error}</span>
+          <span style={{ color: '#DC2626' }}>{data.error}</span>
         </Field>
       )}
       <Field label={t('sms.detail.sent')}>{formatDateTime(data.sent_at)}</Field>

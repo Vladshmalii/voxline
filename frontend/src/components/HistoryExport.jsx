@@ -29,8 +29,8 @@ const Menu = styled.div`
   padding: 6px;
   background-color: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: ${({ theme }) => theme.radii.md};
+  box-shadow: ${({ theme }) => theme.shadows.pop};
   z-index: 1000;
 `;
 
@@ -39,7 +39,7 @@ const Item = styled.button`
   width: 100%;
   padding: 8px 10px;
   border: none;
-  border-radius: 7px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   background: transparent;
   color: ${({ theme }) => theme.colors.primary};
   font-size: 14px;
@@ -53,7 +53,7 @@ const Item = styled.button`
   }
   &:hover, &:focus-visible {
     outline: none;
-    background: rgba(110, 86, 207, 0.08);
+    background: rgba(37, 99, 235, 0.08);
   }
 `;
 

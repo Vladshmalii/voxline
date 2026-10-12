@@ -37,8 +37,6 @@ const ClientKey = styled.div`
   font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 `;
 
 const ClientValue = styled.div`

@@ -6,38 +6,14 @@ import { useUser } from 'contexts/UserContext';
 import { CrudPage } from 'components/CrudPage';
 import { Modal } from 'components/Modal';
 import { toast } from 'components/Toaster';
-import {
-  Badge,
-  Select,
-  SecondaryButton,
-  PrimaryButton,
-  EmptyStateText,
-  RowActionButton,
-} from 'components/ui';
+import { Badge, Select, SecondaryButton, PrimaryButton, EmptyStateText, RowActionButton, Segmented, SegmentOption } from 'components/ui';
 import { adminApi } from 'utils/authApi';
 import { ROLES, canManageUsers } from 'utils/permissions';
 
 const ROLE_VALUES = [ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.OWNER, ROLES.STAFF, ROLES.VIEWER, ROLES.NONE];
 
-const Tabs = styled.div`
-  display: flex;
-  gap: 2px;
-  padding: 2px;
-  background-color: ${({ theme }) => theme.colors.background};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
-`;
-
-const Tab = styled.button`
-  padding: 5px 12px;
-  font-size: 13px;
-  font-weight: ${({ $active }) => ($active ? '700' : '500')};
-  color: ${({ $active, theme }) => ($active ? '#fff' : theme.colors.secondary)};
-  background-color: ${({ $active, theme }) => ($active ? theme.colors.accent : 'transparent')};
-  border: none;
-  border-radius: 6px;
-  cursor: ${({ $active }) => ($active ? 'default' : 'pointer')};
-`;
+const Tabs = Segmented;
+const Tab = SegmentOption;
 
 const MembershipRow = styled.div`
   display: flex;
@@ -256,7 +232,7 @@ export const UsersPage = () => {
         key: 'is_active',
         labelKey: 'users.columns.status',
         render: (row) => (
-          <Badge $color={row.is_active ? '#22c55e' : '#6b7280'}>
+          <Badge $color={row.is_active ? '#16A34A' : '#64748B'}>
             {row.is_active ? t('common.active') : t('common.inactive')}
           </Badge>
         ),
@@ -276,7 +252,7 @@ export const UsersPage = () => {
           ) : (
             <BadgeList>
               {row.memberships.map((m) => (
-                <Badge key={m.organization_uuid} $color="#6E56CF">
+                <Badge key={m.organization_uuid} $color="#0891B2">
                   {orgs.find((o) => o.uuid === m.organization_uuid)?.name || m.organization_uuid}
                   {': '}
                   {roleLabel(m.role)}

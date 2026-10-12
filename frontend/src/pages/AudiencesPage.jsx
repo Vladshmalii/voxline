@@ -157,8 +157,6 @@ const Filter = styled.label`
   font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 
   select,
   input {
@@ -171,7 +169,7 @@ const Filter = styled.label`
 // anyone relying on a screen reader or a black-and-white printout.
 const LeadRow = styled(TableRow)`
   background: ${({ $invalid, theme }) =>
-    $invalid ? (theme.colors.primary === '#0D0D0D' ? '#fef2f2' : 'rgba(220,38,38,0.12)') : 'transparent'};
+    $invalid ? (theme.mode === 'light' ? '#FEF2F2' : 'rgba(220,38,38,0.12)') : 'transparent'};
 `;
 
 const HistoryTable = styled(Table)`
@@ -876,7 +874,7 @@ export const AudiencesPage = () => {
                       <TableCell theme={theme} $align="right">{batch.valid_rows}</TableCell>
                       <TableCell theme={theme} $align="right">
                         {batch.invalid_rows > 0 ? (
-                          <Badge $color="#dc2626">{batch.invalid_rows}</Badge>
+                          <Badge $color="#DC2626">{batch.invalid_rows}</Badge>
                         ) : (
                           batch.invalid_rows
                         )}
@@ -969,7 +967,7 @@ export const AudiencesPage = () => {
                         <TableCell theme={theme} $align="right">{a.member_count}</TableCell>
                         <TableCell theme={theme}>{formatDateTime(a.created_at)}</TableCell>
                         <TableCell theme={theme}>
-                          {a.is_archived ? <Badge $color="#6b7280">{t('common.archived')}</Badge> : '—'}
+                          {a.is_archived ? <Badge $color="#64748B">{t('common.archived')}</Badge> : '—'}
                         </TableCell>
                         <TableCell theme={theme} $align="right">
                           <RowActionButton
@@ -1142,11 +1140,11 @@ const ClientImportResult = ({ result, theme, t }) => (
     <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 600 }}>
         <span>{t('audiences.uploadResult.accepted')}</span>
-        <Badge $color="#16a34a">{result.accepted}</Badge>
+        <Badge $color="#16A34A">{result.accepted}</Badge>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 600 }}>
         <span>{t('audiences.uploadResult.rejected')}</span>
-        <Badge $color={result.rejected > 0 ? '#dc2626' : '#6b7280'}>{result.rejected}</Badge>
+        <Badge $color={result.rejected > 0 ? '#DC2626' : '#64748B'}>{result.rejected}</Badge>
       </div>
     </div>
     <ResultTable theme={theme}>
@@ -1170,7 +1168,7 @@ const ClientImportResult = ({ result, theme, t }) => (
                 '—'
               )}
             </td>
-            <td style={{ color: r.error ? '#dc2626' : undefined }}>{r.error ?? '—'}</td>
+            <td style={{ color: r.error ? '#DC2626' : undefined }}>{r.error ?? '—'}</td>
           </tr>
         ))}
       </tbody>
@@ -1215,7 +1213,7 @@ const LeadTable = ({ rows, theme, t, onRowClick, onEdit }) => (
               <TableCell theme={theme}>
                 {row.phone || '—'}
                 {invalid && (
-                  <Badge $color="#dc2626" style={{ marginLeft: 6 }}>
+                  <Badge $color="#DC2626" style={{ marginLeft: 6 }}>
                     {t('audiences.leads.incomplete')}
                   </Badge>
                 )}

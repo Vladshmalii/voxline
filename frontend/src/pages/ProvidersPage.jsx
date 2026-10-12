@@ -13,7 +13,7 @@ const COLUMNS = [
     key: 'api_key',
     labelKey: 'providers.columns.apiKey',
     align: 'center',
-    render: (row) => (row.api_key ? '•••' : '—'),
+    render: (row) => (row.has_api_key ? '•••' : '—'),
   },
   { key: 'updated_at', labelKey: 'common.updatedAt', render: (row) => formatDateTime(row.updated_at) },
 ];

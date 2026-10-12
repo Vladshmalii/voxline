@@ -69,20 +69,20 @@ const formatMs = (value, t) =>
     : `${(value / 1000).toFixed(1)} ${t('playground.timings.s')}`;
 
 const STATUS_COLORS = {
-  idle: '#6b7280',
-  connecting: '#d97706',
-  live: '#16a34a',
-  ended: '#6b7280',
-  error: '#dc2626',
+  idle: '#64748B',
+  connecting: '#D97706',
+  live: '#16A34A',
+  ended: '#64748B',
+  error: '#DC2626',
 };
 
 // The pipeline's own narration ({event: "state"}, AgentStateTap on the
 // backend). `pulse` marks the states where something is actively happening.
 const AGENT_STATES = {
-  listening: { color: '#16a34a', pulse: false },
-  user_speaking: { color: '#2563eb', pulse: true },
-  thinking: { color: '#d97706', pulse: true },
-  speaking: { color: '#7c3aed', pulse: true },
+  listening: { color: '#16A34A', pulse: false },
+  user_speaking: { color: '#2563EB', pulse: true },
+  thinking: { color: '#D97706', pulse: true },
+  speaking: { color: '#0891B2', pulse: true },
 };
 
 // user_speaking briefly flips to listening at turn commit before thinking
@@ -135,7 +135,7 @@ const StatePill = styled.div`
   gap: 7px;
   padding: 6px 12px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 999px;
+  border-radius: ${({ theme }) => theme.radii.pill};
   font-size: 12.5px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.primary};
@@ -158,14 +158,14 @@ const StateDot = styled.span`
 const LevelTrack = styled.div`
   width: 90px;
   height: 6px;
-  border-radius: 3px;
+  border-radius: ${({ theme }) => theme.radii.xs};
   background: ${({ theme }) => theme.colors.border};
   overflow: hidden;
 `;
 
 const LevelFill = styled.div`
   height: 100%;
-  border-radius: 3px;
+  border-radius: ${({ theme }) => theme.radii.xs};
   background: ${({ theme }) => theme.colors.accent};
   transition: width 0.1s linear;
 `;
@@ -176,7 +176,7 @@ const Transcript = styled.div`
   max-height: calc(100vh - 340px);
   overflow-y: auto;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 16px;
+  border-radius: ${({ theme }) => theme.radii.lg};
   background: ${({ theme }) => theme.colors.background};
   padding: 16px;
   display: flex;
@@ -188,7 +188,7 @@ const Bubble = styled.div`
   align-self: ${({ $role }) => ($role === 'assistant' ? 'flex-start' : $role === 'user' ? 'flex-end' : 'center')};
   max-width: 80%;
   padding: 8px 12px;
-  border-radius: 12px;
+  border-radius: ${({ theme }) => theme.radii.md};
   font-size: 13.5px;
   line-height: 1.45;
   white-space: pre-wrap;
@@ -204,10 +204,8 @@ const Bubble = styled.div`
 `;
 
 const BubbleRole = styled.div`
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: ${({ theme }) => theme.colors.muted};
   margin-bottom: 2px;
 `;
@@ -227,7 +225,7 @@ const TimingRow = styled.div`
   align-items: baseline;
   gap: 3px 12px;
   max-width: 95%;
-  font-size: 11px;
+  font-size: 12px;
   color: ${({ theme }) => theme.colors.muted};
 `;
 
@@ -235,12 +233,12 @@ const TimingChip = styled.span`
   white-space: nowrap;
   cursor: help;
   color: ${({ $headline, $alert, theme }) =>
-    $alert ? '#dc2626' : $headline ? theme.colors.primary : theme.colors.muted};
+    $alert ? '#DC2626' : $headline ? theme.colors.primary : theme.colors.muted};
   font-weight: ${({ $headline }) => ($headline ? 600 : 400)};
 
   code {
     font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
-    font-size: 11px;
+    font-size: 12px;
   }
 `;
 
@@ -251,7 +249,7 @@ const Marker = styled.div`
   align-items: center;
   gap: 8px;
   max-width: 90%;
-  font-size: 11px;
+  font-size: 12px;
   font-style: italic;
   color: ${({ theme }) => theme.colors.muted};
 
@@ -659,7 +657,7 @@ export const PlaygroundPage = () => {
           {live && agentState && (
             <StatePill theme={theme}>
               <StateDot
-                $color={AGENT_STATES[agentState]?.color ?? '#6b7280'}
+                $color={AGENT_STATES[agentState]?.color ?? '#64748B'}
                 $pulse={Boolean(AGENT_STATES[agentState]?.pulse)}
               />
               {AGENT_STATES[agentState] ? t(`playground.states.${agentState}`) : agentState}
@@ -685,7 +683,7 @@ export const PlaygroundPage = () => {
         </ToolRow>
 
         {errorText && (
-          <Hint theme={theme} style={{ color: '#dc2626' }}>
+          <Hint theme={theme} style={{ color: '#DC2626' }}>
             {errorText}
           </Hint>
         )}

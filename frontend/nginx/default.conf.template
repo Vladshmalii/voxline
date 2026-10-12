@@ -25,6 +25,13 @@ server {
     client_max_body_size 50m;
   }
 
+  # Security headers for the app shell. The CSP allows what the bundle needs:
+  # its own scripts, inline styles (styled-components), and same-origin API/WS.
+  add_header X-Content-Type-Options "nosniff" always;
+  add_header X-Frame-Options "DENY" always;
+  add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; connect-src 'self' ws: wss:; frame-ancestors 'none'" always;
+
   location / {
     try_files $uri $uri/ /index.html;
   }

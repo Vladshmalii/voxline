@@ -2,13 +2,13 @@ import { lazy } from 'react';
 import {
   FiUsers,
   FiPhoneCall,
+  FiMic,
   FiCpu,
   FiServer,
   FiPhone,
   FiMessageSquare,
   FiSend,
   FiTarget,
-  FiList,
   FiBarChart2,
   FiDollarSign,
   FiShield,
@@ -53,9 +53,9 @@ const AdminStatsPage = lazy(() =>
 export const NAV_ITEMS = [
   { key: 'callStats', path: '/calls/stats', icon: FiBarChart2, Page: DashboardPage, resource: 'dashboard', group: 'calls' },
   { key: 'callBilling', path: '/calls/billing', icon: FiDollarSign, Page: BillingPage, resource: 'billing', group: 'calls', props: { channel: 'calls' } },
-  { key: 'callList', path: '/calls', icon: FiList, Page: CallsPage, resource: 'calls', group: 'calls', exact: true },
-  { key: 'agents', path: '/agents', icon: FiUsers, Page: AgentsPage, group: 'calls' },
-  { key: 'audiences', path: '/audiences', icon: FiList, Page: AudiencesPage, group: 'calls' },
+  { key: 'callList', path: '/calls', icon: FiPhoneCall, Page: CallsPage, resource: 'calls', group: 'calls', exact: true },
+  { key: 'agents', path: '/agents', icon: FiMic, Page: AgentsPage, group: 'calls' },
+  { key: 'audiences', path: '/audiences', icon: FiUsers, Page: AudiencesPage, group: 'calls' },
   { key: 'smsStats', path: '/messages/stats', icon: FiBarChart2, Page: SmsStatsPage, resource: 'sms', group: 'messages' },
   { key: 'smsBilling', path: '/messages/billing', icon: FiDollarSign, Page: BillingPage, resource: 'billing', group: 'messages', props: { channel: 'sms' } },
   { key: 'smsList', path: '/messages', icon: FiSend, Page: SmsPage, resource: 'sms', group: 'messages', exact: true },
@@ -72,8 +72,14 @@ export const NAV_ITEMS = [
   { key: 'messaging', path: '/messaging', icon: FiMessageSquare, Page: MessagingPage },
 ];
 
-export const SIDEBAR_ITEMS = [
-  { key: 'calls', icon: FiPhoneCall, children: NAV_ITEMS.filter((item) => item.group === 'calls') },
-  { key: 'messages', icon: FiMessageSquare, children: NAV_ITEMS.filter((item) => item.group === 'messages') },
-  ...NAV_ITEMS.filter((item) => !item.group),
+// Sidebar structure: sections with their pages. A section with a single page
+// is rendered without a heading.
+const byKey = (...keys) => keys.map((key) => NAV_ITEMS.find((item) => item.key === key));
+
+export const NAV_SECTIONS = [
+  { key: 'calls', children: NAV_ITEMS.filter((item) => item.group === 'calls') },
+  { key: 'messages', children: NAV_ITEMS.filter((item) => item.group === 'messages') },
+  { key: 'campaigns', children: byKey('campaigns') },
+  { key: 'platform', children: byKey('models', 'providers', 'telephony', 'messaging') },
+  { key: 'admin', children: byKey('adminStats', 'users') },
 ];

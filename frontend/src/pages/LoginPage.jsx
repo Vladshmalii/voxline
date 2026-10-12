@@ -6,19 +6,30 @@ import { useTheme } from 'contexts/ThemeContext';
 import { useI18n } from 'contexts/I18nContext';
 import { LOCALE_NAMES } from 'i18n';
 import { ToggleTheme } from 'app/ToggleTheme';
+import { Logo } from 'app/Logo';
 import { PrimaryButton, TextInput, FieldLabel, FieldGroup, FieldHint } from 'components/ui';
 import { login, probeSession, fetchOrganizations, changeOrganization } from 'utils/authApi';
 import { safeNextPath } from 'utils/authSession';
 
 const Page = styled.div`
+  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 72px 20px 40px;
+  overflow: hidden;
   background-color: ${({ theme }) => theme.colors.background};
-  padding: 40px 20px;
-  position: relative;
+  background-image: radial-gradient(
+      60% 50% at 50% 0%,
+      ${({ theme }) => theme.colors.accentNeon}${({ theme }) => (theme.mode === 'dark' ? '26' : '22')} 0%,
+      transparent 70%
+    ),
+    linear-gradient(${({ theme }) => theme.colors.border}66 1px, transparent 1px),
+    linear-gradient(90deg, ${({ theme }) => theme.colors.border}66 1px, transparent 1px);
+  background-size: 100% 100%, 44px 44px, 44px 44px;
+  background-position: center top, center top, center top;
 `;
 
 const TopRight = styled.div`
@@ -27,85 +38,86 @@ const TopRight = styled.div`
   right: 20px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 `;
 
 const LangSwitch = styled.div`
-  display: flex;
+  display: inline-flex;
+  padding: 3px;
   gap: 2px;
-  padding: 2px;
-  background-color: ${({ theme }) => theme.colors.surface};
+  background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
 `;
 
 const LangButton = styled.button`
-  padding: 4px 10px;
+  height: 26px;
+  padding: 0 10px;
   font-size: 12px;
-  font-weight: ${({ $active }) => ($active ? '700' : '500')};
-  color: ${({ $active, theme }) => ($active ? '#fff' : theme.colors.secondary)};
+  font-weight: 600;
+  color: ${({ $active, theme }) => ($active ? theme.colors.onAccent : theme.colors.secondary)};
   background-color: ${({ $active, theme }) => ($active ? theme.colors.accent : 'transparent')};
   border: none;
-  border-radius: 6px;
+  border-radius: ${({ theme }) => theme.radii.xs};
   cursor: ${({ $active }) => ($active ? 'default' : 'pointer')};
 `;
 
 const Brand = styled.div`
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  color: ${({ theme }) => theme.colors.primary};
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 24px;
-
-  span {
-    color: ${({ theme }) => theme.colors.accentNeon};
-  }
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 const Card = styled.form`
+  position: relative;
   width: 100%;
   max-width: 400px;
-  padding: 28px;
+  padding: 32px;
   background-color: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
+  border-radius: ${({ theme }) => theme.radii.lg};
+  box-shadow: ${({ theme }) => theme.shadows.pop};
 `;
 
 const Title = styled.h1`
   font-size: 22px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.primary};
-  margin: 0 0 8px;
+  margin: 0 0 6px;
 `;
 
 const Subtitle = styled.p`
   font-size: 14px;
   color: ${({ theme }) => theme.colors.secondary};
-  margin: 0 0 22px;
+  margin: 0 0 24px;
 `;
 
 const OrgButton = styled.button`
   width: 100%;
-  padding: 10px 12px;
+  height: 46px;
+  padding: 0 14px;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   font-size: 14px;
+  font-weight: 550;
   text-align: left;
   color: ${({ theme }) => theme.colors.primary};
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  border-radius: ${({ theme }) => theme.radii.sm};
+  transition: border-color 0.12s ease, background-color 0.12s ease;
 
   &:hover:not(:disabled) {
     border-color: ${({ theme }) => theme.colors.accentNeon};
-    background-color: ${({ theme }) => theme.colors.hover};
+    background-color: ${({ theme }) => theme.colors.accentSoft};
   }
 
   &:disabled {
@@ -114,15 +126,17 @@ const OrgButton = styled.button`
   }
 
   small {
-    color: ${({ theme }) => theme.colors.secondary};
+    color: ${({ theme }) => theme.colors.accent};
     font-size: 12px;
+    font-weight: 600;
   }
 `;
 
 const FullButton = styled(PrimaryButton)`
   width: 100%;
-  justify-content: center;
-  margin-top: 6px;
+  height: 40px;
+  margin-top: 8px;
+  font-size: 14px;
 `;
 
 export const LoginPage = () => {
@@ -222,7 +236,8 @@ export const LoginPage = () => {
         <ToggleTheme />
       </TopRight>
       <Brand theme={theme}>
-        <span>V</span>OXLIN<span>E</span>
+        <Logo size={40} />
+        Voxline
       </Brand>
       {checking ? (
         <Subtitle theme={theme}>{t('auth.checking')}</Subtitle>

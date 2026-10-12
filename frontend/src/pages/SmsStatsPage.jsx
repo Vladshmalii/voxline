@@ -76,7 +76,7 @@ const StatusRow = styled.div`
 `;
 const Track = styled.div`
   height: 10px;
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   overflow: hidden;
   background: ${({ theme }) => theme.colors.hover};
 `;

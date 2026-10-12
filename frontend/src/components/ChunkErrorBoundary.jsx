@@ -51,7 +51,7 @@ export class ChunkErrorBoundary extends Component {
             justifyContent: 'center',
             gap: '16px',
             fontFamily: 'sans-serif',
-            color: '#666',
+            color: '#64748B',
           }}
         >
           <p>{translate('system.chunkFailed')}</p>
@@ -61,8 +61,8 @@ export class ChunkErrorBoundary extends Component {
             style={{
               padding: '10px 20px',
               borderRadius: '8px',
-              border: '1px solid #ccc',
-              background: '#fff',
+              border: '1px solid #CBD5E1',
+              background: '#FFFFFF',
               cursor: 'pointer',
               fontSize: '14px',
             }}

@@ -9,38 +9,30 @@ import { meApi, modelsApi } from 'utils/callApi';
 import { redirectToLogin } from 'utils/api';
 import { ROLES, canView, canAssignModels } from 'utils/permissions';
 import { prefetchVoiceCatalog } from 'utils/voiceCatalog';
-import { Header } from 'app/Header';
+import { NavProvider } from 'app/NavContext';
 import { Sidebar } from 'app/Sidebar';
+import { Topbar } from 'app/Topbar';
 
-const LayoutContainer = styled.div`
+// Sidebar on the left, a sticky top bar and the page on the right.
+const Shell = styled.div`
   display: flex;
-  flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   background-color: ${({ theme }) => theme.colors.background};
-  overflow: hidden;
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
-const ContentWrapper = styled.div`
-  display: flex;
+const Column = styled.div`
   flex: 1;
-  overflow: hidden;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Main = styled.main`
   flex: 1;
-  overflow: hidden;
-  padding: 0 10px 10px 3px;
-  display: flex;
-`;
-
-const ContentArea = styled.div`
   width: 100%;
-  height: 100%;
-  background-color: ${({ theme }) =>
-    theme.colors.surface === '#F9FAFB' ? '#F0F1F3' : theme.colors.surface};
-  border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: auto;
+  max-width: 1680px;
+  margin: 0 auto;
 `;
 
 export const AppLayout = () => {
@@ -95,17 +87,17 @@ export const AppLayout = () => {
 
   return (
     <UserContext.Provider value={user}>
-      <LayoutContainer theme={theme}>
-        <Header />
-        <ContentWrapper>
+      <NavProvider>
+        <Shell theme={theme}>
           <Sidebar />
-          <Main>
-            <ContentArea theme={theme}>
+          <Column>
+            <Topbar />
+            <Main>
               <Outlet />
-            </ContentArea>
-          </Main>
-        </ContentWrapper>
-      </LayoutContainer>
+            </Main>
+          </Column>
+        </Shell>
+      </NavProvider>
     </UserContext.Provider>
   );
 };

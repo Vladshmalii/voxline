@@ -59,7 +59,7 @@ const SoundWave = styled.span`
     width: 3px;
     height: 100%;
     background: currentColor;
-    border-radius: 2px;
+    border-radius: ${({ theme }) => theme.radii.xs};
     animation: ${pulse} 0.8s ease-in-out infinite;
 
     &:nth-child(2) {
@@ -87,7 +87,7 @@ const HeaderSubtitle = styled.p`
 const PhraseBox = styled.div`
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 12px;
+  border-radius: ${({ theme }) => theme.radii.md};
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
@@ -104,8 +104,6 @@ const PhraseBoxHeader = styled.div`
 const PhraseLabel = styled.label`
   font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
   color: ${({ theme }) => theme.colors.secondary};
   display: flex;
   align-items: center;
@@ -122,7 +120,7 @@ const ResetButton = styled.button`
   align-items: center;
   gap: 4px;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.radii.xs};
   transition: all 0.15s ease;
 
   &:hover {
@@ -140,14 +138,14 @@ const PhraseTextarea = styled.textarea`
   background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.primary};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   resize: vertical;
   box-sizing: border-box;
   font-family: inherit;
 
   &:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: #2563EB;
   }
 `;
 
@@ -181,12 +179,12 @@ const SearchInput = styled.input`
   background: ${({ theme }) => theme.colors.background};
   color: ${({ theme }) => theme.colors.primary};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   box-sizing: border-box;
 
   &:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: #2563EB;
   }
 `;
 
@@ -197,12 +195,12 @@ const Select = styled.select`
   background: ${({ theme }) => theme.colors.background};
   color: ${({ theme }) => theme.colors.primary};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   cursor: pointer;
 
   &:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: #2563EB;
   }
 `;
 
@@ -214,7 +212,7 @@ const ProviderTag = styled.span`
 `;
 
 const ModelSubtitle = styled.div`
-  font-size: 11px;
+  font-size: 12px;
   color: ${({ theme }) => theme.colors.secondary};
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 `;
@@ -232,12 +230,12 @@ const VoiceIdPill = styled.button`
   align-items: center;
   gap: 6px;
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: 12px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   background: ${({ theme }) => theme.colors.background};
-  color: ${({ theme, $copied }) => ($copied ? '#10b981' : theme.colors.primary)};
-  border: 1px solid ${({ theme, $copied }) => ($copied ? '#10b981' : theme.colors.border)};
-  border-radius: 6px;
+  color: ${({ theme, $copied }) => ($copied ? '#16A34A' : theme.colors.primary)};
+  border: 1px solid ${({ theme, $copied }) => ($copied ? '#16A34A' : theme.colors.border)};
+  border-radius: ${({ theme }) => theme.radii.sm};
   cursor: pointer;
   max-width: 170px;
   overflow: hidden;
@@ -247,7 +245,7 @@ const VoiceIdPill = styled.button`
 
   &:hover {
     background: ${({ theme }) => theme.colors.hover};
-    border-color: #3b82f6;
+    border-color: #2563EB;
   }
 `;
 
@@ -260,16 +258,16 @@ const PlayButton = styled.button`
   padding: 0 12px;
   font-size: 12px;
   font-weight: 500;
-  border-radius: 8px;
-  border: 1px solid ${({ $active }) => ($active ? '#ef4444' : '#3b82f6')};
-  background: ${({ $active }) => ($active ? '#fee2e2' : '#eff6ff')};
-  color: ${({ $active }) => ($active ? '#b91c1c' : '#1d4ed8')};
+  border-radius: ${({ theme }) => theme.radii.sm};
+  border: 1px solid ${({ $active }) => ($active ? '#DC2626' : '#2563EB')};
+  background: ${({ $active }) => ($active ? '#FEE2E2' : '#EFF6FF')};
+  color: ${({ $active }) => ($active ? '#991B1B' : '#1D4ED8')};
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
 
   &:hover {
-    background: ${({ $active }) => ($active ? '#fecaca' : '#dbeafe')};
+    background: ${({ $active }) => ($active ? '#FECACA' : '#DBEAFE')};
   }
 
   &:disabled {
@@ -279,11 +277,10 @@ const PlayButton = styled.button`
 `;
 
 const LangBadge = styled.span`
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
   padding: 2px 5px;
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.radii.xs};
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.border};
   color: ${({ theme }) => theme.colors.secondary};

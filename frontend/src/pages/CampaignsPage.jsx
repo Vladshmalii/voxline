@@ -106,8 +106,6 @@ const Filter = styled.label`
   font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 
   select {
     min-width: 170px;
@@ -124,16 +122,17 @@ const StatusChips = styled.div`
 `;
 
 const StatusChip = styled.button`
-  padding: 4px 10px;
-  font-size: 12px;
-  border-radius: 999px;
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.colors.accentNeon : theme.colors.border)};
-  background: transparent;
-  color: ${({ theme, $active }) => ($active ? theme.colors.accentNeon : theme.colors.secondary)};
-  font-weight: ${({ $active }) => ($active ? 700 : 500)};
+  height: 28px;
+  padding: 0 12px;
+  font-size: 13px;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  border: 1px solid ${({ theme, $active }) => ($active ? 'transparent' : theme.colors.border)};
+  background: ${({ theme, $active }) => ($active ? theme.colors.accentSoft : 'transparent')};
+  color: ${({ theme, $active }) => ($active ? (theme.mode === 'dark' ? theme.colors.accentNeon : theme.colors.accent) : theme.colors.secondary)};
+  font-weight: ${({ $active }) => ($active ? 600 : 500)};
   cursor: pointer;
   white-space: nowrap;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.12s ease, background-color 0.12s ease;
 `;
 
 const spin = keyframes`
@@ -161,8 +160,6 @@ const DetailKey = styled.div`
   font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 `;
 
 const DetailValue = styled.div`
@@ -177,8 +174,6 @@ const SectionLabel = styled.div`
   font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 
   span {
     font-weight: 400;
@@ -206,27 +201,25 @@ const CounterCell = styled.div`
   gap: 2px;
   padding: 10px 8px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   text-align: center;
 `;
 
 // "SMS sent" is not a call status, so it sits apart from the call counters
 // and carries the SMS accent colour instead of the neutral one.
 const SmsCounterCell = styled(CounterCell)`
-  border-color: #2563eb55;
-  background: #2563eb12;
+  border-color: #2563EB55;
+  background: #2563EB12;
 
   & > div:first-child {
-    color: #2563eb;
+    color: #2563EB;
   }
 `;
 
 const SubLabel = styled.div`
   margin: 14px 0 8px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
   color: ${({ theme }) => theme.colors.secondary};
 `;
 
@@ -237,7 +230,7 @@ const CounterValue = styled.div`
 `;
 
 const CounterLabel = styled.div`
-  font-size: 11px;
+  font-size: 12px;
   color: ${({ theme }) => theme.colors.secondary};
 `;
 
@@ -816,15 +809,15 @@ export const CampaignsPage = () => {
                     onClick={() => openDetail(row)}
                     style={{
                       cursor: 'pointer',
-                      backgroundColor: row.status === 'error' ? 'rgba(239, 68, 68, 0.08)' : undefined,
-                      borderLeft: row.status === 'error' ? '3px solid #ef4444' : undefined,
+                      backgroundColor: row.status === 'error' ? 'rgba(220, 38, 38, 0.08)' : undefined,
+                      borderLeft: row.status === 'error' ? '3px solid #DC2626' : undefined,
                     }}
                   >
                     <TableCell theme={theme}>{row.id}</TableCell>
                     <TableCell theme={theme}>
                       {row.name}
                       {row.is_archived && (
-                        <Badge $color="#6b7280" style={{ marginLeft: 6 }}>
+                        <Badge $color="#64748B" style={{ marginLeft: 6 }}>
                           {t('common.archived')}
                         </Badge>
                       )}
@@ -1026,7 +1019,7 @@ export const CampaignsPage = () => {
                     <tr key={i}>
                       <td>{r.phone}</td>
                       <td>{r.call_id ?? '—'}</td>
-                      <td style={{ color: r.error ? '#dc2626' : undefined }}>{r.error ?? '—'}</td>
+                      <td style={{ color: r.error ? '#DC2626' : undefined }}>{r.error ?? '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -1089,7 +1082,7 @@ export const CampaignsPage = () => {
                   {addAudience.result.results.map((r, i) => (
                     <tr key={i}>
                       <td>{r.phone}</td>
-                      <td style={{ color: r.error ? '#dc2626' : undefined }}>{r.error ?? '—'}</td>
+                      <td style={{ color: r.error ? '#DC2626' : undefined }}>{r.error ?? '—'}</td>
                     </tr>
                   ))}
                 </tbody>

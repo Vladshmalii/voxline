@@ -77,8 +77,6 @@ const SectionTitle = styled.h3`
   margin: 0 0 10px;
   font-size: 14px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: ${({ theme }) => theme.colors.secondary};
 `;
 
@@ -121,7 +119,7 @@ const VoicePlayButton = styled.button`
   padding: 8px 12px;
   font-size: 13px;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   border: 1px solid ${({ theme, $active }) => ($active ? theme.colors.accentNeon || theme.colors.accent : theme.colors.border)};
   background: ${({ theme, $active }) => ($active ? `${theme.colors.accent}18` : theme.colors.surface)};
   color: ${({ theme, $active }) => ($active ? theme.colors.accentNeon || theme.colors.primary : theme.colors.primary)};

@@ -5,7 +5,7 @@ import { KINDS, getStatusMeta, statusLabel } from 'utils/statusMap';
 export const ActiveBadge = ({ active }) => {
   const { t } = useI18n();
   return (
-    <Badge $color={active ? '#16a34a' : '#6b7280'}>
+    <Badge $color={active ? '#16A34A' : '#64748B'}>
       {t(active ? 'common.active' : 'common.inactive')}
     </Badge>
   );

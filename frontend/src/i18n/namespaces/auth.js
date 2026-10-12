@@ -3,6 +3,9 @@ import { registerMessages } from '../registry';
 // In-app login page (/login).
 registerMessages('auth', {
   en: {
+    posterLead: 'Every call,',
+    posterEmphasis: 'heard.',
+    posterFoot: 'Voice agents, campaigns and conversations in one desk.',
     title: 'Sign in to Voxline',
     subtitle: 'Enter your credentials to open the admin panel.',
     email: 'Email',
@@ -19,6 +22,9 @@ registerMessages('auth', {
     orgFailed: 'Failed to switch organization',
   },
   ru: {
+    posterLead: 'Каждый звонок',
+    posterEmphasis: 'услышан.',
+    posterFoot: 'Голосовые агенты, кампании и разговоры — в одном пульте.',
     title: 'Вход в Voxline',
     subtitle: 'Введите данные, чтобы открыть панель управления.',
     email: 'Эл. почта',

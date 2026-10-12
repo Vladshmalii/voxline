@@ -1,18 +1,30 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { HiXMark } from 'react-icons/hi2';
 import { useTheme } from 'contexts/ThemeContext';
+
+const fade = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const rise = keyframes`
+  from { opacity: 0; transform: translateY(8px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+`;
 
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: ${({ theme }) => (theme.mode === 'dark' ? 'rgba(2, 6, 14, 0.72)' : 'rgba(15, 23, 42, 0.42)')};
+  backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 5000;
   padding: 20px;
+  animation: ${fade} 0.15s ease;
 `;
 
 const Panel = styled.div`
@@ -23,9 +35,10 @@ const Panel = styled.div`
   flex-direction: column;
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 16px;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+  border-radius: ${({ theme }) => theme.radii.lg};
+  box-shadow: ${({ theme }) => theme.shadows.pop};
   overflow: hidden;
+  animation: ${rise} 0.18s ease;
 `;
 
 const PanelHeader = styled.div`
@@ -33,15 +46,15 @@ const PanelHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 16px 20px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  padding: 18px 22px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.divider};
   flex-shrink: 0;
 `;
 
 const PanelTitle = styled.h3`
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 650;
   color: ${({ theme }) => theme.colors.primary};
 `;
 
@@ -49,13 +62,14 @@ const CloseButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px;
+  width: 32px;
+  height: 32px;
   background: none;
   border: none;
-  border-radius: 6px;
-  color: ${({ theme }) => theme.colors.secondary};
+  border-radius: ${({ theme }) => theme.radii.sm};
+  color: ${({ theme }) => theme.colors.muted};
   cursor: pointer;
-  transition: color 0.15s ease, background 0.15s ease;
+  transition: color 0.12s ease, background 0.12s ease;
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
@@ -64,7 +78,7 @@ const CloseButton = styled.button`
 `;
 
 const PanelBody = styled.div`
-  padding: 18px 20px;
+  padding: 20px 22px;
   overflow-y: auto;
   flex: 1;
 `;
@@ -74,8 +88,9 @@ const PanelFooter = styled.div`
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 10px;
-  padding: 14px 20px;
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  padding: 14px 22px;
+  border-top: 1px solid ${({ theme }) => theme.colors.divider};
+  background: ${({ theme }) => theme.colors.surfaceAlt};
   flex-shrink: 0;
 `;
 
@@ -91,11 +106,11 @@ export const Modal = ({ title, onClose, children, footer, wide = false, width })
   }, [onClose]);
 
   return createPortal(
-    <Overlay onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <Panel theme={theme} $wide={wide} $width={width}>
+    <Overlay theme={theme} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <Panel theme={theme} $wide={wide} $width={width} role="dialog" aria-modal="true" aria-label={title}>
         <PanelHeader theme={theme}>
           <PanelTitle theme={theme}>{title}</PanelTitle>
-          <CloseButton theme={theme} type="button" onClick={onClose}>
+          <CloseButton theme={theme} type="button" onClick={onClose} aria-label="Close">
             <HiXMark size={18} />
           </CloseButton>
         </PanelHeader>

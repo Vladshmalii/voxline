@@ -154,7 +154,7 @@ const StatsGrid = styled.div`
 const StatCard = styled.div`
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   padding: 10px 14px;
   display: flex;
   flex-direction: column;
@@ -162,11 +162,9 @@ const StatCard = styled.div`
 `;
 
 const StatLabel = styled.div`
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
   color: ${({ theme }) => theme.colors.secondary};
-  letter-spacing: 0.04em;
 `;
 
 const StatValue = styled.div`
@@ -195,8 +193,6 @@ const DetailKey = styled.div`
   font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 `;
 
 const DetailValue = styled.div`
@@ -234,8 +230,6 @@ const SectionLabel = styled.div`
   font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 
   span {
     font-weight: 400;
@@ -290,7 +284,7 @@ const Bubble = styled.div`
   align-self: ${({ $role }) => ($role === 'assistant' ? 'flex-start' : $role === 'user' ? 'flex-end' : 'center')};
   max-width: 85%;
   padding: 8px 12px;
-  border-radius: 12px;
+  border-radius: ${({ theme }) => theme.radii.md};
   font-size: 13.5px;
   line-height: 1.45;
   white-space: pre-wrap;
@@ -309,10 +303,8 @@ const Bubble = styled.div`
 `;
 
 const BubbleRole = styled.div`
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: ${({ theme }) => theme.colors.muted};
   margin-bottom: 2px;
 `;
@@ -717,35 +709,35 @@ export const CallsPage = () => {
             </StatCard>
             <StatCard theme={theme}>
               <StatLabel theme={theme}>{t('calls.stats.pending')}</StatLabel>
-              <StatValue theme={theme} $color="#2563eb">{stats.statuses?.pending ?? 0}</StatValue>
+              <StatValue theme={theme} $color="#2563EB">{stats.statuses?.pending ?? 0}</StatValue>
             </StatCard>
             <StatCard theme={theme}>
               <StatLabel theme={theme}>{t('calls.stats.calling')}</StatLabel>
-              <StatValue theme={theme} $color="#7c3aed">{stats.statuses?.calling ?? 0}</StatValue>
+              <StatValue theme={theme} $color="#0891B2">{stats.statuses?.calling ?? 0}</StatValue>
             </StatCard>
             <StatCard theme={theme}>
               <StatLabel theme={theme}>{t('calls.stats.completed')}</StatLabel>
-              <StatValue theme={theme} $color="#16a34a">{stats.statuses?.completed ?? 0}</StatValue>
+              <StatValue theme={theme} $color="#16A34A">{stats.statuses?.completed ?? 0}</StatValue>
             </StatCard>
             <StatCard theme={theme}>
               <StatLabel theme={theme}>{t('calls.stats.exhausted')}</StatLabel>
-              <StatValue theme={theme} $color="#dc2626">{stats.statuses?.exhausted ?? 0}</StatValue>
+              <StatValue theme={theme} $color="#DC2626">{stats.statuses?.exhausted ?? 0}</StatValue>
             </StatCard>
             <StatCard theme={theme}>
               <StatLabel theme={theme}>{t('calls.stats.answeringMachine')}</StatLabel>
-              <StatValue theme={theme} $color="#d97706">{stats.outcomes?.answerphone ?? stats.outcomes?.answering_machine ?? 0}</StatValue>
+              <StatValue theme={theme} $color="#D97706">{stats.outcomes?.answerphone ?? stats.outcomes?.answering_machine ?? 0}</StatValue>
             </StatCard>
             <StatCard theme={theme}>
               <StatLabel theme={theme}>{t('calls.stats.escalated')}</StatLabel>
-              <StatValue theme={theme} $color="#7c3aed">{stats.outcomes?.escalated ?? 0}</StatValue>
+              <StatValue theme={theme} $color="#0891B2">{stats.outcomes?.escalated ?? 0}</StatValue>
             </StatCard>
             <StatCard theme={theme}>
               <StatLabel theme={theme}>{t('calls.stats.smsSent')}</StatLabel>
-              <StatValue theme={theme} $color="#2563eb">{stats.outcomes?.sms_sent ?? 0}</StatValue>
+              <StatValue theme={theme} $color="#2563EB">{stats.outcomes?.sms_sent ?? 0}</StatValue>
             </StatCard>
             <StatCard theme={theme}>
               <StatLabel theme={theme}>{t('calls.stats.noAnswer')}</StatLabel>
-              <StatValue theme={theme} $color="#6b7280">{stats.outcomes?.no_answer ?? 0}</StatValue>
+              <StatValue theme={theme} $color="#64748B">{stats.outcomes?.no_answer ?? 0}</StatValue>
             </StatCard>
           </StatsGrid>
         )}
@@ -931,7 +923,7 @@ export const CallsPage = () => {
                         {Array.isArray(row.tags) && row.tags.length > 0 ? (
                           <TagsRow>
                             {row.tags.map((tag) => (
-                              <Badge key={tag} $color="#7c3aed">
+                              <Badge key={tag} $color="#0891B2">
                                 {callTagLabel(t, tag)}
                               </Badge>
                             ))}
@@ -1164,7 +1156,7 @@ const CallDetail = ({ data, theme, t, agentLabel, onTagsUpdated, onGoToLead, can
           <Field label={t('calls.detail.nextAttempt')}>
             {formatDateTime(data.next_attempt_at)}
             {data.is_callback && (
-              <Badge $color="#d97706" style={{ marginLeft: 8 }}>
+              <Badge $color="#D97706" style={{ marginLeft: 8 }}>
                 {t('calls.detail.callbackTag')}
               </Badge>
             )}
@@ -1179,7 +1171,7 @@ const CallDetail = ({ data, theme, t, agentLabel, onTagsUpdated, onGoToLead, can
         {data.tags?.length > 0 ? (
           <TagsRow style={{ marginBottom: 10 }}>
             {data.tags.map((tag) => (
-              <Badge key={tag} $color="#7c3aed">
+              <Badge key={tag} $color="#0891B2">
                 {callTagLabel(t, tag)}
               </Badge>
             ))}
@@ -1218,7 +1210,7 @@ const CallDetail = ({ data, theme, t, agentLabel, onTagsUpdated, onGoToLead, can
             </TagsEditor>
 
             {tagsError && (
-              <DetailValue theme={theme} style={{ color: '#dc2626', marginBottom: 8 }}>
+              <DetailValue theme={theme} style={{ color: '#DC2626', marginBottom: 8 }}>
                 {tagsError}
               </DetailValue>
             )}
@@ -1283,7 +1275,7 @@ const CallDetail = ({ data, theme, t, agentLabel, onTagsUpdated, onGoToLead, can
 
 const AttemptCard = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
+  border-radius: ${({ theme }) => theme.radii.md};
   padding: 12px;
   margin-bottom: 12px;
 `;
@@ -1343,7 +1335,7 @@ const AttemptDetail = ({ attempt, callId, theme, t }) => {
 
       {attempt.summary && <DetailValue theme={theme}>{attempt.summary}</DetailValue>}
       {attempt.error && (
-        <DetailValue theme={theme} style={{ color: '#dc2626' }}>
+        <DetailValue theme={theme} style={{ color: '#DC2626' }}>
           {attempt.error}
         </DetailValue>
       )}

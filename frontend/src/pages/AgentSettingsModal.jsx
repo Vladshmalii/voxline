@@ -31,8 +31,6 @@ const SectionTitle = styled.h3`
   margin: 20px 0 10px;
   font-size: 13px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: ${({ theme }) => theme.colors.secondary};
 
   &:first-child {
@@ -52,12 +50,12 @@ const PendingBadge = styled.span`
   display: inline-block;
   margin: -4px 0 10px;
   padding: 2px 8px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  border-radius: 999px;
-  color: #d97706;
-  background: #d9770622;
-  border: 1px solid #d9770655;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  color: #D97706;
+  background: #D9770622;
+  border: 1px solid #D9770655;
 `;
 
 /**

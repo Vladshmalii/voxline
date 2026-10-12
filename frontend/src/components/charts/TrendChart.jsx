@@ -36,7 +36,7 @@ const LegendItem = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 12px;
   color: ${({ theme }) => theme.colors.secondary};
 `;
 
@@ -56,7 +56,7 @@ const Svg = styled.svg`
 `;
 
 const AxisLabel = styled.text`
-  font-size: 10px;
+  font-size: 12px;
   fill: ${({ theme }) => theme.colors.muted};
 `;
 
@@ -68,12 +68,12 @@ const Tooltip = styled.div`
   transform: translate(-50%, 0);
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   padding: 8px 10px;
   font-size: 12px;
   color: ${({ theme }) => theme.colors.primary};
   white-space: nowrap;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  box-shadow: ${({ theme }) => theme.shadows.pop};
   z-index: 2;
 `;
 
@@ -100,8 +100,8 @@ export const TrendChart = ({
   theme,
   data,
   totalColor,
-  completedColor = '#16a34a',
-  failedColor = '#ef4444',
+  completedColor = '#16A34A',
+  failedColor = '#DC2626',
   totalLabel = 'Total',
   completedLabel = 'Success',
   failedLabel = 'Failed',

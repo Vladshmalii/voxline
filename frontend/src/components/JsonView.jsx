@@ -8,8 +8,8 @@ import { useTheme } from 'contexts/ThemeContext';
 // blob can be copied. Props stay `value` + `maxHeight` so callers are unchanged.
 
 const SYNTAX = {
-  light: { key: '#0550ae', string: '#0a7d33', number: '#953800', boolean: '#8250df', null: '#6b6b6b' },
-  dark: { key: '#79c0ff', string: '#7ee787', number: '#ffa657', boolean: '#d2a8ff', null: '#8b949e' },
+  light: { key: '#1D4ED8', string: '#15803D', number: '#B45309', boolean: '#0891B2', null: '#64748B' },
+  dark: { key: '#7DB5FF', string: '#6EE7A0', number: '#FBBF24', boolean: '#67E8F9', null: '#94A3B8' },
 };
 
 const Root = styled.div`
@@ -20,7 +20,7 @@ const Root = styled.div`
   color: ${({ theme }) => theme.colors.primary};
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
+  border-radius: ${({ theme }) => theme.radii.md};
   padding: 12px 14px;
   overflow: auto;
   max-height: ${({ $maxHeight }) => $maxHeight || '360px'};
@@ -31,7 +31,7 @@ const Root = styled.div`
   }
   &::-webkit-scrollbar-thumb {
     background: ${({ theme }) => theme.colors.border};
-    border-radius: 4px;
+    border-radius: ${({ theme }) => theme.radii.xs};
   }
 `;
 
@@ -78,12 +78,12 @@ const CopyButton = styled.button`
   top: 8px;
   right: 8px;
   padding: 3px 9px;
-  font-size: 11px;
+  font-size: 12px;
   font-family: inherit;
   color: ${({ theme }) => theme.colors.secondary};
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 6px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   cursor: pointer;
   opacity: 0.85;
 

@@ -6,7 +6,7 @@ import { modelsApi, providersApi, MAX_PAGE } from 'utils/callApi';
 import { useUser } from 'contexts/UserContext';
 import { canManageModels } from 'utils/permissions';
 
-const KIND_COLORS = { stt: '#2563eb', tts: '#16a34a', ttt: '#7c3aed' };
+const KIND_COLORS = { stt: '#2563EB', tts: '#16A34A', ttt: '#0891B2' };
 
 // SttAdapterEnum + TtsAdapterEnum + TttAdapterEnum, tagged with the kind each
 // serves so one flat select stays honest.
@@ -42,7 +42,7 @@ export const ModelsPage = () => {
         key: 'kind',
         labelKey: 'models.columns.kind',
         align: 'center',
-        render: (row) => <Badge $color={KIND_COLORS[row.kind] || '#6b7280'}>{row.kind}</Badge>,
+        render: (row) => <Badge $color={KIND_COLORS[row.kind] || '#64748B'}>{row.kind}</Badge>,
       },
       { key: 'adapter', labelKey: 'models.columns.adapter' },
       { key: 'code', labelKey: 'models.columns.code' },

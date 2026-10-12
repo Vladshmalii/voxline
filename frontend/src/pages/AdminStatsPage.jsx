@@ -36,9 +36,9 @@ const OrgBadge = styled.div`
   align-items: center;
   gap: 8px;
   padding: 6px 12px;
-  background: ${({ theme }) => (theme.isDark ? '#1e1b4b' : '#ede9fe')};
-  border: 1px solid ${({ theme }) => (theme.isDark ? '#4338ca' : '#c4b5fd')};
-  border-radius: 8px;
+  background: ${({ theme }) => (theme.mode === 'dark' ? '#172554' : '#DBEAFE')};
+  border: 1px solid ${({ theme }) => (theme.mode === 'dark' ? '#1E40AF' : '#93C5FD')};
+  border-radius: ${({ theme }) => theme.radii.sm};
   font-size: 13px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.accent};
@@ -86,12 +86,12 @@ const StatLabel = styled.span`
 const StatIcon = styled.div`
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ $bg }) => $bg || 'rgba(139, 92, 246, 0.12)'};
-  color: ${({ $color }) => $color || '#8b5cf6'};
+  background: ${({ $bg }) => $bg || 'rgba(8, 145, 178, 0.12)'};
+  color: ${({ $color }) => $color || '#0891B2'};
 `;
 
 const StatVal = styled.span`
@@ -102,7 +102,7 @@ const StatVal = styled.span`
 `;
 
 const StatSub = styled.span`
-  font-size: 11px;
+  font-size: 12px;
   color: ${({ theme }) => theme.colors.muted};
 `;
 
@@ -139,7 +139,7 @@ const TariffValue = styled.span`
 const ProgressContainer = styled.div`
   width: 100%;
   height: 8px;
-  border-radius: 9999px;
+  border-radius: ${({ theme }) => theme.radii.pill};
   background: ${({ theme }) => theme.colors.divider};
   overflow: hidden;
   margin-top: 6px;
@@ -148,8 +148,8 @@ const ProgressContainer = styled.div`
 const ProgressBar = styled.div`
   height: 100%;
   width: ${({ $pct }) => Math.min(100, Math.max(0, $pct))}%;
-  background: ${({ $color }) => $color || '#8b5cf6'};
-  border-radius: 9999px;
+  background: ${({ $color }) => $color || '#0891B2'};
+  border-radius: ${({ theme }) => theme.radii.pill};
   transition: width 0.3s ease;
 `;
 
@@ -217,7 +217,7 @@ export const AdminStatsPage = () => {
                 {t('adminStats.cards.callsTotal.label')}
                 <HelpTip text={t('adminStats.cards.callsTotal.help')} />
               </StatLabel>
-              <StatIcon $bg="rgba(139, 92, 246, 0.12)" $color="#8b5cf6">
+              <StatIcon $bg="rgba(8, 145, 178, 0.12)" $color="#0891B2">
                 <FiPhoneCall size={16} />
               </StatIcon>
             </StatTop>
@@ -231,13 +231,13 @@ export const AdminStatsPage = () => {
                 {t('adminStats.cards.callsSuccess.label')}
                 <HelpTip text={t('adminStats.cards.callsSuccess.help')} />
               </StatLabel>
-              <StatIcon $bg="rgba(16, 185, 129, 0.12)" $color="#10b981">
+              <StatIcon $bg="rgba(22, 163, 74, 0.12)" $color="#16A34A">
                 <FiCheckCircle size={16} />
               </StatIcon>
             </StatTop>
             <StatVal theme={theme}>{(data?.calls_completed ?? 0).toLocaleString()}</StatVal>
             <ProgressContainer theme={theme}>
-              <ProgressBar $pct={successPercent} $color="#10b981" />
+              <ProgressBar $pct={successPercent} $color="#16A34A" />
             </ProgressContainer>
             <StatSub theme={theme}>{t('adminStats.cards.callsSuccess.sub', { pct: successPercent })}</StatSub>
           </StatCard>
@@ -248,7 +248,7 @@ export const AdminStatsPage = () => {
                 {t('adminStats.cards.callsFailed.label')}
                 <HelpTip text={t('adminStats.cards.callsFailed.help')} />
               </StatLabel>
-              <StatIcon $bg="rgba(239, 68, 68, 0.12)" $color="#ef4444">
+              <StatIcon $bg="rgba(220, 38, 38, 0.12)" $color="#DC2626">
                 <FiXCircle size={16} />
               </StatIcon>
             </StatTop>
@@ -264,7 +264,7 @@ export const AdminStatsPage = () => {
                 {t('adminStats.cards.answerRate.label')}
                 <HelpTip text={t('adminStats.cards.answerRate.help')} />
               </StatLabel>
-              <StatIcon $bg="rgba(59, 130, 246, 0.12)" $color="#3b82f6">
+              <StatIcon $bg="rgba(37, 99, 235, 0.12)" $color="#2563EB">
                 <FiPercent size={16} />
               </StatIcon>
             </StatTop>
@@ -288,7 +288,7 @@ export const AdminStatsPage = () => {
                 {t('adminStats.cards.talkTime.label')}
                 <HelpTip text={t('adminStats.cards.talkTime.help')} />
               </StatLabel>
-              <StatIcon $bg="rgba(245, 158, 11, 0.12)" $color="#f59e0b">
+              <StatIcon $bg="rgba(217, 119, 6, 0.12)" $color="#D97706">
                 <FiClock size={16} />
               </StatIcon>
             </StatTop>
@@ -306,7 +306,7 @@ export const AdminStatsPage = () => {
                 {t('channelBilling.callBalance')}
                 <HelpTip text={t('channelBilling.callsSubtitle')} />
               </StatLabel>
-              <StatIcon $bg="rgba(16, 185, 129, 0.12)" $color="#10b981">
+              <StatIcon $bg="rgba(22, 163, 74, 0.12)" $color="#16A34A">
                 <FiDollarSign size={16} />
               </StatIcon>
             </StatTop>
@@ -321,7 +321,7 @@ export const AdminStatsPage = () => {
 
           <StatCard theme={theme}>
             <StatTop><StatLabel theme={theme}>{t('channelBilling.smsBalance')}</StatLabel>
-              <StatIcon $bg="rgba(59, 130, 246, 0.12)" $color="#3b82f6"><FiDollarSign size={16} /></StatIcon>
+              <StatIcon $bg="rgba(37, 99, 235, 0.12)" $color="#2563EB"><FiDollarSign size={16} /></StatIcon>
             </StatTop>
             <StatVal theme={theme}>{currencySymbol}{(data?.sms_balance ?? 0).toFixed(2)}</StatVal>
           </StatCard>
@@ -332,7 +332,7 @@ export const AdminStatsPage = () => {
                 {t('adminStats.cards.spent.label')}
                 <HelpTip text={t('adminStats.cards.spent.help')} />
               </StatLabel>
-              <StatIcon $bg="rgba(239, 68, 68, 0.12)" $color="#ef4444">
+              <StatIcon $bg="rgba(220, 38, 38, 0.12)" $color="#DC2626">
                 <FiActivity size={16} />
               </StatIcon>
             </StatTop>
@@ -353,7 +353,7 @@ export const AdminStatsPage = () => {
                 {t('adminStats.cards.tariff.label')}
                 <HelpTip text={t('adminStats.cards.tariff.help')} />
               </StatLabel>
-              <StatIcon $bg="rgba(139, 92, 246, 0.12)" $color="#8b5cf6">
+              <StatIcon $bg="rgba(8, 145, 178, 0.12)" $color="#0891B2">
                 <FiDollarSign size={16} />
               </StatIcon>
             </StatTop>
@@ -385,7 +385,7 @@ export const AdminStatsPage = () => {
                 {t('adminStats.cards.smsSent.label')}
                 <HelpTip text={t('adminStats.cards.smsSent.help')} />
               </StatLabel>
-              <StatIcon $bg="rgba(14, 165, 233, 0.12)" $color="#0ea5e9">
+              <StatIcon $bg="rgba(37, 99, 235, 0.12)" $color="#2563EB">
                 <FiMessageSquare size={16} />
               </StatIcon>
             </StatTop>
@@ -411,7 +411,7 @@ export const AdminStatsPage = () => {
                 {t('adminStats.cards.agents.label')}
                 <HelpTip text={t('adminStats.cards.agents.help')} />
               </StatLabel>
-              <StatIcon $bg="rgba(99, 102, 241, 0.12)" $color="#6366f1">
+              <StatIcon $bg="rgba(8, 145, 178, 0.12)" $color="#0891B2">
                 <FiUsers size={16} />
               </StatIcon>
             </StatTop>
@@ -425,7 +425,7 @@ export const AdminStatsPage = () => {
                 {t('adminStats.cards.campaigns.label')}
                 <HelpTip text={t('adminStats.cards.campaigns.help')} />
               </StatLabel>
-              <StatIcon $bg="rgba(236, 72, 153, 0.12)" $color="#ec4899">
+              <StatIcon $bg="rgba(219, 39, 119, 0.12)" $color="#DB2777">
                 <FiTarget size={16} />
               </StatIcon>
             </StatTop>
@@ -439,7 +439,7 @@ export const AdminStatsPage = () => {
                 {t('adminStats.cards.leads.label')}
                 <HelpTip text={t('adminStats.cards.leads.help')} />
               </StatLabel>
-              <StatIcon $bg="rgba(14, 165, 233, 0.12)" $color="#0ea5e9">
+              <StatIcon $bg="rgba(37, 99, 235, 0.12)" $color="#2563EB">
                 <FiUsers size={16} />
               </StatIcon>
             </StatTop>

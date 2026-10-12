@@ -422,10 +422,10 @@ const Chip = styled.span`
   align-items: center;
   gap: 6px;
   padding: 3px 6px 3px 9px;
-  border: 1px solid ${({ $invalid, theme }) => ($invalid ? '#ef4444' : theme.colors.border)};
-  border-radius: 999px;
+  border: 1px solid ${({ $invalid, theme }) => ($invalid ? '#DC2626' : theme.colors.border)};
+  border-radius: ${({ theme }) => theme.radii.pill};
   font-size: 12.5px;
-  color: ${({ $invalid, theme }) => ($invalid ? '#ef4444' : theme.colors.primary)};
+  color: ${({ $invalid, theme }) => ($invalid ? '#DC2626' : theme.colors.primary)};
 `;
 
 const ChipRemove = styled.button`
@@ -455,7 +455,7 @@ const DayToggle = styled.button`
   padding: 5px 10px;
   font-size: 12.5px;
   font-weight: ${({ $active }) => ($active ? 700 : 500)};
-  border-radius: 6px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   border: 1px solid ${({ theme, $active }) => ($active ? theme.colors.accentNeon : theme.colors.border)};
   background: transparent;
   color: ${({ theme, $active }) => ($active ? theme.colors.accentNeon : theme.colors.secondary)};
@@ -477,7 +477,7 @@ const ListRow = styled.div`
   padding: 10px;
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
 `;
 
 const ListRowFields = styled.div`
@@ -511,12 +511,12 @@ const ListRemove = styled.button`
   color: ${({ theme }) => theme.colors.secondary};
   background: none;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 6px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   cursor: pointer;
 
   &:hover {
-    color: #ef4444;
-    border-color: #ef4444;
+    color: #DC2626;
+    border-color: #DC2626;
   }
 `;
 
@@ -527,7 +527,7 @@ const ListAdd = styled.button`
   color: ${({ theme }) => theme.colors.primary};
   background: ${({ theme }) => theme.colors.surface};
   border: 1px dashed ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   cursor: pointer;
 
   &:hover {
@@ -596,7 +596,7 @@ const ExpandToggle = styled.button`
   color: ${({ theme }) => theme.colors.primary};
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   cursor: pointer;
   transition: border-color 0.15s ease, color 0.15s ease;
 

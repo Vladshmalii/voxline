@@ -15,28 +15,7 @@ import { useI18n } from 'contexts/I18nContext';
 import { billingApi } from 'utils/callApi';
 import { useUser } from 'contexts/UserContext';
 import { canManageBilling, canManageTariffs } from 'utils/permissions';
-import {
-  PageContent,
-  HeaderSection,
-  PageTitle,
-  HeaderActions,
-  ContentScroll,
-  Card,
-  PrimaryButton,
-  SecondaryButton,
-  FieldGroup,
-  FieldLabel,
-  TextInput,
-  TableContainer,
-  Table,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
-  TableCell,
-  EmptyState,
-  EmptyStateTitle,
-  EmptyStateText,
-} from 'components/ui';
+import { PageContent, HeaderSection, PageTitle, HeaderActions, ContentScroll, Card, PrimaryButton, SecondaryButton, FieldGroup, FieldLabel, TextInput, TableContainer, Table, TableHeader, TableHeaderCell, TableRow, TableCell, EmptyState, EmptyStateTitle, EmptyStateText, Segmented, SegmentOption } from 'components/ui';
 import { Pagination } from 'components/Pagination';
 import { HelpTip } from 'components/HelpTip';
 import { Modal } from 'components/Modal';
@@ -61,12 +40,12 @@ const KpiCard = styled(Card)`
 const KpiIconBox = styled.div`
   width: 38px;
   height: 38px;
-  border-radius: 10px;
+  border-radius: ${({ theme }) => theme.radii.md};
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ $bg }) => $bg || 'rgba(139, 92, 246, 0.12)'};
-  color: ${({ $color }) => $color || '#8b5cf6'};
+  background: ${({ $bg }) => $bg || 'rgba(8, 145, 178, 0.12)'};
+  color: ${({ $color }) => $color || '#0891B2'};
   margin-bottom: 4px;
 `;
 
@@ -98,30 +77,10 @@ const SectionTitle = styled.h3`
   justify-content: space-between;
 `;
 
-const FilterTabs = styled.div`
-  display: flex;
-  gap: 8px;
+const FilterTabs = styled(Segmented)`
   margin-bottom: 14px;
 `;
-
-const FilterTab = styled.button`
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  border: 1px solid
-    ${({ $active, theme }) => ($active ? theme.colors.accent : theme.colors.border)};
-  background: ${({ $active, theme }) =>
-    $active ? (theme.isDark ? '#4c1d95' : '#ede9fe') : 'transparent'};
-  color: ${({ $active, theme }) =>
-    $active ? theme.colors.accent : theme.colors.secondary};
-  cursor: pointer;
-  transition: all 0.15s ease;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`;
+const FilterTab = SegmentOption;
 
 const TxAmount = styled.span`
   font-weight: 600;
@@ -129,7 +88,7 @@ const TxAmount = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: ${({ $positive }) => ($positive ? '#16a34a' : '#dc2626')};
+  color: ${({ $positive }) => ($positive ? '#16A34A' : '#DC2626')};
 `;
 
 const QuickAmountGroup = styled.div`
@@ -140,7 +99,7 @@ const QuickAmountGroup = styled.div`
 
 const QuickButton = styled.button`
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   border: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.surfaceAlt || 'transparent'};
   color: ${({ theme }) => theme.colors.primary};
@@ -156,13 +115,13 @@ const QuickButton = styled.button`
 `;
 
 const CalcBanner = styled.div`
-  background: ${({ theme }) => (theme.isDark ? '#1e1b4b' : '#f5f3ff')};
-  border: 1px solid ${({ theme }) => (theme.isDark ? '#3730a3' : '#ddd6fe')};
-  border-radius: 8px;
+  background: ${({ theme }) => (theme.mode === 'dark' ? '#172554' : '#EFF6FF')};
+  border: 1px solid ${({ theme }) => (theme.mode === 'dark' ? '#1D4ED8' : '#BFDBFE')};
+  border-radius: ${({ theme }) => theme.radii.sm};
   padding: 12px 14px;
   margin-top: 14px;
   font-size: 13px;
-  color: ${({ theme }) => (theme.isDark ? '#c4b5fd' : '#5b21b6')};
+  color: ${({ theme }) => (theme.mode === 'dark' ? '#93C5FD' : '#1E40AF')};
   display: flex;
   align-items: center;
   gap: 8px;
@@ -320,7 +279,7 @@ export const BillingPage = ({ channel = 'calls' }) => {
         {loadError && <EmptyStateText theme={theme}>{loadError}</EmptyStateText>}
         <SummaryGrid>
           <KpiCard theme={theme}>
-            <KpiIconBox $bg="rgba(16, 185, 129, 0.12)" $color="#10b981">
+            <KpiIconBox $bg="rgba(22, 163, 74, 0.12)" $color="#16A34A">
               <FiDollarSign size={20} />
             </KpiIconBox>
             <KpiLabel theme={theme}>{t(isSms ? 'channelBilling.smsBalance' : 'channelBilling.callBalance')}</KpiLabel>
@@ -336,7 +295,7 @@ export const BillingPage = ({ channel = 'calls' }) => {
           </KpiCard>
 
           <KpiCard theme={theme}>
-            <KpiIconBox $bg="rgba(139, 92, 246, 0.12)" $color="#8b5cf6">
+            <KpiIconBox $bg="rgba(8, 145, 178, 0.12)" $color="#0891B2">
               <FiClock size={20} />
             </KpiIconBox>
             <KpiLabel theme={theme}>{t(isSms ? 'channelBilling.remainingSms' : 'billing.kpi.remaining')}</KpiLabel>
@@ -353,7 +312,7 @@ export const BillingPage = ({ channel = 'calls' }) => {
           </KpiCard>
 
           <KpiCard theme={theme}>
-            <KpiIconBox $bg="rgba(239, 68, 68, 0.12)" $color="#ef4444">
+            <KpiIconBox $bg="rgba(220, 38, 38, 0.12)" $color="#DC2626">
               <FiTrendingUp size={20} />
             </KpiIconBox>
             <KpiLabel theme={theme}>{t('channelBilling.estimatedSpent')}<HelpTip text={t('channelBilling.estimateHelp')} /></KpiLabel>
@@ -368,7 +327,7 @@ export const BillingPage = ({ channel = 'calls' }) => {
 
           {(!isSms || canSeeTariffs) && (
           <KpiCard theme={theme}>
-            <KpiIconBox $bg="rgba(59, 130, 246, 0.12)" $color="#3b82f6">
+            <KpiIconBox $bg="rgba(37, 99, 235, 0.12)" $color="#2563EB">
               <FiCreditCard size={20} />
             </KpiIconBox>
             <KpiLabel theme={theme}>{t('billing.kpi.rate')}</KpiLabel>

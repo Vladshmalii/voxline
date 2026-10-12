@@ -25,6 +25,11 @@ registerMessages('nav', {
     sms: 'SMS',
     smsModeration: 'SMS moderation',
     users: 'Users & Organizations',
+    platform: 'Platform',
+    admin: 'Admin',
+    collapse: 'Collapse sidebar',
+    expand: 'Expand sidebar',
+    menu: 'Open menu',
   },
   ru: {
     dashboard: 'Дашборд',
@@ -49,6 +54,11 @@ registerMessages('nav', {
     sms: 'SMS',
     smsModeration: 'Модерация SMS',
     users: 'Пользователи и организации',
+    platform: 'Платформа',
+    admin: 'Админ',
+    collapse: 'Свернуть меню',
+    expand: 'Развернуть меню',
+    menu: 'Открыть меню',
   },
 });
 
@@ -71,12 +81,14 @@ registerMessages('userMenu', {
 
 registerMessages('welcome', {
   en: {
-    title: 'Voxline Panel',
-    sub: 'Choose a section from the sidebar to get started.',
+    kicker: 'Dashboard',
+    title: 'Welcome back',
+    sub: 'Jump into a section below or use the sidebar.',
   },
   ru: {
-    title: 'Панель Voxline',
-    sub: 'Выберите раздел в боковом меню, чтобы начать.',
+    kicker: 'Обзор',
+    title: 'С возвращением',
+    sub: 'Выберите раздел ниже или в боковом меню.',
   },
 });
 

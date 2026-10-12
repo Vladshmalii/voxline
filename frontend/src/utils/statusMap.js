@@ -62,13 +62,13 @@ export const KINDS = {
   CLIENT: 'client',
 };
 
-const GRAY = '#6b7280';
-const BLUE = '#2563eb';
-const GREEN = '#16a34a';
-const AMBER = '#d97706';
-const ORANGE = '#ea580c';
-const PURPLE = '#7c3aed';
-const RED = '#dc2626';
+const GRAY = '#64748B';
+const BLUE = '#2563EB';
+const GREEN = '#16A34A';
+const AMBER = '#D97706';
+const ORANGE = '#EA580C';
+const PURPLE = '#0891B2';
+const RED = '#DC2626';
 
 const e = (labelKey, color, icon) => ({ labelKey, color, icon });
 

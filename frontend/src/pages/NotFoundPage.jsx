@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useTheme } from 'contexts/ThemeContext';
 import { useI18n } from 'contexts/I18nContext';
+import { Logo } from 'app/Logo';
 
 const Page = styled.div`
   min-height: 100vh;
@@ -9,52 +9,57 @@ const Page = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 10px;
+  padding: 40px 24px;
+  text-align: center;
   background-color: ${({ theme }) => theme.colors.background};
-  padding: 40px 20px;
 `;
 
 const Code = styled.div`
-  font-size: 72px;
+  margin-top: 18px;
+  font-size: clamp(72px, 14vw, 132px);
   font-weight: 800;
-  color: ${({ theme }) => theme.colors.accent};
   line-height: 1;
-  margin-bottom: 16px;
+  letter-spacing: -0.05em;
+  background: linear-gradient(135deg, #4f8bff, #1d4ed8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 `;
 
 const Text = styled.p`
   font-size: 16px;
   color: ${({ theme }) => theme.colors.secondary};
-  margin: 0 0 32px;
+  margin: 0 0 18px;
 `;
 
 const HomeLink = styled(Link)`
-  padding: 12px 24px;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
-  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: ${({ theme }) => theme.radii.sm};
+  font-size: 14px;
   font-weight: 600;
   text-decoration: none;
-  color: ${({ theme }) => theme.colors.primary};
-  background-color: ${({ theme }) => theme.colors.surface};
-  transition: border-color 0.2s, background-color 0.2s;
+  color: ${({ theme }) => theme.colors.onAccent};
+  background-color: ${({ theme }) => theme.colors.accent};
+  box-shadow: ${({ theme }) => theme.shadows.lift};
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.accentNeon};
-    background-color: ${({ theme }) => theme.colors.hover};
+    background-color: ${({ theme }) => theme.colors.accentHover};
   }
 `;
 
 export const NotFoundPage = () => {
-  const { theme } = useTheme();
   const { t } = useI18n();
 
   return (
-    <Page theme={theme}>
-      <Code theme={theme}>404</Code>
-      <Text theme={theme}>{t('system.notFoundText')}</Text>
-      <HomeLink theme={theme} to="/">
-        {t('system.goHome')}
-      </HomeLink>
+    <Page>
+      <Logo size={44} />
+      <Code>404</Code>
+      <Text>{t('system.notFoundText')}</Text>
+      <HomeLink to="/">{t('system.goHome')}</HomeLink>
     </Page>
   );
 };

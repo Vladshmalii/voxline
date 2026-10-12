@@ -15,8 +15,8 @@ export const toast = (message, type = 'info') => {
 
 const Stack = styled.div`
   position: fixed;
-  top: 16px;
-  right: 16px;
+  top: 72px;
+  right: 20px;
   z-index: 10000;
   display: flex;
   flex-direction: column;
@@ -25,21 +25,34 @@ const Stack = styled.div`
 `;
 
 const COLORS = {
-  info: '#2563eb',
-  success: '#16a34a',
-  error: '#dc2626',
+  info: '#2563EB',
+  success: '#16A34A',
+  error: '#DC2626',
 };
 
 const Item = styled.div`
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 13px;
-  line-height: 1.4;
-  color: #fff;
-  background: ${({ $type }) => COLORS[$type] || COLORS.info};
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
+  padding: 12px 16px 12px 20px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.sm};
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.surface};
+  box-shadow: ${({ theme }) => theme.shadows.pop};
   cursor: pointer;
   word-break: break-word;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: ${({ $type }) => COLORS[$type] || COLORS.info};
+  }
 `;
 
 export const Toaster = () => {

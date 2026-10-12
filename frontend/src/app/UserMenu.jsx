@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import { FiLogOut } from 'react-icons/fi';
 import { useTheme } from 'contexts/ThemeContext';
 import { useI18n } from 'contexts/I18nContext';
 import { LOCALE_NAMES } from 'i18n';
@@ -11,110 +12,144 @@ const Container = styled.div`
   position: relative;
 `;
 
-const AvatarButton = styled.button`
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.colors.accent};
-  border: 2px solid ${({ theme }) => theme.colors.border};
+const Trigger = styled.button`
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 700;
-  color: #fff;
-  user-select: none;
-  transition: border-color 0.2s ease;
+  gap: 10px;
+  padding: ${({ $collapsed }) => ($collapsed ? '0' : '6px 8px')};
+  justify-content: ${({ $collapsed }) => ($collapsed ? 'center' : 'flex-start')};
+  min-height: 46px;
+  border: none;
+  border-radius: ${({ theme }) => theme.radii.sm};
+  background: transparent;
+  color: ${({ theme }) => theme.colors.primary};
+  text-align: left;
+  transition: background-color 0.12s ease;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.hover};
+  }
+`;
+
+const Avatar = styled.span`
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f8bff, #1d4ed8);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 650;
+  user-select: none;
+`;
+
+const Who = styled.span`
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  line-height: 1.25;
+
+  strong {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  small {
+    font-size: 11.5px;
+    color: ${({ theme }) => theme.colors.muted};
+    text-transform: capitalize;
   }
 `;
 
 const DropdownMenu = styled.div`
   position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 240px;
+  z-index: 1100;
+  bottom: ${({ $collapsed }) => ($collapsed ? '0' : 'calc(100% + 8px)')};
+  left: ${({ $collapsed }) => ($collapsed ? 'calc(100% + 8px)' : '0')};
+  min-width: ${({ $collapsed }) => ($collapsed ? '260px' : '100%')};
   background-color: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 8px;
-  z-index: 1000;
-`;
-
-const UserInfo = styled.div`
-  padding: 10px 12px 12px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  margin-bottom: 6px;
+  border-radius: ${({ theme }) => theme.radii.md};
+  box-shadow: ${({ theme }) => theme.shadows.pop};
+  padding: 6px;
 `;
 
 const UserEmail = styled.div`
-  font-size: 13px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.primary};
+  padding: 8px 10px 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.divider};
+  font-size: 12.5px;
+  color: ${({ theme }) => theme.colors.secondary};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
 const Row = styled.div`
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 6px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   color: ${({ theme }) => theme.colors.primary};
-  font-size: 14px;
+  font-size: 13.5px;
 `;
 
 const LangSwitch = styled.div`
-  display: flex;
+  display: inline-flex;
+  padding: 3px;
   gap: 2px;
-  padding: 2px;
-  background-color: ${({ theme }) => theme.colors.background};
+  background: ${({ theme }) => theme.colors.surfaceAlt};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
 `;
 
 const LangButton = styled.button`
-  padding: 4px 10px;
+  height: 26px;
+  padding: 0 10px;
   font-size: 12px;
-  font-weight: ${({ $active }) => ($active ? '700' : '500')};
-  color: ${({ $active, theme }) => ($active ? '#fff' : theme.colors.secondary)};
-  background-color: ${({ $active, theme }) => ($active ? theme.colors.accent : 'transparent')};
+  font-weight: 600;
+  color: ${({ $active, theme }) => ($active ? theme.colors.primary : theme.colors.muted)};
+  background-color: ${({ $active, theme }) => ($active ? theme.colors.raised : 'transparent')};
+  box-shadow: ${({ $active, theme }) => ($active ? theme.shadows.lift : 'none')};
   border: none;
-  border-radius: 6px;
+  border-radius: ${({ theme }) => theme.radii.xs};
   cursor: ${({ $active }) => ($active ? 'default' : 'pointer')};
-  transition: background-color 0.15s ease, color 0.15s ease;
 
   &:hover {
-    color: ${({ $active, theme }) => ($active ? '#fff' : theme.colors.primary)};
+    color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
 const LogoutButton = styled.button`
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 9px 10px;
+  border-radius: ${({ theme }) => theme.radii.xs};
   border: none;
   background-color: transparent;
-  color: ${({ theme }) => theme.colors.secondary};
-  cursor: pointer;
-  font-size: 14px;
+  color: ${({ theme }) => theme.colors.danger};
+  font-size: 13.5px;
+  font-weight: 500;
   text-align: left;
-  transition: all 0.15s ease;
-  margin-top: 2px;
 
   &:hover {
-    background-color: rgba(239, 68, 68, 0.12);
-    color: #ef4444;
+    background-color: ${({ theme }) => theme.colors.danger}14;
   }
 `;
 
-export const UserMenu = () => {
+export const UserMenu = ({ collapsed = false }) => {
   const { theme } = useTheme();
   const { t, locale, setLocale, locales } = useI18n();
   const user = useUser();
@@ -130,7 +165,7 @@ export const UserMenu = () => {
     return () => document.removeEventListener('mousedown', onClick);
   }, [open]);
 
-  const avatarLetter = user?.email?.[0]?.toUpperCase() ?? '?';
+  const avatarLetter = (user?.name || user?.email)?.[0]?.toUpperCase() ?? '?';
   // Clear the session server-side, then do a full load of /login so no
   // per-user state survives in memory.
   const handleLogout = async () => {
@@ -140,16 +175,25 @@ export const UserMenu = () => {
 
   return (
     <Container ref={ref}>
-      <AvatarButton theme={theme} onClick={() => setOpen((v) => !v)}>
-        {avatarLetter}
-      </AvatarButton>
+      <Trigger
+        theme={theme}
+        type="button"
+        $collapsed={collapsed}
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        title={collapsed ? user?.email : undefined}
+      >
+        <Avatar theme={theme}>{avatarLetter}</Avatar>
+        {!collapsed && (
+          <Who theme={theme}>
+            <strong>{user?.name || user?.email}</strong>
+            <small>{String(user?.role || '').replace(/_/g, ' ')}</small>
+          </Who>
+        )}
+      </Trigger>
       {open && (
-        <DropdownMenu theme={theme}>
-          {user && (
-            <UserInfo theme={theme}>
-              <UserEmail theme={theme}>{user.email}</UserEmail>
-            </UserInfo>
-          )}
+        <DropdownMenu theme={theme} $collapsed={collapsed}>
+          {user && <UserEmail theme={theme}>{user.email}</UserEmail>}
           <Row theme={theme}>
             <span>{t('userMenu.language')}</span>
             <LangSwitch theme={theme}>
@@ -172,6 +216,7 @@ export const UserMenu = () => {
             <ToggleTheme />
           </Row>
           <LogoutButton theme={theme} onClick={handleLogout}>
+            <FiLogOut size={15} />
             {t('userMenu.signOut')}
           </LogoutButton>
         </DropdownMenu>

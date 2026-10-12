@@ -17,7 +17,7 @@ const Root = styled.div`
   gap: 10px;
   padding: 10px 12px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
+  border-radius: ${({ theme }) => theme.radii.md};
   background: ${({ theme }) => theme.colors.surface};
 `;
 
@@ -30,10 +30,10 @@ const PlayButton = styled.button`
   justify-content: center;
   padding: 0;
   font-size: 13px;
-  color: #fff;
+  color: #FFFFFF;
   background: ${({ theme }) => theme.colors.accent};
   border: none;
-  border-radius: 999px;
+  border-radius: ${({ theme }) => theme.radii.pill};
   cursor: pointer;
 
   &:disabled {

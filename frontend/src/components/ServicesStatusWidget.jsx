@@ -39,16 +39,16 @@ const OverallBadge = styled.span`
   font-size: 12px;
   font-weight: 500;
   padding: 3px 10px;
-  border-radius: 9999px;
+  border-radius: ${({ theme }) => theme.radii.pill};
   background: ${({ $status, theme }) => {
-    if ($status === 'operational') return theme.isDark ? '#064e3b' : '#dcfce7';
-    if ($status === 'degraded') return theme.isDark ? '#78350f' : '#fef3c7';
-    return theme.isDark ? '#7f1d1d' : '#fee2e2';
+    if ($status === 'operational') return theme.mode === 'dark' ? '#0F2E1D' : '#DCFCE7';
+    if ($status === 'degraded') return theme.mode === 'dark' ? '#3A2A0A' : '#FEF3C7';
+    return theme.mode === 'dark' ? '#3B1414' : '#FEE2E2';
   }};
   color: ${({ $status, theme }) => {
-    if ($status === 'operational') return theme.isDark ? '#6ee7b7' : '#166534';
-    if ($status === 'degraded') return theme.isDark ? '#fde68a' : '#92400e';
-    return theme.isDark ? '#fca5a5' : '#991b1b';
+    if ($status === 'operational') return theme.mode === 'dark' ? '#86EFAC' : '#166534';
+    if ($status === 'degraded') return theme.mode === 'dark' ? '#FDE68A' : '#92400E';
+    return theme.mode === 'dark' ? '#FCA5A5' : '#991B1B';
   }};
 `;
 
@@ -61,8 +61,8 @@ const Grid = styled.div`
 const ServiceCard = styled.div`
   background: ${({ theme }) => theme.colors.surfaceAlt || theme.colors.background};
   border: 1px solid
-    ${({ $isDown, theme }) => ($isDown ? '#ef4444' : theme.colors.border)};
-  border-radius: 8px;
+    ${({ $isDown, theme }) => ($isDown ? '#DC2626' : theme.colors.border)};
+  border-radius: ${({ theme }) => theme.radii.sm};
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -72,7 +72,7 @@ const ServiceCard = styled.div`
   ${({ $isDown }) =>
     $isDown &&
     `
-    background: rgba(239, 68, 68, 0.06);
+    background: rgba(220, 38, 38, 0.06);
   `}
 `;
 
@@ -96,36 +96,36 @@ const StatusDot = styled.span`
   height: 8px;
   border-radius: 50%;
   background: ${({ $status }) => {
-    if ($status === 'operational') return '#22c55e';
-    if ($status === 'degraded') return '#f59e0b';
-    return '#ef4444';
+    if ($status === 'operational') return '#16A34A';
+    if ($status === 'degraded') return '#D97706';
+    return '#DC2626';
   }};
-  box-shadow: 0 0 8px ${({ $status }) => ($status === 'operational' ? '#22c55e88' : '#ef444488')};
+  box-shadow: 0 0 8px ${({ $status }) => ($status === 'operational' ? '#16A34A88' : '#DC262688')};
 `;
 
 const ServiceMsg = styled.p`
-  font-size: 11px;
+  font-size: 12px;
   color: ${({ theme }) => theme.colors.secondary};
   margin: 0;
   line-height: 1.4;
 `;
 
 const LatencyText = styled.span`
-  font-size: 10px;
+  font-size: 12px;
   color: ${({ theme }) => theme.colors.muted};
   font-family: monospace;
 `;
 
 const AlertBanner = styled.div`
-  background: ${({ theme }) => (theme.isDark ? '#450a0a' : '#fef2f2')};
-  border: 1px solid #ef4444;
-  border-radius: 8px;
+  background: ${({ theme }) => (theme.mode === 'dark' ? '#2A0F0F' : '#FEF2F2')};
+  border: 1px solid #DC2626;
+  border-radius: ${({ theme }) => theme.radii.sm};
   padding: 10px 14px;
   margin-bottom: 12px;
   display: flex;
   align-items: center;
   gap: 10px;
-  color: ${({ theme }) => (theme.isDark ? '#fca5a5' : '#991b1b')};
+  color: ${({ theme }) => (theme.mode === 'dark' ? '#FCA5A5' : '#991B1B')};
   font-size: 13px;
   font-weight: 500;
 `;
@@ -179,7 +179,7 @@ export const ServicesStatusWidget = () => {
     <Card theme={theme} style={{ marginTop: 20, marginBottom: 20 }}>
       {isTelephonyDown && (
         <AlertBanner theme={theme}>
-          <FiAlertTriangle size={18} color="#ef4444" />
+          <FiAlertTriangle size={18} color="#DC2626" />
           <span>{t('dashboard.services.telephonyDown')}</span>
         </AlertBanner>
       )}

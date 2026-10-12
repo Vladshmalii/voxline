@@ -3,18 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { HiArrowPath } from 'react-icons/hi2';
 import { useTheme } from 'contexts/ThemeContext';
 import { useI18n } from 'contexts/I18nContext';
-import {
-  PageContent,
-  HeaderSection,
-  PageTitle,
-  HeaderActions,
-  ContentScroll,
-  SecondaryButton,
-  TextInput,
-  EmptyState,
-  EmptyStateTitle,
-  EmptyStateText,
-} from 'components/ui';
+import { PageContent, HeaderSection, PageTitle, HeaderActions, ContentScroll, SecondaryButton, TextInput, EmptyState, EmptyStateTitle, EmptyStateText, Segmented, SegmentOption } from 'components/ui';
 import { KINDS, statusLabel, statusColor } from 'utils/statusMap';
 import { TrendChart } from 'components/charts/TrendChart';
 import { RadialStat } from 'components/charts/RadialStat';
@@ -54,16 +43,16 @@ import { statsApi } from 'utils/callApi';
 // idiom.
 
 const REASON_COLORS = [
-  '#2a78d6',
-  '#eb6834',
-  '#1baf7a',
-  '#eda100',
-  '#e87ba4',
-  '#008300',
-  '#4a3aa7',
+  '#2563EB',
+  '#EA580C',
+  '#16A34A',
+  '#D97706',
+  '#DB2777',
+  '#16A34A',
+  '#6366F1',
 ];
 
-const COMPLETED_COLOR = '#16a34a';
+const COMPLETED_COLOR = '#16A34A';
 const AUTO_REFRESH_MS = 60_000;
 const RANGE_PRESETS = [7, 14, 30, 90];
 
@@ -101,32 +90,8 @@ const AutoToggle = styled(SecondaryButton)`
     `}
 `;
 
-const RangeGroup = styled.div`
-  display: inline-flex;
-  flex-wrap: wrap;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
-  overflow: hidden;
-`;
-
-const RangeOption = styled.button`
-  padding: 5px 10px;
-  font-size: 12px;
-  border: none;
-  cursor: pointer;
-  color: ${({ $active, theme }) => ($active ? '#fff' : theme.colors.secondary)};
-  background: ${({ $active, theme }) => ($active ? theme.colors.accent : 'transparent')};
-  transition: background 0.15s ease, color 0.15s ease;
-
-  & + & {
-    border-left: 1px solid ${({ theme }) => theme.colors.border};
-  }
-
-  &:hover {
-    background: ${({ $active, theme }) =>
-      $active ? theme.colors.accentHover : theme.colors.hover};
-  }
-`;
+const RangeGroup = Segmented;
+const RangeOption = SegmentOption;
 
 const CustomRange = styled.div`
   display: flex;
@@ -148,11 +113,9 @@ const CustomField = styled.label`
 `;
 
 const SectionEyebrow = styled.div`
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.muted};
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
   margin: 18px 0 8px;
 
   &:first-child {
@@ -170,7 +133,7 @@ const KpiTile = styled.div`
   padding: 8px 10px;
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -178,11 +141,9 @@ const KpiTile = styled.div`
 `;
 
 const KpiLabel = styled.div`
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
   margin-bottom: 3px;
 `;
 
@@ -194,7 +155,7 @@ const KpiValue = styled.div`
 `;
 
 const KpiSub = styled.span`
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.muted};
 `;
@@ -210,15 +171,13 @@ const ChartCard = styled.div`
   padding: 12px 14px;
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.radii.sm};
 `;
 
 const ChartTitle = styled.div`
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
   margin-bottom: 8px;
 `;
 
@@ -243,7 +202,7 @@ const BarTrack = styled.div`
   flex: 1;
   height: 14px;
   background: ${({ theme }) => theme.colors.hover};
-  border-radius: 3px;
+  border-radius: ${({ theme }) => theme.radii.xs};
   min-width: 0;
 `;
 
@@ -273,11 +232,9 @@ const GeoTableEl = styled.table`
 const GeoTableHeadCell = styled.th`
   padding: 4px 6px;
   text-align: ${({ $align }) => $align || 'left'};
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
@@ -614,7 +571,7 @@ export const DashboardPage = () => {
                   data={trend}
                   totalColor={theme.colors.accent}
                   completedColor={COMPLETED_COLOR}
-                  failedColor="#ef4444"
+                  failedColor="#DC2626"
                   totalLabel={t('dashboard.charts.callsTrendTotal')}
                   completedLabel={t('dashboard.charts.callsTrendCompleted')}
                   failedLabel={t('dashboard.charts.callsTrendFailed')}

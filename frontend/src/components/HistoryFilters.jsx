@@ -52,11 +52,15 @@ export const PeriodBar = styled.div`
   margin-bottom: 16px;
 `;
 export const PeriodButton = styled(SecondaryButton)`
-  padding: 6px 11px;
-  font-size: 12px;
-  border-color: ${({ theme, $active }) => $active ? theme.colors.accent : theme.colors.border};
-  color: ${({ theme, $active }) => $active ? theme.colors.accent : theme.colors.secondary};
-  background: ${({ $active }) => $active ? 'rgba(110, 86, 207, 0.08)' : 'transparent'};
+  height: 30px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: ${({ $active }) => ($active ? 600 : 500)};
+  box-shadow: none;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  border-color: ${({ theme, $active }) => ($active ? 'transparent' : theme.colors.border)};
+  color: ${({ theme, $active }) => ($active ? (theme.mode === 'dark' ? theme.colors.accentNeon : theme.colors.accent) : theme.colors.secondary)};
+  background: ${({ theme, $active }) => ($active ? theme.colors.accentSoft : 'transparent')};
 `;
 export const FilterNote = styled.span`
   font-size: 12px;
@@ -93,7 +97,7 @@ export const Chip = styled.button`
   max-width: 100%;
   padding: 5px 9px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 7px;
+  border-radius: ${({ theme }) => theme.radii.sm};
   color: ${({ theme }) => theme.colors.accent};
   background: ${({ theme }) => theme.colors.background};
   font-size: 12px;
