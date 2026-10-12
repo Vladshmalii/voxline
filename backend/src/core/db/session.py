@@ -90,6 +90,18 @@ class SessionMaker:
         return maker
 
     @classmethod
+    async def release_idle(cls, org_uuid: str) -> None:
+        """Close an organization engine's idle connections (it reopens on use).
+
+        For loops that visit every organization on a timer: without this each
+        process keeps one open connection per organization forever. Connections
+        currently checked out are untouched; they close when returned.
+        """
+        cached = cls.cached_sessions.get(org_uuid)
+        if cached is not None:
+            await cached[1].dispose()
+
+    @classmethod
     async def close(cls) -> None:
         """Dispose every cached engine and clear the cache."""
         sessions = list(cls.cached_sessions.values())

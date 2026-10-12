@@ -53,6 +53,10 @@ async def update_model_provider(
     session: SessionUserCommitDep, item_id: int, data: admin.SModelProviderUpdate
 ):
     payload = data.model_dump(exclude_unset=True, mode="json")
+    # The secret is write-only (never returned), so the edit form sends it
+    # blank unless it is being replaced: blank means "keep the stored one".
+    if not payload.get("api_key"):
+        payload.pop("api_key", None)
     repo = ModelProviderCRUD(session)
     if payload and not await repo.update(ModelProvider.id == item_id, data=payload):
         raise HTTPException(status_code=404, detail="model-provider not found")

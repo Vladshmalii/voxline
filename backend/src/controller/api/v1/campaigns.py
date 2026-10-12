@@ -18,6 +18,9 @@ from src.models.campaign import Campaign
 from src.repositories.campaign import CampaignCRUD
 from src.schemas import admin
 
+#: One upload is one request and one transaction, with several queries per row.
+MAX_UPLOAD_ROWS = 5000
+
 router = APIRouter(
     prefix="/campaigns", tags=["campaigns"], dependencies=[view_campaigns]
 )
@@ -155,6 +158,11 @@ async def upload_contacts(
 ):
     """Upload contacts: upsert clients, strict-validate the script per row,
     create the campaign's calls. Rejected rows return their reason."""
+    if len(rows) > MAX_UPLOAD_ROWS:
+        raise HTTPException(
+            status_code=413,
+            detail=f"at most {MAX_UPLOAD_ROWS} contacts per upload; split the file",
+        )
     try:
         results = await CampaignService(session).upload(item_id, rows)
     except CampaignError as exc:

@@ -78,6 +78,12 @@ def main() -> None:
     args = parser.parse_args()
     if bool(args.email) != bool(args.password):
         parser.error("--email and --password go together")
+    if (
+        args.password
+        and SETTINGS.application_state.is_production
+        and args.password.startswith("change-me")
+    ):
+        parser.error("refusing the placeholder password in production")
 
     sync_db.run_control_migrations(retries=180)
     asyncio.run(_ensure_superuser_and_org(args.email, args.password, args.org_name))

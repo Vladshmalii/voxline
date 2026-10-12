@@ -13,6 +13,7 @@ a duplicate message loses the claim.
 
 from __future__ import annotations
 
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.application.engine.config import CallContext, resolve_profile
@@ -22,10 +23,16 @@ from src.models.agent import VoiceAgent
 from src.models.call import Call
 from src.repositories.agent import VoiceAgentCRUD, build_agent_config
 from src.repositories.call import CallAttemptCRUD, CallCRUD
+from src.repositories.billing import OrganizationBalanceCRUD
 from src.repositories.client import ClientCRUD
 from src.schemas.admin import SCallCreate
 from src.schemas.engine import CustomerProfile
 from src.utils.phone import normalize_phone
+
+
+#: Manual calls that may be open (queued, dialing or talking) at once per
+#: organization; campaigns have their own pacing, API callers did not.
+MAX_OPEN_MANUAL_CALLS = 50
 
 
 class OriginateError(ValueError):
@@ -72,6 +79,19 @@ class CallService:
             raise OriginateError(f"agent {data.agent_id} has no telephony binding")
         if not agent.telephony.is_active:
             raise OriginateError(f"telephony {agent.telephony_id} is not active")
+
+        if not await OrganizationBalanceCRUD(self.session).has_funds("calls"):
+            raise OriginateError("insufficient call balance")
+        open_manual = await self.session.scalar(
+            select(func.count(Call.id)).where(
+                Call.campaign_id.is_(None),
+                Call.status == CallLifecycleEnum.calling,
+            )
+        )
+        if (open_manual or 0) >= MAX_OPEN_MANUAL_CALLS:
+            raise OriginateError(
+                f"too many manual calls in progress (limit {MAX_OPEN_MANUAL_CALLS})"
+            )
 
         try:
             phone = normalize_phone(data.to_number)

@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, responses
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.sessions import SessionMiddleware
 
 from src.settings import SETTINGS, logger  # isort: skip - runs Config.init first
 
@@ -52,10 +51,4 @@ app.add_middleware(
     # History exports name their file here; a cross-origin admin can't read
     # it unless it is exposed.
     expose_headers=["Content-Disposition"],
-)
-
-app.add_middleware(
-    SessionMiddleware,
-    secret_key=SETTINGS.secret_key,
-    https_only=SETTINGS.application_state.is_production,
 )

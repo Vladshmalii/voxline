@@ -40,6 +40,10 @@ async def update_telephony(
     session: SessionUserCommitDep, item_id: int, data: admin.STelephonyUpdate
 ):
     payload = data.model_dump(exclude_unset=True, mode="json")
+    # The secret is write-only (never returned), so the edit form sends it
+    # blank unless it is being replaced: blank means "keep the stored one".
+    if not payload.get("auth_token"):
+        payload.pop("auth_token", None)
     repo = TelephonyCRUD(session)
     if payload and not await repo.update(Telephony.id == item_id, data=payload):
         raise HTTPException(status_code=404, detail="telephony not found")

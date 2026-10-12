@@ -6,7 +6,8 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Cookie, Depends, Response
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response
+from loguru import logger
 
 from src.controller.dependencies.control import ControlSessionDep, CurrentDbUser
 from src.core.auth.cookies import (
@@ -19,6 +20,7 @@ from src.core.auth.manager import PermissionManager
 from src.core.control import service
 from src.core.control.models import Organization, User
 from src.core.exceptions import Forbidden, Unauthorized
+from src.core.redis import RedisBase
 from src.core.schemas import SAuthUser
 from src.schemas.auth import (
     SAuthOrganizationRead,
@@ -45,9 +47,52 @@ def _session_body(user: User, org: Organization, role: str) -> SSessionRead:
     )
 
 
+#: Failed sign-ins allowed per window, per e-mail and per client address.
+_LOGIN_WINDOW_SECONDS = 300
+_LOGIN_MAX_PER_EMAIL = 10
+_LOGIN_MAX_PER_IP = 50
+
+
+async def _login_keys(request: Request, email: str) -> list[tuple[str, int]]:
+    ip = request.client.host if request.client else "unknown"
+    return [
+        (f"login:fail:email:{service.normalize_email(email)}", _LOGIN_MAX_PER_EMAIL),
+        (f"login:fail:ip:{ip}", _LOGIN_MAX_PER_IP),
+    ]
+
+
+async def _login_blocked(keys: list[tuple[str, int]]) -> bool:
+    try:
+        client = await RedisBase.get_client()
+        counts = await client.mget([key for key, _ in keys])
+    except Exception as exc:  # noqa: BLE001 - throttling must not take sign-in down
+        logger.warning(f"login throttle unavailable: {exc}")
+        return False
+    return any(int(c or 0) >= limit for c, (_, limit) in zip(counts, keys))
+
+
+async def _login_failed(keys: list[tuple[str, int]]) -> None:
+    try:
+        client = await RedisBase.get_client()
+        for key, _ in keys:
+            if await client.incr(key) == 1:
+                await client.expire(key, _LOGIN_WINDOW_SECONDS)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(f"login throttle unavailable: {exc}")
+
+
 @public_router.post("/login", response_model=SSessionRead)
-async def login(body: SLogin, response: Response, session: ControlSessionDep):
-    user = await service.authenticate(session, body.email, body.password)
+async def login(
+    body: SLogin, request: Request, response: Response, session: ControlSessionDep
+):
+    keys = await _login_keys(request, body.email)
+    if await _login_blocked(keys):
+        raise HTTPException(status_code=429, detail="too_many_attempts")
+    try:
+        user = await service.authenticate(session, body.email, body.password)
+    except Unauthorized:
+        await _login_failed(keys)
+        raise
     org, role = await service.resolve_login_org(session, user, body.organization_uuid)
     access, refresh = await service.issue_tokens(session, user, org)
     set_auth_cookies(response, access, refresh)

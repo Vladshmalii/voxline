@@ -35,6 +35,7 @@ Three keys per call, all TTL'd so nothing here can leak or drift:
 from __future__ import annotations
 
 import json
+import time
 
 from src.core.redis import RedisBase
 from src.utils import tokens
@@ -44,6 +45,10 @@ _PENDING_KEY = "call:pending:{uuid}"
 _ROUTE_KEY = "call:route:{uuid}"
 _LIVE_KEY = "call:live:{uuid}"
 _SMS_ROUTE_KEY = "sms:route:{uuid}"
+#: Sorted set of calls in flight: member = call uuid, score = when its slot
+#: lapses. One call holds one slot from ``register`` until ``clear_live`` /
+#: ``discard``, so counting is ZCARD, not a SCAN over the keyspace.
+_SLOTS_KEY = "call:slots"
 
 #: How long a sent message stays resolvable for its delivery callbacks. A
 #: carrier may hold an SMS for its validity period (a day or more) before
@@ -114,6 +119,17 @@ async def register(
     client = await RedisBase.get_client()
     await client.set(_PENDING_KEY.format(uuid=call_uuid), payload, ex=dial_ttl)
     await client.set(_ROUTE_KEY.format(uuid=call_uuid), payload, ex=route_ttl)
+    await client.zadd(_SLOTS_KEY, {call_uuid: time.time() + dial_ttl})
+
+
+def media_base(options: dict | None, default: str | None) -> str | None:
+    """The public base a carrier connects back to: the telephony row's own
+    ``media_url_base`` when set (and non-empty), else the service default.
+
+    One rule for the dialer and for webhook signature checks — they must
+    derive the same string or Twilio's signature never verifies.
+    """
+    return (options or {}).get("media_url_base") or default
 
 
 async def claim(call_uuid: str) -> dict | None:
@@ -168,18 +184,21 @@ async def discard(call_uuid: str) -> None:
     await client.delete(
         _PENDING_KEY.format(uuid=call_uuid), _ROUTE_KEY.format(uuid=call_uuid)
     )
+    await client.zrem(_SLOTS_KEY, call_uuid)
 
 
 async def mark_live(call_uuid: str) -> None:
     """Assert (or refresh) that this process is running the call right now."""
     client = await RedisBase.get_client()
     await client.set(_LIVE_KEY.format(uuid=call_uuid), "1", ex=LIVE_TTL_SECONDS)
+    await client.zadd(_SLOTS_KEY, {call_uuid: time.time() + LIVE_TTL_SECONDS})
 
 
 async def clear_live(call_uuid: str) -> None:
     """The call ended; release its liveness lock immediately."""
     client = await RedisBase.get_client()
     await client.delete(_LIVE_KEY.format(uuid=call_uuid))
+    await client.zrem(_SLOTS_KEY, call_uuid)
 
 
 async def is_live(call_uuid: str) -> bool:
@@ -191,13 +210,10 @@ async def is_live(call_uuid: str) -> bool:
 async def in_flight() -> int:
     """Calls currently dialing or running, platform-wide.
 
-    Counted from the TTL'd keys rather than a counter or the databases: a
-    crashed process cannot leave this number wrong for longer than a TTL, and
-    no per-organization query fan-out is needed on the dial path.
+    Lapsed slots (a crashed process stops refreshing its score) are trimmed on
+    every read, so a crash cannot leave this number wrong for longer than a
+    TTL, and counting costs O(log n), not a keyspace scan.
     """
     client = await RedisBase.get_client()
-    total = 0
-    for pattern in (_PENDING_KEY.format(uuid="*"), _LIVE_KEY.format(uuid="*")):
-        async for _ in client.scan_iter(match=pattern, count=500):
-            total += 1
-    return total
+    await client.zremrangebyscore(_SLOTS_KEY, "-inf", time.time())
+    return await client.zcard(_SLOTS_KEY)

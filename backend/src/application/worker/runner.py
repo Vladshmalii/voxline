@@ -41,6 +41,7 @@ from src.settings import SETTINGS  # noqa: F401  isort: skip
 from src.application.engine.config import CallContext, CustomerProfile, LanguageConfig
 from src.application.engine.session import CallSession, SessionHooks
 from src.application.services import analysis
+from src.application.services.billing import BillingService
 from src.application.services.messaging import MessagingService, SendError
 from src.application.worker import registry
 from src.common.enums.engine import CallStatusEnum
@@ -211,6 +212,8 @@ async def run_media_call(websocket: WebSocket, *, org_uuid: str, call_id: int) -
         f"attempt {attempt_uuid}: telephony transport ready, starting session.prepare"
     )
 
+    switch_events: list[dict[str, Any]] = []
+
     async def on_started(_call_id: str, _payload: dict[str, Any]) -> None:
         await _set_status(
             org_uuid,
@@ -228,13 +231,17 @@ async def run_media_call(websocket: WebSocket, *, org_uuid: str, call_id: int) -
             await CallAttemptCRUD(session).update(
                 CallAttempt.id == attempt_id,
                 data={
-                    "messages": payload.get("messages", []),
+                    # The engine's context holds only what the model saw; the
+                    # language-switch events recorded during the call are not
+                    # in it, so they are re-attached rather than overwritten.
+                    "messages": [*payload.get("messages", []), *switch_events],
                     "ended_at": datetime.now(),
                 },
             )
             await session.commit()
 
     async def on_language_switch(_call_id: str, payload: dict[str, Any]) -> None:
+        switch_events.append({"role": "event", **payload})
         async with SessionMaker.get_session(org_uuid)() as session:
             row = await CallAttemptCRUD(session).get_one_or_none(
                 CallAttempt.id == attempt_id
@@ -308,6 +315,15 @@ async def run_media_call(websocket: WebSocket, *, org_uuid: str, call_id: int) -
         liveness.cancel()
         await registry.clear_live(attempt_uuid)
         active_sessions.pop(attempt_uuid, None)
+        # Bill the connected time, whatever way the call ended. Never lets a
+        # billing hiccup mask the call's own outcome; the charge is idempotent
+        # per attempt, so a retry elsewhere cannot double-bill.
+        try:
+            async with SessionMaker.get_session(org_uuid)() as session:
+                await BillingService(session).charge_call(attempt_id)
+                await session.commit()
+        except Exception as exc:  # noqa: BLE001
+            logger.error(f"attempt {attempt_uuid}: call charge failed: {exc}")
 
 
 async def drain(deadline_seconds: float = 300.0) -> None:

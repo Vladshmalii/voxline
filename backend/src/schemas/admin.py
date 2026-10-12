@@ -116,8 +116,14 @@ class SModelProviderUpdate(BaseModel):
 class SModelProviderRead(_Read):
     name: str
     url: str
-    api_key: str | None
+    #: Never serialized: a secret is write-only. Clients see ``has_api_key``.
+    api_key: str | None = Field(default=None, exclude=True)
     options: dict
+
+    @computed_field
+    @property
+    def has_api_key(self) -> bool:
+        return bool(self.api_key)
 
 
 # ── Model ─────────────────────────────────────────────────────────────────────
@@ -200,11 +206,17 @@ class STelephonyRead(_Read):
     adapter: str
     is_active: bool
     account_id: str | None
-    auth_token: str | None
+    #: Never serialized: a secret is write-only. Clients see ``has_auth_token``.
+    auth_token: str | None = Field(default=None, exclude=True)
     caller_id: str | None
     control_url: str | None
     capabilities: dict
     options: dict
+
+    @computed_field
+    @property
+    def has_auth_token(self) -> bool:
+        return bool(self.auth_token)
 
 
 # ── Messaging ─────────────────────────────────────────────────────────────────
@@ -240,12 +252,18 @@ class SMessagingRead(_Read):
     adapter: str
     is_active: bool
     account_id: str | None
-    auth_token: str | None
+    #: Never serialized: a secret is write-only. Clients see ``has_auth_token``.
+    auth_token: str | None = Field(default=None, exclude=True)
     sender: str | None
     sender_pool_id: str | None
     control_url: str | None
     capabilities: dict
     options: dict
+
+    @computed_field
+    @property
+    def has_auth_token(self) -> bool:
+        return bool(self.auth_token)
 
 
 class SSmsSend(BaseModel):

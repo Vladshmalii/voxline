@@ -65,6 +65,20 @@ def test_output_and_template_size_caps():
         validate_template("x" * (MAX_OUTPUT_BYTES + 1))
 
 
+def test_deeply_nested_loops_are_refused():
+    """A thread cannot be cancelled, so a render that could run for hours must not start."""
+    deep = (
+        "{% for a in range(1000) %}{% for b in range(1000) %}"
+        "{% for c in range(1000) %}{% endfor %}{% endfor %}{% endfor %}"
+    )
+    with pytest.raises(ScriptError, match="nest"):
+        validate_template(deep)
+    with pytest.raises(ScriptError, match="nest"):
+        render_script(deep)
+    # Two levels, the practical maximum, is fine.
+    assert render_script("{% for a in range(2) %}{% for b in range(2) %}x{% endfor %}{% endfor %}") == "xxxx"
+
+
 def test_namespace_is_not_available():
     # namespace() is what makes cross-iteration string doubling possible —
     # its absence is a guarantee, not an accident.

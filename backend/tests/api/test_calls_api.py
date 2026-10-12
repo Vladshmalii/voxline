@@ -11,7 +11,7 @@ from src.models.client import Client
 from src.repositories.call import CallAttemptCRUD, CallCRUD
 from src.repositories.client import ClientCRUD
 from src.repositories.messaging import MessageCRUD, MessagingCRUD
-from tests.support import queue_depth, seed_stack
+from tests.support import fund, queue_depth, seed_stack
 
 
 async def test_originate_refuses_early(client, session):
@@ -57,6 +57,7 @@ async def test_originate_refuses_junk_numbers_and_opted_out_clients(client, sess
 
 async def test_originate_creates_client_call_and_attempt(client, session):
     stack = await seed_stack(session)
+    await fund(session)
     await session.commit()
 
     response = await client.post(
@@ -220,6 +221,7 @@ async def test_list_sorts_by_duration_despite_it_being_a_python_property(
 
 async def test_cancel_only_before_the_leg_exists(client, session, org_uuid):
     stack = await seed_stack(session)
+    await fund(session)
     await session.commit()
     # Plain int, captured before any expire_all(): reading it off the expired
     # ORM instance later would be sync IO → MissingGreenlet.

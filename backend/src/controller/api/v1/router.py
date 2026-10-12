@@ -10,6 +10,7 @@ from src.controller.api.v1 import (
     calls,
     campaigns,
     clients,
+    leads,
     me,
     messaging,
     models,
@@ -25,6 +26,8 @@ from src.core.auth.dependencies import verify_user
 router = APIRouter()
 # login / refresh / logout: the only routes that work without a session.
 router.include_router(auth.public_router)
+# Public: the landing page's "request a demo" form (forwards to Telegram).
+router.include_router(leads.router)
 
 # Authentication is enforced for every other route via ``verify_user``;
 # authorization is per-router/per-endpoint on top of it — see

@@ -51,6 +51,7 @@ from src.common.enums.campaign import CallLifecycleEnum
 from src.common.enums.engine import CallStatusEnum
 from src.core.control import directory
 from src.core.db.session import SessionMaker
+from src.core.redis import RedisBase
 from src.integrations.telephony import build_telephony
 from src.models.agent import VoiceAgent
 from src.models.call import Call, CallAttempt
@@ -60,11 +61,19 @@ from src.repositories.agent import (
     build_agent_config,
     build_analysis_config,
 )
+from src.repositories.billing import OrganizationBalanceCRUD
 from src.repositories.call import CallAttemptCRUD, CallCRUD
 from src.repositories.provider import ModelCRUD
 from src.repositories.telephony import TelephonyCRUD
 
 broker = make_broker()
+
+#: Held for the length of one dispatcher tick (TTL just under the cron period,
+#: so a crashed tick cannot block the next one for long).
+_DISPATCH_LOCK = "call:dispatch:lock"
+_DISPATCH_LOCK_TTL = 55
+#: Upper bound for one analysis LLM call; the lock lapses on its own after a crash.
+_ANALYZE_LOCK_TTL = 300
 
 
 @broker.on_event(TaskiqEvents.WORKER_STARTUP)
@@ -176,8 +185,8 @@ async def dial_call(org_uuid: str, attempt_id: int) -> None:
                 await fail("agent lost its telephony binding after queueing")
                 return
             telephony_config = TelephonyCRUD.build_config(agent.telephony)
-            media_base = agent.telephony.options.get(
-                "media_url_base", settings.media_url
+            media_base = registry.media_base(
+                agent.telephony.options, settings.media_url
             )
             to_number = call_row.client.phone
             from_number = call_row.from_number or agent.telephony.caller_id
@@ -200,6 +209,22 @@ async def dial_call(org_uuid: str, attempt_id: int) -> None:
             route_ttl=settings.max_call_seconds,
         )
 
+        # The early check above is a cheap shortcut; this one is the real
+        # gate. The slot was taken by ``register``, so concurrent dials each
+        # see the others and the platform cap holds. A loser goes back to
+        # ``queued`` for the sweep to retry once capacity frees up.
+        if await registry.in_flight() > settings.max_concurrent_calls:
+            await registry.discard(attempt_uuid)
+            async with SessionMaker.get_session(org_uuid)() as session:
+                await CallAttemptCRUD(session).update(
+                    CallAttempt.id == attempt_id,
+                    CallAttempt.status == CallStatusEnum.dialing,
+                    data={"status": CallStatusEnum.queued},
+                )
+                await session.commit()
+            logger.info(f"attempt {attempt_uuid}: lost the capacity race, requeued")
+            return
+
         adapter = build_telephony(telephony_config, call_id=attempt_uuid)
         provider_ref = await adapter.dial(
             to=to_number,
@@ -207,15 +232,25 @@ async def dial_call(org_uuid: str, attempt_id: int) -> None:
             caller_id=from_number,
             status_url=status_url,
         )
+    except Exception as exc:  # noqa: BLE001 - a failed dial is data, not a crash
+        await fail(str(exc))
+        return
 
+    # The phone is ringing now. Recording the reference is bookkeeping: if it
+    # fails the call must NOT be marked failed (the retry policy would ring the
+    # customer a second time while the first call is still connecting).
+    try:
         async with SessionMaker.get_session(org_uuid)() as session:
             await CallAttemptCRUD(session).update(
                 CallAttempt.id == attempt_id, data={"provider_ref": provider_ref}
             )
             await session.commit()
-        logger.info(f"attempt {attempt_uuid}: dialed {to_number} (ref={provider_ref})")
-    except Exception as exc:  # noqa: BLE001 - a failed dial is data, not a crash
-        await fail(str(exc))
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            f"attempt {attempt_uuid}: dialed (ref={provider_ref}) but saving the "
+            f"reference failed: {exc}"
+        )
+    logger.info(f"attempt {attempt_uuid}: dialed {to_number} (ref={provider_ref})")
 
 
 @broker.task
@@ -279,6 +314,12 @@ async def analyze_attempt(org_uuid: str, attempt_id: int) -> None:
     if not transcript:
         return  # nothing was really said; settle folds it without an outcome
 
+    # Every tick re-enqueues an attempt until its outcome lands, so a slow LLM
+    # or a backed-up queue would stack paid duplicates. One run at a time.
+    redis = await RedisBase.get_client()
+    lock = f"call:analyze:{org_uuid}:{attempt_id}"
+    if not await redis.set(lock, "1", nx=True, ex=_ANALYZE_LOCK_TTL):
+        return
     try:
         result = await analysis.analyze_transcript(
             ttt, transcript, language=language, offers=offers
@@ -287,7 +328,9 @@ async def analyze_attempt(org_uuid: str, attempt_id: int) -> None:
         logger.warning(
             f"attempt {attempt_id}: analysis failed, next tick retries: {exc}"
         )
+        await redis.delete(lock)
         return
+    await redis.delete(lock)
 
     async with SessionMaker.get_session(org_uuid)() as session:
         updated = await CallAttemptCRUD(session).update(
@@ -332,28 +375,53 @@ async def dispatch_campaigns() -> None:
         logger.warning(f"dispatch: organization roster unavailable: {exc}")
         return
 
-    for org in organizations:
-        org_uuid = org["uuid"]
-        try:
-            capacity = settings.max_concurrent_calls - await registry.in_flight()
-            budget = max(0, min(capacity, settings.max_dials_per_minute))
-            async with SessionMaker.get_session(org_uuid)() as session:
-                analysis_ids = await dispatch.pending_analyses(session)
-                settled = await dispatch.settle_calls(session)
-                await dispatch.promote_campaigns(session)
-                attempt_ids = await dispatch.claim_due_calls(session, budget)
-                await session.commit()
-            for attempt_id in analysis_ids:
-                await analyze_attempt.kiq(org_uuid=org_uuid, attempt_id=attempt_id)
-            for attempt_id in attempt_ids:
-                await dial_call.kiq(org_uuid=org_uuid, attempt_id=attempt_id)
-            if settled or attempt_ids or analysis_ids:
-                logger.info(
-                    f"dispatch: org {org_uuid}: settled {settled}, analyzing "
-                    f"{len(analysis_ids)}, dialing {len(attempt_ids)} attempts"
-                )
-        except Exception as exc:  # noqa: BLE001 - one org must not stop the rest
-            logger.warning(f"dispatch: org {org_uuid} failed: {exc}")
+    # One tick at a time: a slow tick must not be overlapped by the next
+    # minute's, or both would spend the same capacity.
+    redis = await RedisBase.get_client()
+    if not await redis.set(_DISPATCH_LOCK, "1", nx=True, ex=_DISPATCH_LOCK_TTL):
+        logger.warning("dispatch: previous tick still running, skipping")
+        return
+
+    try:
+        # Platform-wide capacity, spent across organizations: each org's claim
+        # reduces what is left for the next, instead of every org seeing the
+        # same untouched number.
+        remaining = max(
+            0, settings.max_concurrent_calls - await registry.in_flight()
+        )
+        remaining = min(remaining, settings.max_dials_per_minute)
+        for org in organizations:
+            org_uuid = org["uuid"]
+            try:
+                async with SessionMaker.get_session(org_uuid)() as session:
+                    analysis_ids = await dispatch.pending_analyses(session)
+                    settled = await dispatch.settle_calls(session)
+                    await dispatch.promote_campaigns(session)
+                    # No funds, no new dials for this organization (calls
+                    # already in flight finish and are billed).
+                    funded = await OrganizationBalanceCRUD(session).has_funds("calls")
+                    attempt_ids = await dispatch.claim_due_calls(
+                        session, remaining if funded else 0
+                    )
+                    await session.commit()
+                remaining -= len(attempt_ids)
+                for attempt_id in analysis_ids:
+                    await analyze_attempt.kiq(org_uuid=org_uuid, attempt_id=attempt_id)
+                for attempt_id in attempt_ids:
+                    await dial_call.kiq(org_uuid=org_uuid, attempt_id=attempt_id)
+                if settled or attempt_ids or analysis_ids:
+                    logger.info(
+                        f"dispatch: org {org_uuid}: settled {settled}, analyzing "
+                        f"{len(analysis_ids)}, dialing {len(attempt_ids)} attempts"
+                    )
+            except Exception as exc:  # noqa: BLE001 - one org must not stop the rest
+                logger.warning(f"dispatch: org {org_uuid} failed: {exc}")
+            finally:
+                # Hand the idle connection back: a minute-by-minute visit to
+                # every org must not pin a connection per org per process.
+                await SessionMaker.release_idle(org_uuid)
+    finally:
+        await redis.delete(_DISPATCH_LOCK)
 
 
 @broker.task(schedule=[{"cron": "* * * * *"}])
@@ -382,6 +450,8 @@ async def sweep_calls() -> None:
             )
         except Exception as exc:  # noqa: BLE001 - one org must not stop the rest
             logger.warning(f"sweep: org {org_uuid} failed: {exc}")
+        finally:
+            await SessionMaker.release_idle(org_uuid)
 
 
 def func_now_minus(seconds: int):

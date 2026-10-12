@@ -32,12 +32,16 @@ import concurrent.futures
 from datetime import datetime
 from typing import Any
 
-from jinja2 import StrictUndefined, TemplateSyntaxError, Undefined
+from jinja2 import StrictUndefined, TemplateSyntaxError, Undefined, nodes
 from jinja2.sandbox import ImmutableSandboxedEnvironment, SecurityError
 
 MAX_TEMPLATE_BYTES = 32 * 1024
 MAX_OUTPUT_BYTES = 32 * 1024
 MAX_RANGE_LENGTH = 1_000
+#: Loops may nest this deep. With ``range`` capped at 1,000 that bounds a
+#: render at ~1,000,000 iterations; deeper nesting is how a template burns a
+#: thread that a timeout cannot stop (a thread has no cancel).
+MAX_LOOP_DEPTH = 2
 #: Wall-clock budget for one lenient render at call time.
 RENDER_TIMEOUT_SECONDS = 5.0
 #: Budgets for the strict upload-time validation subprocess.
@@ -84,6 +88,24 @@ class _ScriptSandbox(ImmutableSandboxedEnvironment):
         ):
             raise SecurityError("string result too large for a call script")
         return super().call_binop(context, operator, left, right)
+
+
+def _loop_depth(node: nodes.Node, depth: int = 0) -> int:
+    deepest = depth
+    for child in node.iter_child_nodes():
+        inside = depth + 1 if isinstance(child, nodes.For) else depth
+        deepest = max(deepest, _loop_depth(child, inside))
+    return deepest
+
+
+def _parse(env: _ScriptSandbox, source: str) -> None:
+    """Compile-time checks shared by every entry point; raises ScriptError."""
+    try:
+        tree = env.parse(source)
+    except TemplateSyntaxError as exc:
+        raise ScriptError(f"line {exc.lineno}: {exc.message}") from exc
+    if _loop_depth(tree) > MAX_LOOP_DEPTH:
+        raise ScriptError(f"loops may nest at most {MAX_LOOP_DEPTH} deep")
 
 
 def _environment(strict: bool) -> _ScriptSandbox:
@@ -149,6 +171,7 @@ def render_script(
         raise ScriptError(f"template exceeds {MAX_TEMPLATE_BYTES} bytes")
 
     env = _environment(strict)
+    _parse(env, source)
     try:
         template = env.from_string(source)
     except TemplateSyntaxError as exc:
@@ -179,8 +202,10 @@ def validate_template(source: str) -> None:
     """
     if len(source.encode()) > MAX_TEMPLATE_BYTES:
         raise ScriptError(f"template exceeds {MAX_TEMPLATE_BYTES} bytes")
+    env = _environment(strict=True)
+    _parse(env, source)
     try:
-        _environment(strict=True).from_string(source)
+        env.from_string(source)
     except TemplateSyntaxError as exc:
         raise ScriptError(f"line {exc.lineno}: {exc.message}") from exc
 

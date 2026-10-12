@@ -26,10 +26,12 @@ import httpx
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.application.services.billing import BillingService
 from src.application.worker import registry
 from src.common.enums.engine import MessageStatusEnum
 from src.integrations.messaging import build_messaging
 from src.models.messaging import Message, Messaging
+from src.repositories.billing import OrganizationBalanceCRUD
 from src.repositories.call import SMS_SENT_STATUSES, mark_sms_sent
 from src.repositories.messaging import MessageCRUD, MessagingCRUD
 from src.schemas.admin import SSmsSend
@@ -100,6 +102,8 @@ class MessagingService:
             raise SendError(str(exc)) from exc
 
         row = await self._route(data.messaging_id)
+        if not await OrganizationBalanceCRUD(self.session).has_funds("sms"):
+            raise SendError("insufficient SMS balance")
         try:
             adapter = build_messaging(MessagingCRUD.build_config(row))
         except (KeyError, ValueError) as exc:
@@ -169,6 +173,7 @@ class MessagingService:
             status=MessageStatusEnum.sent,
             data={"provider_ref": provider_ref, "sent_at": datetime.now()},
         )
+        await BillingService(self.session).charge_sms(message.id)
         if call_id is not None:
             # VOAD-80: the SMS is the call's result. Usually a no-op here (the
             # call is still live); it matters for a late send on a settled call.

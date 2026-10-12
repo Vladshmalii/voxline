@@ -150,6 +150,100 @@ class BillingService:
 
         return await self.get_summary(mask_tariffs=mask_tariffs)
 
+    async def charge_call(self, attempt_id: int) -> bool:
+        """Debit the call balance for one answered attempt, once.
+
+        Idempotent: the attempt's uuid is the charge's description key, and a
+        second call for the same attempt finds the row and does nothing.
+        Returns whether a charge was written.
+        """
+        attempt = (
+            await self.session.execute(
+                select(CallAttempt).where(CallAttempt.id == attempt_id)
+            )
+        ).scalar_one_or_none()
+        if (
+            attempt is None
+            or attempt.answered_at is None
+            or attempt.ended_at is None
+            or attempt.ended_at <= attempt.answered_at
+        ):
+            return False
+        bal = await self.balance_crud.get_or_create()
+        if bal.minutes_only:
+            return False
+        key = f"attempt {attempt.uuid}"
+        already = await self.session.scalar(
+            select(BalanceTransaction.id).where(
+                BalanceTransaction.type == "call_usage",
+                BalanceTransaction.description == key,
+            )
+        )
+        if already is not None:
+            return False
+        seconds = (attempt.ended_at - attempt.answered_at).total_seconds()
+        cost = round(seconds / 60.0 * bal.cost_per_minute, 4)
+        if cost <= 0:
+            return False
+        return await self._debit(
+            bal,
+            OrganizationBalance.call_balance,
+            cost,
+            tx_type="call_usage",
+            channel="calls",
+            description=key,
+            call_id=attempt.call_id,
+        )
+
+    async def charge_sms(self, message_id: int) -> bool:
+        """Debit the SMS balance for one sent message."""
+        bal = await self.balance_crud.get_or_create()
+        if bal.minutes_only or bal.cost_per_sms <= 0:
+            return False
+        return await self._debit(
+            bal,
+            OrganizationBalance.sms_balance,
+            bal.cost_per_sms,
+            tx_type="sms_usage",
+            channel="sms",
+            description=f"message {message_id}",
+            sms_id=message_id,
+        )
+
+    async def _debit(
+        self,
+        bal: OrganizationBalance,
+        column,
+        cost: float,
+        *,
+        tx_type: str,
+        channel: str,
+        description: str,
+        **links,
+    ) -> bool:
+        # Decrement inside the DB so concurrent charges cannot overwrite each
+        # other; RETURNING pins balance_after to this very charge.
+        balance_after = (
+            await self.session.execute(
+                update(OrganizationBalance)
+                .where(OrganizationBalance.id == bal.id)
+                .values({column: column - cost})
+                .returning(column)
+            )
+        ).scalar_one()
+        self.session.add(
+            BalanceTransaction(
+                amount=-cost,
+                type=tx_type,
+                channel=channel,
+                description=description,
+                balance_after=balance_after,
+                **links,
+            )
+        )
+        await self.session.flush()
+        return True
+
     async def update_tariffs(self, req: SBillingTariffsUpdate) -> SBillingSummaryRead:
         bal = await self.balance_crud.get_or_create()
         if req.cost_per_minute is not None:

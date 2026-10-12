@@ -88,8 +88,8 @@ async def jambonz_answer(call_uuid: str, t: str | None = None) -> list[dict]:
         raise HTTPException(status_code=404, detail="unknown call")
 
     worker = SETTINGS.call_worker
-    media_base = carrier["options"].get("media_url_base") or (
-        worker.media_url if worker else None
+    media_base = registry.media_base(
+        carrier["options"], worker.media_url if worker else None
     )
     if not media_base:
         logger.error(f"answer webhook for {call_uuid}: no media_url_base configured")
@@ -276,8 +276,8 @@ async def _verify_carrier_signature(
         return
 
     worker = SETTINGS.call_worker
-    media_base = carrier["options"].get("media_url_base") or (
-        worker.media_url if worker else None
+    media_base = registry.media_base(
+        carrier["options"], worker.media_url if worker else None
     )
     if not media_base:
         # Fail closed: a check that cannot run is not a check that passed.

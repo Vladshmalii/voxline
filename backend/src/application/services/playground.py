@@ -43,6 +43,7 @@ and pays for it on the first playground session.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import uuid
 
@@ -98,6 +99,14 @@ class PlaygroundSerializer(SipBridgeFrameSerializer):
         return await super().serialize(frame)
 
 
+#: A rehearsal runs the full pipeline (and bills STT/TTS/LLM) inside the API
+#: process, so both how many run at once and how long each may run are bounded.
+MAX_PLAYGROUND_SESSIONS_PER_PROCESS = 8
+MAX_PLAYGROUND_SESSIONS_PER_ORG = 3
+MAX_PLAYGROUND_SECONDS = 30 * 60
+_open_sessions: dict[str, int] = {}
+
+
 async def run_playground(
     websocket: WebSocket, *, org_uuid: str, agent_id: int, language: str | None = None
 ) -> None:
@@ -111,6 +120,13 @@ async def run_playground(
 
     Close codes: 4404 unknown agent, 4500 configuration failed to build.
     """
+    if (
+        sum(_open_sessions.values()) >= MAX_PLAYGROUND_SESSIONS_PER_PROCESS
+        or _open_sessions.get(org_uuid, 0) >= MAX_PLAYGROUND_SESSIONS_PER_ORG
+    ):
+        await websocket.close(code=4429)  # too many rehearsals open
+        return
+
     async with SessionMaker.get_session(org_uuid)() as session:
         agent_row = await VoiceAgentCRUD(session).get_one_or_none(
             VoiceAgent.id == agent_id
@@ -178,9 +194,17 @@ async def run_playground(
     logger.info(
         f"playground: {context.call_id} started for agent {agent_id} in org {org_uuid}"
     )
+    _open_sessions[org_uuid] = _open_sessions.get(org_uuid, 0) + 1
     try:
-        await call_session.run()
+        async with asyncio.timeout(MAX_PLAYGROUND_SECONDS):
+            await call_session.run()
+    except TimeoutError:
+        logger.info(f"playground: {context.call_id} hit the time limit")
+        await call_session.hangup()
     except Exception:  # noqa: BLE001 - a playground crash must not 500 the app
         logger.exception(f"playground: {context.call_id} failed")
     finally:
+        _open_sessions[org_uuid] -= 1
+        if not _open_sessions[org_uuid]:
+            del _open_sessions[org_uuid]
         logger.info(f"playground: {context.call_id} finished")

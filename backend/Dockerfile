@@ -46,6 +46,11 @@ COPY alembic.ini alembic_control.ini ./
 COPY scripts ./scripts
 RUN chmod +x -R /app/scripts
 
+# Never run the platform as root: a compromised call pipeline or template
+# renderer should not own the container.
+RUN useradd --system --no-create-home --uid 10001 voxline
+USER voxline
+
 # app 8080, hooks 8081 (see scripts/)
 EXPOSE 8080 8081
 

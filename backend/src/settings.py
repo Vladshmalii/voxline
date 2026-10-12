@@ -95,6 +95,17 @@ class CallWorkerSettings(BaseSettings):
     max_call_seconds: int = 7200
 
 
+class LeadsSettings(BaseSettings):
+    """Where "request a demo" submissions from the landing page are delivered.
+
+    A Telegram bot token and the chat that should receive the requests. Unset
+    (``None`` on :class:`Settings`) the public ``/v1/leads`` route answers 503.
+    """
+
+    bot_token: str
+    chat_id: str
+
+
 class JWTSettings(BaseSettings):
     """Session tokens: a short-lived HS256 access JWT plus an opaque refresh token.
 
@@ -119,8 +130,12 @@ class Settings(BaseSettings):
     secret_key: str
     service_prefix: str
     log_level: str = "INFO"
-    application_state: ApplicationState = ApplicationState.DEVELOPMENT
-    origins: str = "*"
+    #: Fail-safe default: a deploy that forgets APPLICATION_STATE runs hardened,
+    #: not with debug tracebacks and non-Secure cookies.
+    application_state: ApplicationState = ApplicationState.PRODUCTION
+    #: Space-separated allowed origins. Empty = no cross-origin access; "*" is
+    #: refused in production because the API authenticates with cookies.
+    origins: str = ""
     #: Rows one SMS/call history export may hold before it is refused with
     #: "narrow the filters" — kept under Excel's 1,048,576-row sheet limit.
     export_max_rows: int = 200_000
@@ -129,8 +144,22 @@ class Settings(BaseSettings):
     db: DBSettings
     redis: Annotated[RedisSettings | RedisSentinelSettings, Field(discriminator="type")]
     call_worker: CallWorkerSettings | None = None
+    leads: LeadsSettings | None = None
 
     jwt: JWTSettings = Field(default_factory=JWTSettings)
+
+    @model_validator(mode="after")
+    def _refuse_unsafe_production(self) -> "Settings":
+        if not self.application_state.is_production:
+            return self
+        if self.secret_key.startswith("change-me") or len(self.secret_key) < 32:
+            raise ValueError(
+                "SECRET_KEY is a placeholder or shorter than 32 characters; "
+                "set a long random value"
+            )
+        if "*" in self.origins.split():
+            raise ValueError("ORIGINS may not be * in production")
+        return self
 
     @model_validator(mode="after")
     def _derive_jwt_secret(self) -> "Settings":

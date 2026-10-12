@@ -100,6 +100,9 @@ async def session(org_uuid: str):
 
 @pytest.fixture(autouse=True)
 async def _clean(org_uuid: str):
+    # Dialing and texting are gated on funds: every worker test starts funded.
+    async with SessionMaker.get_session(org_uuid)() as funding:
+        await support.fund(funding)
     yield
     async with SessionMaker.get_session(org_uuid)() as session:
         from sqlalchemy import text

@@ -348,3 +348,23 @@ async def seed_stack(
         telephony=telephony,
         agent=agent,
     )
+
+
+async def fund(session, *, calls: float = 1000.0, sms: float = 1000.0) -> None:
+    """Give the organization a balance to spend.
+
+    Dialing and texting are gated on funds, and a fresh organization has none;
+    tests that exercise those paths top it up first.
+    """
+    from sqlalchemy import select
+
+    from src.models.billing import OrganizationBalance
+
+    balance = (
+        await session.execute(select(OrganizationBalance).limit(1))
+    ).scalar_one_or_none()
+    if balance is None:
+        session.add(OrganizationBalance(call_balance=calls, sms_balance=sms))
+    else:
+        balance.call_balance, balance.sms_balance = calls, sms
+    await session.commit()

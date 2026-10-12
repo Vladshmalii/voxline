@@ -2,12 +2,15 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.application.services.billing import BillingService
 from src.application.services.services_status import ServicesStatusService
 from src.application.services.stats import StatsService
 from src.common.enums.campaign import CallOutcomeEnum, CampaignStatusEnum
+from src.models.audience import Audience
+from src.models.messaging import Messaging
 from src.schemas.admin_stats import SAdminAccountStatsRead
 
 
@@ -25,6 +28,13 @@ class AdminStatsService:
         stats_data = await stats_svc.overview()
         billing_data = await billing_svc.get_summary()
         services_data = await services_svc.get_status()
+
+        audiences_total = await self.session.scalar(
+            select(func.count(Audience.id)).where(Audience.is_archived.is_(False))
+        )
+        sms_routes = await self.session.scalar(
+            select(func.count(Messaging.id)).where(Messaging.is_active.is_(True))
+        )
 
         # Running campaigns count
         running_campaigns = sum(
@@ -56,7 +66,7 @@ class AdminStatsService:
             agents_active=stats_data.agents.active,
             campaigns_total=stats_data.campaigns.total,
             campaigns_running=running_campaigns,
-            audiences_total=0,  # can be expanded
+            audiences_total=audiences_total or 0,
             leads_total=stats_data.clients.total,
             # Calls
             calls_total=total_calls,
@@ -82,5 +92,5 @@ class AdminStatsService:
             telephony_operational=services_data.telephony_operational,
             telephony_gateways_count=services_data.telephony_count,
             active_models_count=services_data.models_count,
-            sms_routes_count=1 if services_data.messaging_operational else 0,
+            sms_routes_count=sms_routes or 0,
         )

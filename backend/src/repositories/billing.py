@@ -33,6 +33,18 @@ class OrganizationBalanceCRUD(CRUD[OrganizationBalance]):
         return balance_row
 
 
+    async def has_funds(self, channel: str) -> bool:
+        """Whether this organization may still spend on ``channel``.
+
+        Per-minute clients (``minutes_only``) settle outside the platform, so
+        their balances are not a gate.
+        """
+        balance = await self.get_or_create()
+        if balance.minutes_only:
+            return True
+        return (balance.call_balance if channel == "calls" else balance.sms_balance) > 0
+
+
 class BalanceTransactionCRUD(CRUD[BalanceTransaction]):
     model = BalanceTransaction
 
