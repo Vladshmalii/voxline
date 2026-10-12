@@ -1,0 +1,86 @@
+# Self-contained stack: `cp .env.example .env && docker compose up --build`.
+#
+#   postgres        control database + one database per organization
+#   redis           task queue, call handoff registry, permission cache
+#   migrate         one-shot: control migrations, organization migrations, and
+#                   (when BOOTSTRAP_EMAIL/BOOTSTRAP_PASSWORD are set) the first
+#                   superuser and organization. Idempotent; the rest wait for it.
+#   app             admin API (humans, session cookies)
+#   hooks           telephony-facing: media WebSockets + status webhooks; RUNS
+#                   the call pipelines - scale this one for call capacity, and
+#                   give it a generous stop_grace_period so deploys drain
+#                   conversations instead of dropping them
+#   worker          taskiq worker: dial_call and other small idempotent tasks
+#   scheduler       taskiq scheduler: fires the dispatch/sweep tasks every minute
+#                   (one is enough; extras are safe but pointless)
+x-app: &app
+  build:
+    context: .
+    dockerfile: Dockerfile
+  env_file:
+    - .env
+  depends_on:
+    migrate:
+      condition: service_completed_successfully
+    redis:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${DB__USER:-postgres}
+      POSTGRES_PASSWORD: ${DB__PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB__USER:-postgres}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7
+    command: ["sh", "-c", "exec redis-server --requirepass \"$$REDIS__PASSWORD\" --appendonly yes"]
+    environment:
+      REDIS__PASSWORD: ${REDIS__PASSWORD:-redis}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS__PASSWORD\" ping | grep -q PONG"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  migrate:
+    <<: *app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    command: ["/app/.venv/bin/python", "-m", "src.bootstrap"]
+
+  app:
+    <<: *app
+    ports:
+      - "127.0.0.1:8086:8080"
+    command: ["/app/scripts/app.sh"]
+
+  hooks:
+    <<: *app
+    ports:
+      - "127.0.0.1:8087:8081"
+    stop_grace_period: 340s
+    command: ["/app/scripts/hooks.sh"]
+
+  worker:
+    <<: *app
+    command: ["/app/scripts/worker.sh"]
+
+  scheduler:
+    <<: *app
+    command: ["/app/scripts/scheduler.sh"]
+
+volumes:
+  postgres_data:
+  redis_data:

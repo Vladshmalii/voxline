@@ -1,0 +1,24 @@
+default_language_version:
+  python: python3.14
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^(backend/)?src/migrations/
+      - id: end-of-file-fixer
+        exclude: ^(backend/)?src/migrations/
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: check-ast
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+        exclude: '(^migrations/|/migrations/|^scripts/|/scripts/)'
+      - id: ruff-format
+        exclude: '(^migrations/|/migrations/|^scripts/|/scripts/)'
