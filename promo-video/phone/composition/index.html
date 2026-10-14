@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8" />
+<title>Voxline promo phone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#f6f7fb; --alt:#eef1f6; --text:#0b1220; --text2:#475569; --muted:#64748b; --line:#e3e7ee;
+    --accent:#2563eb; --accent2:#7c5cff; --accent-soft:#eaf1ff; --glow:rgba(59,130,246,.28); --ok:#15803d; --warn:#b45309;
+    --shadow-lg:0 40px 90px rgba(15,23,42,.16), 0 3px 12px rgba(15,23,42,.06); }
+  * { box-sizing:border-box; margin:0; }
+  html, body { width:1080px; height:1920px; overflow:hidden; background:var(--bg); }
+  body { font-family:'Inter',system-ui,sans-serif; color:var(--text); -webkit-font-smoothing:antialiased; }
+  #root { position:relative; width:1080px; height:1920px; overflow:hidden; background:var(--bg); }
+  .abs { position:absolute; }
+  .glow { position:absolute; inset:0; opacity:.6; background:radial-gradient(70% 40% at 20% 0%, var(--glow), transparent 70%), radial-gradient(60% 35% at 90% 12%, rgba(124,92,255,.26), transparent 70%); }
+  .grid { position:absolute; left:0; top:-84px; width:1080px; height:2088px; opacity:.5; background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size:84px 84px; -webkit-mask-image:radial-gradient(75% 55% at 50% 45%, #000, transparent 80%); mask-image:radial-gradient(75% 55% at 50% 45%, #000, transparent 80%); }
+  .grad { background:linear-gradient(100deg, var(--accent) 10%, var(--accent2) 90%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .brand { display:flex; align-items:center; gap:18px; font-size:48px; font-weight:750; letter-spacing:-.03em; }
+  .brand img { width:68px; height:68px; }
+
+  /* hook */
+  #hook { left:0; top:0; width:1080px; height:700px; }
+  #brand { left:70px; top:90px; }
+  #pill { left:70px; right:70px; top:250px; display:flex; justify-content:center; }
+  #pill span { display:inline-flex; align-items:center; gap:14px; padding:14px 28px 14px 16px; border:1px solid var(--line); border-radius:999px; background:#fff; font-size:30px; font-weight:550; color:var(--text2); }
+  #pill i { flex:none; width:16px; height:16px; border-radius:50%; background:#16a34a; box-shadow:0 0 0 8px rgba(22,163,74,.2); }
+  h1 { position:absolute; left:40px; right:40px; top:360px; text-align:center; font-size:104px; line-height:1.08; font-weight:800; letter-spacing:-.045em; }
+  h1 span { display:block; }
+
+  /* phone */
+  #pw { left:220px; top:215px; width:640px; height:1240px; z-index:5; }
+  #phone { position:absolute; inset:0; border-radius:100px; background:#0b1220; padding:16px; box-shadow:0 70px 130px rgba(15,23,42,.38), inset 0 0 0 3px #2a3550; }
+  #screen { position:relative; width:100%; height:100%; border-radius:84px; overflow:hidden; background:#0b1220; }
+  .notch { position:absolute; top:20px; left:50%; width:160px; height:42px; margin-left:-80px; background:#000; border-radius:24px; z-index:9; }
+  .scr { position:absolute; inset:0; }
+  .dark { background:linear-gradient(165deg,#22305d 0%,#0b1220 62%); color:#fff; }
+
+  /* incoming */
+  #in .lbl { position:absolute; top:150px; width:100%; text-align:center; font-size:30px; color:#a5afc0; }
+  #in .av { position:absolute; left:50%; top:270px; width:200px; height:200px; margin-left:-100px; border-radius:50%; display:grid; place-items:center; font-size:84px; font-weight:700; background:linear-gradient(135deg,#4f8bff,#7c5cff); }
+  .ring1 { position:absolute; left:50%; top:270px; width:200px; height:200px; margin-left:-100px; border-radius:50%; border:3px solid rgba(127,168,255,.7); }
+  #in .nm { position:absolute; top:520px; width:100%; text-align:center; font-size:72px; font-weight:750; }
+  #in .sb { position:absolute; top:612px; width:100%; text-align:center; font-size:30px; color:#a5afc0; }
+  .cbtn { position:absolute; bottom:150px; width:136px; height:136px; border-radius:50%; display:grid; place-items:center; }
+  #dec { left:100px; background:#dc2626; } #acc { right:100px; background:#16a34a; }
+  #tap { position:absolute; right:100px; bottom:150px; width:136px; height:136px; border-radius:50%; border:6px solid #fff; }
+
+  /* call */
+  #call .top { position:absolute; left:34px; right:34px; top:100px; display:flex; align-items:center; gap:20px; }
+  #call .av2 { width:84px; height:84px; border-radius:50%; display:grid; place-items:center; font-size:36px; font-weight:700; background:linear-gradient(135deg,#4f8bff,#7c5cff); }
+  #call .nm2 { flex:1; font-size:38px; font-weight:700; line-height:1.2; }
+  #call .nm2 small { display:block; font-size:24px; font-weight:600; color:#4ade80; }
+  #call time { font:500 38px 'JetBrains Mono',monospace; }
+  #meter { position:absolute; left:34px; right:34px; top:232px; height:86px; display:flex; align-items:center; gap:4px; }
+  #meter span { flex:1; height:100%; border-radius:4px; background:linear-gradient(#4f8bff,#7c5cff); transform:scaleY(.2); }
+  .trh { position:absolute; left:34px; right:34px; top:345px; display:flex; justify-content:space-between; font-size:22px; font-weight:650; color:#a5afc0; text-transform:uppercase; letter-spacing:.05em; }
+  .bubbles { position:absolute; left:34px; right:34px; top:395px; }
+  .b { margin-bottom:16px; padding:18px 24px 20px; border-radius:30px; font-size:28px; line-height:1.38; }
+  .b b { display:block; margin-bottom:4px; font-size:20px; letter-spacing:.06em; }
+  .b.bot { background:rgba(79,139,255,.26); border-top-left-radius:8px; } .b.bot b { color:#9bbcff; }
+  .b.cust { background:rgba(255,255,255,.14); border-top-right-radius:8px; } .b.cust b { color:#cbd5e1; }
+  .b .h { visibility:hidden; }
+  .b em { font-style:normal; color:#9bd0ff; font-weight:650; }
+
+  /* sms */
+  #sms { background:#f6f7fb; color:var(--text); }
+  #sms .hd { position:absolute; top:100px; left:0; right:0; text-align:center; font-size:34px; font-weight:700; }
+  #sms .hd i { display:grid; place-items:center; margin:0 auto 10px; width:84px; height:84px; border-radius:50%; font-style:normal; color:#fff; font-size:36px; background:linear-gradient(135deg,#4f8bff,#7c5cff); }
+  #sms .dt { position:absolute; top:300px; width:100%; text-align:center; font-size:24px; color:var(--muted); }
+  #sms .bub { position:absolute; left:34px; top:350px; max-width:480px; padding:26px 30px; border-radius:36px; border-bottom-left-radius:10px; background:#e5e9f2; font-size:34px; line-height:1.45; }
+  #sms .dl { position:absolute; left:46px; top:660px; display:flex; align-items:center; gap:10px; font-size:28px; font-weight:650; color:var(--ok); }
+
+  /* captions */
+  #cap { left:60px; top:1500px; width:960px; height:300px; z-index:6; border-radius:44px; background:#fff; border:1px solid var(--line); box-shadow:var(--shadow-lg); overflow:hidden; }
+  .ci { position:absolute; inset:0; padding:40px 44px; display:flex; align-items:center; gap:34px; }
+  .num { flex:none; width:104px; height:104px; border-radius:30px; display:grid; place-items:center; color:#fff; font-size:54px; font-weight:800; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 12px 28px var(--glow); }
+  .ci h3 { font-size:50px; line-height:1.1; font-weight:800; letter-spacing:-.03em; }
+  .ci p { margin-top:12px; font-size:32px; line-height:1.35; color:var(--text2); }
+
+  /* summary card */
+  #sum { left:90px; top:560px; width:900px; z-index:8; border-radius:44px; background:#fff; border:1px solid var(--line); box-shadow:var(--shadow-lg); overflow:hidden; }
+  #sum h4 { padding:40px 50px 10px; font-size:46px; font-weight:800; letter-spacing:-.02em; }
+  .kv { display:flex; justify-content:space-between; align-items:center; margin:0 50px; height:112px; border-bottom:1px solid var(--line); font-size:36px; color:var(--text2); }
+  .kv:last-child { border-bottom:0; margin-bottom:14px; } .kv b { font-weight:700; color:var(--text); } .kv b.ok { color:var(--ok); }
+
+  /* world */
+  #wt { left:70px; right:70px; top:160px; z-index:7; font-size:80px; line-height:1.08; font-weight:800; letter-spacing:-.04em; }
+  .ring { position:absolute; left:290px; top:610px; width:500px; height:500px; border-radius:50%; border:4px solid rgba(37,99,235,.4); z-index:3; }
+  .chip { position:absolute; z-index:6; padding:14px 28px; border:1px solid var(--line); border-radius:999px; background:#fff; font-size:34px; font-weight:600; color:var(--text2); box-shadow:0 8px 20px rgba(15,23,42,.08); }
+  .chip.on { background:var(--accent-soft); border-color:transparent; color:var(--accent); }
+  #zh { left:70px; top:1360px; z-index:7; font-size:26px; font-weight:650; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+  .zc { position:absolute; top:1420px; width:300px; height:200px; z-index:7; padding:26px 28px; border-radius:36px; background:#fff; border:1px solid var(--line); box-shadow:var(--shadow-lg); }
+  .zc b { display:block; font-size:36px; font-weight:750; } .zc span { display:block; margin-top:2px; font:500 34px 'JetBrains Mono',monospace; color:var(--muted); }
+  .zc em { display:inline-block; margin-top:12px; font-style:normal; font-size:26px; font-weight:650; padding:5px 18px; border-radius:999px; }
+  .go { background:rgba(22,163,74,.16); color:var(--ok); } .wait { background:rgba(217,119,6,.16); color:var(--warn); }
+
+  /* cta */
+  #cta { left:0; top:0; width:1080px; height:1920px; z-index:20; background:var(--bg); overflow:hidden; }
+  .final { position:absolute; left:60px; top:380px; width:960px; height:1100px; border-radius:64px; color:#fff; text-align:center; overflow:hidden; background:radial-gradient(80% 100% at 50% 0%, #5b93ff 0%, #2559e8 50%, #5b3fd6 100%); box-shadow:0 60px 120px rgba(59,100,235,.35); }
+  .final h2 { position:absolute; left:60px; right:60px; top:170px; font-size:100px; line-height:1.08; font-weight:800; letter-spacing:-.04em; }
+  .btn { position:absolute; left:250px; top:700px; width:460px; height:130px; display:grid; place-items:center; border-radius:36px; background:#fff; color:#1d4ed8; font-size:42px; font-weight:700; box-shadow:0 24px 56px rgba(0,0,0,.25); }
+  .fbrand { position:absolute; left:0; right:0; bottom:80px; justify-content:center; color:#fff; }
+  #cursor { position:absolute; left:760px; top:1300px; width:64px; height:64px; filter:drop-shadow(0 6px 10px rgba(0,0,0,.35)); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="root" data-width="1080" data-height="1920" data-start="0" data-duration="24.6">
+
+  <div class="glow g"></div><div class="grid" id="grid"></div>
+
+  <div class="abs" id="hook">
+    <div class="brand abs" id="brand"><img src="assets/img/logo.svg" alt="" />Voxline</div>
+    <div class="abs" id="pill"><span><i></i>Голосові ШІ-агенти для бізнесу по всьому світу</span></div>
+    <h1><span id="h1a">Дзвінки клієнтам,</span><span class="grad" id="h1b">які робить ШІ</span></h1>
+  </div>
+
+  <div class="abs" id="pw">
+    <div id="phone">
+      <div id="screen">
+        <div class="notch"></div>
+
+        <div class="scr dark" id="call">
+          <div class="top"><div class="av2">N</div><div class="nm2">Nord<small>Триває розмова</small></div><time id="timer">00:00</time></div>
+          <div id="meter"></div>
+          <div class="trh"><span>Розшифровка</span><span>UK</span></div>
+          <div class="bubbles">
+            <div class="b bot" id="b1"><b>АГЕНТ</b><span class="v"></span><span class="h">Добрий день, Олено! Підтверджуємо замовлення №1042: доставка завтра з 10 до 14. Усе вірно?</span></div>
+            <div class="b cust" id="b2"><b>КЛІЄНТ</b><span class="v"></span><span class="h">Так, але привезіть, будь ласка, після 12.</span></div>
+            <div class="b bot" id="b3"><b>АГЕНТ</b><span class="v"></span><span class="h">Записав: доставка після 12:00. Зараз надішлю підтвердження в SMS.</span></div>
+          </div>
+        </div>
+
+        <div class="scr dark" id="in">
+          <div class="lbl">вхідний дзвінок</div>
+          <div class="ring1" id="rg1"></div><div class="ring1" id="rg2"></div><div class="ring1" id="rg3"></div><div class="ring1" id="rg4"></div>
+          <div class="av">N</div>
+          <div class="nm">Nord</div><div class="sb">магазин</div>
+          <div class="cbtn" id="dec"><svg width="62" height="62" viewBox="0 0 24 24" fill="#fff"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11 11 0 0 0 3.5.55 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.2.2 2.4.55 3.5a1 1 0 0 1-.25 1z" transform="rotate(135 12 12)"/></svg></div>
+          <div class="cbtn" id="acc"><svg width="62" height="62" viewBox="0 0 24 24" fill="#fff"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11 11 0 0 0 3.5.55 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.2.2 2.4.55 3.5a1 1 0 0 1-.25 1z"/></svg></div>
+          <div id="tap"></div>
+        </div>
+
+        <div class="scr" id="sms">
+          <div class="hd"><i>N</i>Nord</div>
+          <div class="dt">SMS</div>
+          <div class="bub" id="smsb">Замовлення №1042 підтверджено. Доставка завтра після 12:00.</div>
+          <div class="dl" id="smsd"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Доставлено</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="abs" id="cap">
+    <div class="ci" id="c1"><div class="num">1</div><div><h3>Агент телефонує сам</h3><p>За сценарієм кампанії, у дозволені години</p></div></div>
+    <div class="ci" id="c2"><div class="num">2</div><div><h3>Знає, з ким говорить</h3><p>Ім’я й номер замовлення підставляються в момент дзвінка</p></div></div>
+    <div class="ci" id="c3"><div class="num">3</div><div><h3>Фіксує відповідь</h3><p>Зміна «доставка після 12:00» одразу потрапляє в підсумок</p></div></div>
+    <div class="ci" id="c4"><div class="num">4</div><div><h3>Шле SMS після розмови</h3><p>Доставку відстежено</p></div></div>
+    <div class="ci" id="c5"><div class="num">5</div><div><h3>Розбирає кожен дзвінок</h3><p>Підсумок, настрій і причина відмови — одразу в статистику</p></div></div>
+  </div>
+
+  <div class="abs" id="sum">
+    <h4>Підсумок дзвінка</h4>
+    <div class="kv" id="k1"><span>Підсумок</span><b class="ok">Замовлення підтверджено</b></div>
+    <div class="kv" id="k2"><span>Зміна</span><b>Доставка після 12:00</b></div>
+    <div class="kv" id="k3"><span>Настрій</span><b class="ok">Позитивний</b></div>
+    <div class="kv" id="k4"><span>SMS</span><b class="ok">Доставлено</b></div>
+    <div class="kv" id="k5"><span>Тривалість</span><b>0:42</b></div>
+  </div>
+
+  <div class="abs" id="world" style="left:0; top:0; width:1080px; height:1920px;">
+  <div class="abs" id="wt">Працюємо з клієнтами в будь-якій країні</div>
+  <div class="ring" id="wr1"></div><div class="ring" id="wr2"></div><div class="ring" id="wr3"></div>
+  <span class="chip on" style="left:60px; top:640px">Українська</span>
+  <span class="chip on" style="left:60px; top:780px">English</span>
+  <span class="chip on" style="left:60px; top:920px">Español</span>
+  <span class="chip" style="left:60px; top:1060px">Português</span>
+  <span class="chip" style="left:60px; top:1200px">Deutsch</span>
+  <span class="chip" style="left:760px; top:700px">Français</span>
+  <span class="chip" style="left:760px; top:840px">Polski</span>
+  <span class="chip" style="left:760px; top:980px">日本語</span>
+  <span class="chip" style="left:760px; top:1120px">العربية</span>
+  <span class="chip" style="left:760px; top:1260px">हिन्दी</span>
+  <div class="abs" id="zh">Місцевий час клієнта</div>
+  <div class="zc" id="zc1" style="left:70px"><b>Berlin</b><span>10:00</span><em class="go">дзвонимо</em></div>
+  <div class="zc" id="zc2" style="left:390px"><b>New York</b><span>04:00</span><em class="wait">чекаємо</em></div>
+  <div class="zc" id="zc3" style="left:710px"><b>Singapore</b><span>16:00</span><em class="go">дзвонимо</em></div>
+  </div>
+
+  <div class="abs" id="cta">
+    <div class="glow g"></div><div class="grid"></div>
+    <div class="final" id="final">
+      <h2 id="fh">Готові почути, як це звучить?</h2>
+      <div class="btn" id="btn">Замовити демо</div>
+      <div class="brand fbrand"><img src="assets/img/logo.svg" alt="" />Voxline</div>
+    </div>
+    <svg id="cursor" viewBox="0 0 24 24"><path d="M4 2l16 9-7 2-3 7z" fill="#0b1220" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  </div>
+
+  <audio id="bg-music" data-start="0" data-duration="24.6" data-track-index="10" data-volume="0.32" data-fade-in="0.6" data-fade-out="1.6" src="assets/music/happy-beats-business-moves-vol-11-by-ende-dot-app.mp3"></audio>
+  <audio id="s1" data-start="3.6" data-duration="0.19" data-track-index="11" data-volume="0.7" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+  <audio id="s2" data-start="5.4" data-duration="0.06" data-track-index="12" data-volume="0.7" src="assets/sfx/mouseclick1.ogg"></audio>
+  <audio id="s3" data-start="5.8" data-duration="0.11" data-track-index="13" data-volume="0.5" src="assets/sfx/drop_001.ogg"></audio>
+  <audio id="s4" data-start="8.4" data-duration="0.19" data-track-index="14" data-volume="0.5" src="assets/sfx/drop_002.ogg"></audio>
+  <audio id="s5" data-start="10.1" data-duration="0.11" data-track-index="15" data-volume="0.5" src="assets/sfx/drop_001.ogg"></audio>
+  <audio id="s6" data-start="12.7" data-duration="0.11" data-track-index="16" data-volume="0.5" src="assets/sfx/drop_002.ogg"></audio>
+  <audio id="s7" data-start="13.3" data-duration="1.48" data-track-index="17" data-volume="0.6" src="assets/sfx/impactBell_heavy_000.ogg"></audio>
+  <audio id="s8" data-start="14.76" data-duration="0.05" data-track-index="18" data-volume="0.5" src="assets/sfx/select_008.ogg"></audio>
+  <audio id="s9" data-start="15.81" data-duration="0.05" data-track-index="19" data-volume="0.5" src="assets/sfx/select_008.ogg"></audio>
+  <audio id="s10" data-start="16.86" data-duration="0.05" data-track-index="20" data-volume="0.5" src="assets/sfx/select_008.ogg"></audio>
+  <audio id="s11" data-start="17.85" data-duration="0.19" data-track-index="21" data-volume="0.65" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+  <audio id="s12" data-start="21.55" data-duration="1.48" data-track-index="22" data-volume="0.6" src="assets/sfx/impactBell_heavy_000.ogg"></audio>
+  <audio id="s13" data-start="23.6" data-duration="0.06" data-track-index="23" data-volume="0.7" src="assets/sfx/mouseclick1.ogg"></audio>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var RMS = [0.785, 0.749, 0.491, 0.438, 0.367, 0.331, 0.335, 0.361, 0.48, 0.439, 0.441, 0.441, 0.435, 0.379, 0.34, 0.319, 1.0, 0.632, 0.42, 0.318, 0.328, 0.304, 0.314, 0.289, 0.323, 0.317, 0.314, 0.283, 0.276, 0.259, 0.258, 0.367, 0.894, 0.569, 0.447, 0.403, 0.323, 0.292, 0.271, 0.275, 0.261, 0.288, 0.274, 0.26, 0.351, 0.306, 0.257, 0.584, 0.827, 0.576, 0.421, 0.301, 0.247, 0.254, 0.223, 0.308, 0.483, 0.461, 0.418, 0.406, 0.32, 0.233, 0.198, 0.7, 0.74, 0.569, 0.411, 0.383, 0.325, 0.338, 0.317, 0.428, 0.408, 0.364, 0.32, 0.314, 0.264, 0.253, 0.256, 0.732, 0.736, 0.48, 0.344, 0.292, 0.312, 0.298, 0.322, 0.26, 0.262, 0.23, 0.256, 0.251, 0.25, 0.27, 0.228, 0.744, 0.732, 0.514, 0.403, 0.303, 0.286, 0.261, 0.245, 0.269, 0.258, 0.207, 0.201, 0.275, 0.251, 0.203, 0.183, 0.892, 0.631, 0.468, 0.337, 0.216, 0.184, 0.173, 0.152, 0.422, 0.391, 0.362, 0.327, 0.303, 0.227, 0.168, 0.39, 0.847, 0.54, 0.502, 0.356, 0.379, 0.355, 0.365, 0.417, 0.5, 0.452, 0.394, 0.391, 0.417, 0.352, 0.33, 0.537, 0.783, 0.427, 0.422, 0.33, 0.42, 0.338, 0.376, 0.441, 0.399, 0.325, 0.275, 0.276, 0.294, 0.296, 0.292, 0.665, 0.788, 0.459, 0.467, 0.384, 0.328, 0.305, 0.278, 0.287, 0.303, 0.282, 0.245, 0.259, 0.302, 0.26, 0.225, 0.807, 0.786, 0.49, 0.402, 0.233, 0.238, 0.196, 0.213, 0.37, 0.402, 0.344, 0.389, 0.342, 0.259, 0.197, 0.144, 0.788, 0.706, 0.487, 0.42, 0.318, 0.374, 0.309, 0.354, 0.431, 0.52, 0.447, 0.44, 0.328, 0.326, 0.282, 0.318, 0.916, 0.532, 0.374, 0.371, 0.29, 0.283, 0.245, 0.302, 0.308, 0.326, 0.331, 0.279, 0.355, 0.333, 0.31, 0.417, 0.862, 0.563, 0.357, 0.368, 0.264, 0.219, 0.205, 0.221, 0.283, 0.3, 0.26, 0.268, 0.356, 0.361, 0.309, 0.617, 0.856, 0.569, 0.418, 0.278, 0.327, 0.247, 0.257, 0.315, 0.334, 0.331, 0.319, 0.262, 0.229, 0.182, 0.14, 0.7, 0.751, 0.543, 0.444, 0.388, 0.367, 0.357, 0.348, 0.459, 0.441, 0.435, 0.392, 0.397, 0.369, 0.313, 0.269, 0.837, 0.739, 0.379, 0.344, 0.32, 0.318, 0.3, 0.288, 0.342, 0.334, 0.342, 0.319, 0.304, 0.296, 0.278, 0.25, 0.84, 0.622, 0.518, 0.445, 0.326, 0.301, 0.297, 0.253, 0.289, 0.287, 0.269, 0.263, 0.352, 0.375, 0.341, 0.447, 0.843, 0.619, 0.449, 0.385, 0.271, 0.242, 0.233, 0.249, 0.453, 0.457, 0.422, 0.38, 0.313, 0.234, 0.198, 0.405, 0.894, 0.54, 0.525, 0.384, 0.362, 0.391, 0.367, 0.416, 0.478, 0.412, 0.376, 0.35, 0.309, 0.288, 0.272, 0.532, 0.807, 0.461, 0.388, 0.315, 0.31, 0.318, 0.288, 0.29, 0.296, 0.265, 0.248, 0.249, 0.289, 0.272, 0.281, 0.652, 0.795, 0.546, 0.439, 0.362, 0.268, 0.271, 0.26, 0.261, 0.306, 0.206, 0.195, 0.242, 0.293, 0.231, 0.174, 0.797, 0.677, 0.479, 0.355, 0.253, 0.216, 0.191, 0.197, 0.348, 0.437, 0.355, 0.338, 0.323, 0.234, 0.201, 0.167, 0.842, 0.597, 0.567, 0.409, 0.412, 0.364, 0.359, 0.376, 0.511, 0.465, 0.449, 0.429, 0.371, 0.347, 0.336, 0.362, 0.791, 0.507, 0.423, 0.325, 0.401, 0.336, 0.35, 0.341, 0.318, 0.284, 0.275, 0.264, 0.286, 0.256, 0.285, 0.489, 0.832, 0.567, 0.467, 0.417, 0.328, 0.347, 0.32, 0.292, 0.314, 0.266, 0.251, 0.239, 0.341, 0.291, 0.222, 0.627, 0.842, 0.495, 0.374, 0.325, 0.243, 0.22, 0.211, 0.293, 0.441, 0.418, 0.398, 0.421, 0.291, 0.212, 0.162, 0.241, 0.322, 0.317, 0.326, 0.349, 0.365, 0.391, 0.454, 0.493, 0.518, 0.507, 0.436, 0.385, 0.341, 0.392, 0.366, 0.319, 0.351, 0.281, 0.286, 0.326, 0.339, 0.326, 0.313, 0.293, 0.326, 0.269, 0.246, 0.271, 0.31, 0.34, 0.317, 0.38, 0.395, 0.294, 0.343, 0.209, 0.212, 0.124, 0.112, 0.15, 0.106, 0.076, 0.076, 0.246, 0.206, 0.175, 0.17, 0.188, 0.174, 0.161, 0.135, 0.145, 0.166, 0.145, 0.146, 0.194, 0.204, 0.191, 0.187, 0.204, 0.193, 0.164, 0.694, 0.644, 0.524, 0.439, 0.403, 0.41, 0.421, 0.418, 0.39, 0.58, 0.523, 0.463, 0.454, 0.406, 0.38, 0.369, 0.796, 0.59, 0.45, 0.406, 0.375, 0.514, 0.479, 0.399, 0.347, 0.397, 0.394, 0.391, 0.392, 0.404, 0.385, 0.362, 0.845, 0.627, 0.513, 0.463, 0.362, 0.343, 0.326, 0.338, 0.289, 0.378, 0.373, 0.349, 0.431, 0.539, 0.455, 0.388, 0.827, 0.56, 0.375, 0.379, 0.327, 0.334, 0.333, 0.299, 0.528, 0.59, 0.549, 0.537, 0.52, 0.497, 0.445, 0.488, 0.798, 0.607, 0.387, 0.359, 0.374, 0.385, 0.412, 0.362, 0.547, 0.498, 0.4, 0.366, 0.321, 0.345, 0.339, 0.605, 0.759, 0.474, 0.35, 0.301, 0.48, 0.498, 0.436, 0.425, 0.397, 0.378, 0.366, 0.344, 0.339, 0.331, 0.319, 0.724, 0.66, 0.55, 0.458, 0.361, 0.374, 0.415, 0.396, 0.323, 0.372, 0.342, 0.357, 0.365, 0.529, 0.464, 0.353, 0.761, 0.644, 0.513, 0.373, 0.351, 0.354, 0.346, 0.348, 0.419, 0.481, 0.49, 0.443, 0.444, 0.444, 0.421, 0.385, 0.807, 0.559, 0.373, 0.375, 0.345, 0.341, 0.373, 0.365, 0.491, 0.593, 0.539, 0.485, 0.47, 0.418, 0.407, 0.401, 0.837, 0.494, 0.31, 0.359, 0.464, 0.459, 0.48, 0.434, 0.409, 0.423, 0.4, 0.404, 0.393, 0.382, 0.342, 0.476, 0.784, 0.598, 0.479, 0.394, 0.406, 0.373, 0.38, 0.346, 0.407, 0.439, 0.392, 0.395, 0.482, 0.475, 0.432, 0.668, 0.738, 0.459, 0.44, 0.334, 0.359, 0.329, 0.335, 0.37, 0.601, 0.577, 0.554, 0.526, 0.481, 0.439, 0.382, 0.733, 0.616, 0.415, 0.455, 0.361, 0.436, 0.419, 0.409, 0.414, 0.517, 0.469, 0.482, 0.421, 0.424, 0.375, 0.347, 0.778, 0.627, 0.361, 0.421, 0.371, 0.472, 0.425, 0.37, 0.341, 0.43, 0.411, 0.38, 0.39, 0.391, 0.376, 0.354, 0.815, 0.598, 0.443, 0.455, 0.375, 0.332, 0.304, 0.323, 0.299, 0.359, 0.391, 0.34, 0.446, 0.502, 0.44, 0.418, 0.841, 0.587, 0.475, 0.415, 0.37, 0.46];
+      var tl = gsap.timeline({ paused: true });
+      var F = function (sel, from, to, t) { return tl.fromTo(sel, from, to, t); };
+      var rms = function (t) { return RMS[Math.max(0, Math.min(RMS.length - 1, Math.round(t * 30)))]; };
+      var meter = document.getElementById('meter'), bars = [];
+      for (var i = 0; i < 36; i++) { var b = document.createElement('span'); meter.appendChild(b); bars.push(b); }
+
+      // ---- hook
+      F('#brand', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.15);
+      F('#pill', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 0.3);
+      F('#h1a', { opacity: 0, y: 70, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: 'power4.out' }, 0.6);
+      F('#h1b', { opacity: 0, y: 70, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: 'power4.out' }, 1.4);
+      tl.to('#hook', { y: -260, opacity: 0, duration: 0.5, ease: 'power3.in' }, 3.7); // beat-locked: 3.70
+
+      // ---- phone rises, then settles to centre
+      F('#pw', { y: 850, rotation: -7, scale: .92, opacity: 1 }, { y: 480, rotation: -4, scale: .92, duration: 1.2, ease: 'power3.out' }, 1.9);
+      F('#pw', { y: 480, rotation: -4, scale: .92 }, { y: 0, rotation: 0, scale: 1, duration: 0.7, ease: 'power3.inOut' }, 3.7); // beat-locked: 3.70
+
+      // incoming call rings + answer tap
+      [2.0, 2.7, 3.4, 4.1, 4.8].forEach(function (t, i) {
+        F('#rg' + (i % 4 + 1), { scale: 1, opacity: 0.7 }, { scale: 2.1, opacity: 0, duration: 1.2, ease: 'power1.out' }, t);
+      });
+      F('#tap', { scale: .6, opacity: 0 }, { scale: 1.5, opacity: 1, duration: 0.2, ease: 'power2.out' }, 5.3);
+      tl.to('#tap', { scale: 2, opacity: 0, duration: 0.3, ease: 'power1.out' }, 5.5);
+      tl.to('#acc', { scale: .9, duration: 0.1 }, 5.35);
+      tl.to('#acc', { scale: 1, duration: 0.2 }, 5.45);
+      F('#call', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 5.5);
+      tl.to('#in', { opacity: 0, duration: 0.3 }, 5.55);
+      tl.to('#call', { opacity: 0, duration: 0.2 }, 13.0);
+
+      // call screen
+      var timer = { v: 0 }, tEl = document.getElementById('timer');
+      tl.to(timer, { v: 42, duration: 7.0, ease: 'none', onUpdate: function () { var s = Math.round(timer.v); tEl.textContent = '00:' + (s < 10 ? '0' : '') + s; } }, 5.6);
+      function typeLine(id, t, dur) {
+        var el = document.getElementById(id), v = el.querySelector('.v'), h = el.querySelector('.h'), full = h.textContent, o = { n: 0 };
+        F('#' + id, { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, t);
+        tl.to(o, { n: full.length, duration: dur, ease: 'none', onUpdate: function () { var k = Math.round(o.n); v.textContent = full.slice(0, k); h.textContent = full.slice(k); } }, t + 0.1);
+      }
+      typeLine('b1', 5.8, 1.5);
+      typeLine('b2', 8.4, 0.9);
+      typeLine('b3', 10.1, 1.3);
+
+      // sms screen slides over the call
+      F('#sms', { y: 1240, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'power3.out' }, 12.65); // beat-locked: 12.65
+      F('#smsb', { opacity: 0, scale: .9, y: 20 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: 'back.out(2)' }, 12.7);
+      F('#smsd', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, 13.3);
+
+      // ---- captions (one at a time)
+      var caps = [['#c1', 3.85, 5.6], ['#c2', 5.75, 8.9], ['#c3', 9.05, 12.55], ['#c4', 12.75, 14.45], ['#c5', 14.6, 17.75]];
+      caps.forEach(function (c) {
+        F(c[0], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, c[1]);
+        tl.to(c[0], { opacity: 0, y: -30, duration: 0.25, ease: 'power2.in' }, c[2]);
+      });
+      F('#cap', { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 3.8);
+      tl.to('#cap', { opacity: 0, y: 120, duration: 0.4, ease: 'power2.in' }, 17.8);
+
+      // ---- step 5: summary card over a dimmed phone
+      F('#pw', { y: 0, rotation: 0, scale: 1, opacity: 1 }, { y: 1500, rotation: 6, scale: .9, opacity: 0, duration: 0.55, ease: 'power3.in' }, 14.4);
+      F('#sum', { opacity: 0, y: 70, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'power3.out' }, 14.5);
+      ['#k1', '#k2', '#k3', '#k4', '#k5'].forEach(function (k, i) { // beat-grid: 14.76 / 15.28 / 15.81 / 16.34 / 16.86
+        F(k, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power3.out' }, [14.76, 15.28, 15.81, 16.34, 16.86][i]);
+      });
+      tl.to('#sum', { opacity: 0, y: -60, duration: 0.4, ease: 'power2.in' }, 17.7);
+
+      // ---- world
+      F('#pw', { y: 1500, rotation: 6, scale: .9, opacity: 0 }, { y: 60, rotation: 0, scale: .5, opacity: 1, duration: 0.7, ease: 'power3.out' }, 17.91); // beat-locked: 17.91
+      tl.to('#pw', { opacity: 0, duration: 0.2 }, 21.4);
+      tl.to('#world', { opacity: 0, duration: 0.2 }, 21.4);
+      F('#wt', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' }, 18.1);
+      ['#wr1', '#wr2', '#wr3'].forEach(function (r, i) {
+        F(r, { scale: .5, opacity: .7 }, { scale: 2.1, opacity: 0, duration: 2.0, ease: 'power1.out' }, 18.2 + i * 0.7);
+      });
+      var chips = document.querySelectorAll('.chip');
+      for (var c = 0; c < chips.length; c++) F(chips[c], { opacity: 0, scale: .85, y: 24 }, { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: 'back.out(2)' }, 18.5 + c * 0.1);
+      F('#zh', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, 18.95);
+      ['#zc1', '#zc2', '#zc3'].forEach(function (z, i) { // beat-grid: 18.96 / 19.49 / 20.02
+        F(z, { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: 'back.out(1.6)' }, [18.96, 19.49, 20.02][i]);
+      });
+
+      // ---- cta
+      F('#cta', { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power2.out' }, 21.59); // beat-locked: 21.59 (beat)
+      F('#final', { opacity: 0, scale: .94 }, { opacity: 1, scale: 1, duration: 0.6, ease: 'power3.out' }, 21.75);
+      F('#fh', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' }, 22.0);
+      F('#btn', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 22.7);
+      F('#cursor', { opacity: 0, x: 0, y: 0 }, { opacity: 1, x: -290, y: -90, duration: 0.7, ease: 'power2.inOut' }, 22.8);
+      tl.to('#btn', { scale: .94, duration: 0.1, ease: 'power2.in' }, 23.6);
+      tl.to('#btn', { scale: 1, duration: 0.25, ease: 'back.out(3)' }, 23.7);
+
+      // ---- continuous: glow, parallax grid, phone float, voice meter
+      var tick = { t: 0 }, gl = document.querySelectorAll('.g'), grid = document.getElementById('grid'), ph = document.getElementById('phone');
+      tl.to(tick, { t: 24.6, duration: 24.6, ease: 'none', onUpdate: function () {
+        var t = tick.t, e = rms(t);
+        for (var i = 0; i < gl.length; i++) gl[i].style.opacity = (0.5 + 0.4 * e).toFixed(3);
+        grid.style.transform = 'translateY(' + ((t * 22) % 84).toFixed(1) + 'px)';
+        ph.style.transform = 'translateY(' + (Math.sin(t * 1.7) * 8).toFixed(1) + 'px) rotate(' + (Math.sin(t * 1.1) * 0.8).toFixed(2) + 'deg)';
+        if (t > 5.6 && t < 12.7) for (var k = 0; k < bars.length; k++) {
+          var w = Math.abs(Math.sin(t * 7.3 + k * 0.55) * Math.sin(t * 2.9 + k * 0.21));
+          bars[k].style.transform = 'scaleY(' + (0.14 + 0.86 * w * (0.55 + 0.45 * e)).toFixed(3) + ')';
+        }
+      } }, 0);
+      window.__timelines = window.__timelines || {}; window.__timelines['root'] = tl;
+    })();
+  </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,363 @@
+{
+  "ok": true,
+  "strict": false,
+  "browserSkipped": false,
+  "lint": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 5,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "duplicate_media_discovery_risk",
+        "severity": "warning",
+        "message": "Detected 2 matching img entries with the same source/start/duration.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {},
+        "sourceFile": "D:\\Voxline\\promo-video\\vertical\\composition\\index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Avoid duplicated media nodes that can be discovered twice during compilation."
+      },
+      {
+        "code": "nested_structure_needs_subcomposition",
+        "severity": "warning",
+        "message": "<div id=\"s1\"> is a timeline element that contains nested <div>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.",
+        "selector": "#s1",
+        "dataAttributes": {},
+        "sourceFile": "D:\\Voxline\\promo-video\\vertical\\composition\\index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move <div id=\"s1\"> and its contents into a sub-composition file and mount it with data-composition-src."
+      },
+      {
+        "code": "nested_structure_needs_subcomposition",
+        "severity": "warning",
+        "message": "<div id=\"s2\"> is a timeline element that contains nested <div>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.",
+        "selector": "#s2",
+        "dataAttributes": {},
+        "sourceFile": "D:\\Voxline\\promo-video\\vertical\\composition\\index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move <div id=\"s2\"> and its contents into a sub-composition file and mount it with data-composition-src."
+      },
+      {
+        "code": "nested_structure_needs_subcomposition",
+        "severity": "warning",
+        "message": "<div id=\"s3\"> is a timeline element that contains nested <div>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.",
+        "selector": "#s3",
+        "dataAttributes": {},
+        "sourceFile": "D:\\Voxline\\promo-video\\vertical\\composition\\index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move <div id=\"s3\"> and its contents into a sub-composition file and mount it with data-composition-src."
+      },
+      {
+        "code": "nested_structure_needs_subcomposition",
+        "severity": "warning",
+        "message": "<div id=\"s4\"> is a timeline element that contains nested <div>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.",
+        "selector": "#s4",
+        "dataAttributes": {},
+        "sourceFile": "D:\\Voxline\\promo-video\\vertical\\composition\\index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move <div id=\"s4\"> and its contents into a sub-composition file and mount it with data-composition-src."
+      }
+    ],
+    "filesScanned": 1
+  },
+  "runtime": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": []
+  },
+  "layout": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 3,
+    "infoCount": 3,
+    "findings": [
+      {
+        "code": "content_overlap",
+        "severity": "warning",
+        "time": 9.25,
+        "selector": "div.avatar",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 132.13,
+          "top": 318.5,
+          "right": 159.88,
+          "bottom": 362.5,
+          "width": 27.75,
+          "height": 44
+        },
+        "containerSelector": "#w-h",
+        "text": "О",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 132.13,
+          "y": 318.5,
+          "width": 27.75,
+          "height": 44
+        },
+        "firstSeen": 9.25,
+        "lastSeen": 9.375,
+        "occurrences": 2,
+        "heldMs": 125,
+        "times": [
+          9.25,
+          9.375
+        ]
+      },
+      {
+        "code": "content_overlap",
+        "severity": "warning",
+        "time": 9.25,
+        "selector": "div.who > strong:nth-of-type(1)",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 215,
+          "top": 301.25,
+          "right": 551.48,
+          "bottom": 347.25,
+          "width": 336.48,
+          "height": 46
+        },
+        "containerSelector": "#w-h",
+        "text": "Олена Коваленко",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 215,
+          "y": 301.25,
+          "width": 336.48,
+          "height": 46
+        },
+        "firstSeen": 9.25,
+        "lastSeen": 9.375,
+        "occurrences": 2,
+        "heldMs": 125,
+        "times": [
+          9.25,
+          9.375
+        ]
+      },
+      {
+        "code": "content_overlap",
+        "severity": "warning",
+        "time": 9.25,
+        "selector": "div.who > small:nth-of-type(1)",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 215,
+          "top": 348.75,
+          "right": 459.81,
+          "bottom": 379.75,
+          "width": 244.81,
+          "height": 31
+        },
+        "containerSelector": "#w-h",
+        "text": "+380 67 ••• ••-42",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 215,
+          "y": 348.75,
+          "width": 244.81,
+          "height": 31
+        },
+        "firstSeen": 9.25,
+        "lastSeen": 9.375,
+        "occurrences": 2,
+        "heldMs": 125,
+        "times": [
+          9.25,
+          9.375
+        ]
+      },
+      {
+        "code": "content_overlap",
+        "severity": "info",
+        "time": 9.25,
+        "selector": "span.live",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 784.14,
+          "top": 295,
+          "right": 979,
+          "bottom": 324,
+          "width": 194.86,
+          "height": 29
+        },
+        "containerSelector": "#w-h",
+        "text": "Триває розмова",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 784.14,
+          "y": 295,
+          "width": 194.86,
+          "height": 29
+        },
+        "firstSeen": 9.25,
+        "lastSeen": 9.25,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          9.25
+        ]
+      },
+      {
+        "code": "content_overlap",
+        "severity": "info",
+        "time": 9.25,
+        "selector": "#timer",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 847,
+          "top": 328,
+          "right": 979,
+          "bottom": 386,
+          "width": 132,
+          "height": 58
+        },
+        "containerSelector": "#w-h",
+        "text": "00:42",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 847,
+          "y": 328,
+          "width": 132,
+          "height": 58
+        },
+        "firstSeen": 9.25,
+        "lastSeen": 9.25,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          9.25
+        ]
+      },
+      {
+        "code": "content_overlap",
+        "severity": "info",
+        "time": 15,
+        "selector": "#z3 > span:nth-of-type(1)",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 496.33,
+          "top": 1466.5,
+          "right": 592.33,
+          "bottom": 1509.5,
+          "width": 96,
+          "height": 43
+        },
+        "containerSelector": "div.brand.fbrand",
+        "text": "16:00",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 496.33,
+          "y": 1466.5,
+          "width": 96,
+          "height": 43
+        },
+        "firstSeen": 15,
+        "lastSeen": 15,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          15
+        ]
+      }
+    ],
+    "duration": 19,
+    "samples": [
+      1.056,
+      3.167,
+      5.278,
+      7.389,
+      9.5,
+      11.611,
+      13.722,
+      15.833,
+      17.944
+    ],
+    "transitionSamples": [],
+    "transitionSamplesDropped": 0,
+    "tolerance": 2,
+    "totalIssueCount": 6,
+    "truncated": false
+  },
+  "motion": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": false,
+    "samples": 0
+  },
+  "contrast": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "samples": [
+      1.056,
+      5.278,
+      9.5,
+      13.722,
+      17.944
+    ],
+    "checked": 37,
+    "passed": 37
+  },
+  "hdr": {
+    "autoPromotion": null,
+    "inspection": "available"
+  },
+  "snapshots": {
+    "enabled": false,
+    "files": [],
+    "times": [],
+    "findingFiles": []
+  }
+}

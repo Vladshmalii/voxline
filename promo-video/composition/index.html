@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8" />
+<title>Voxline promo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#f6f7fb; --surface:#ffffff; --alt:#eef1f6; --text:#0b1220; --text2:#475569; --muted:#64748b;
+    --line:#e3e7ee; --accent:#2563eb; --accent2:#7c5cff; --accent-soft:#eaf1ff;
+    --glow:rgba(59,130,246,.28); --ok:#15803d; --warn:#b45309; --bad:#dc2626;
+    --shadow-lg:0 40px 90px rgba(15,23,42,.16), 0 3px 12px rgba(15,23,42,.06);
+  }
+  * { box-sizing:border-box; margin:0; }
+  html, body { width:1920px; height:1080px; overflow:hidden; background:var(--bg); }
+  body { font-family:'Inter',system-ui,'Segoe UI',sans-serif; color:var(--text); -webkit-font-smoothing:antialiased; }
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; background:var(--bg); }
+  .scene { position:absolute; inset:0; width:1920px; height:1080px; overflow:hidden; background:var(--bg); }
+  .glow { position:absolute; inset:0; pointer-events:none; opacity:.6;
+    background:radial-gradient(60% 50% at 18% 0%, var(--glow), transparent 70%), radial-gradient(45% 45% at 88% 12%, rgba(124,92,255,.26), transparent 70%); }
+  .grid { position:absolute; inset:0; pointer-events:none; opacity:.5;
+    background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:84px 84px; -webkit-mask-image:radial-gradient(70% 60% at 50% 40%, #000, transparent 78%); mask-image:radial-gradient(70% 60% at 50% 40%, #000, transparent 78%); }
+  .grad { background:linear-gradient(100deg, var(--accent) 10%, var(--accent2) 90%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+
+  /* scene 1 */
+  .brand { position:absolute; top:64px; left:80px; display:flex; align-items:center; gap:18px; font-size:44px; font-weight:750; letter-spacing:-.03em; }
+  .brand img { width:64px; height:64px; }
+  .pill { display:inline-flex; align-items:center; gap:14px; padding:10px 26px 10px 14px; border:1px solid var(--line); border-radius:999px; background:#fff; font-size:26px; font-weight:550; color:var(--text2); }
+  .pill i { width:14px; height:14px; border-radius:50%; background:#16a34a; box-shadow:0 0 0 7px rgba(22,163,74,.2); }
+  h1 { margin-top:44px; text-align:center; font-size:150px; line-height:1.06; font-weight:800; letter-spacing:-.045em; }
+  h1 span { display:block; }
+
+  /* cards */
+  .card { position:absolute; background:var(--surface); border:1px solid var(--line); border-radius:36px; box-shadow:var(--shadow-lg); overflow:hidden; }
+  .call-top { display:flex; align-items:center; gap:24px; padding:30px 38px; }
+  .avatar { width:80px; height:80px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:700; font-size:32px; background:linear-gradient(135deg,#4f8bff,#7c5cff); }
+  .who { flex:1; }
+  .who strong { display:block; font-size:34px; font-weight:700; line-height:1.25; }
+  .who small { display:block; margin-top:2px; font:500 22px 'JetBrains Mono',monospace; color:var(--muted); }
+  .status { display:grid; justify-items:end; gap:4px; }
+  .live { display:inline-flex; align-items:center; gap:10px; font-size:22px; font-weight:600; color:var(--ok); }
+  .live i { width:14px; height:14px; border-radius:50%; background:currentColor; }
+  .status time { font:500 40px 'JetBrains Mono',monospace; letter-spacing:-.02em; }
+  .meter { display:flex; align-items:center; gap:5px; height:110px; padding:0 38px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--alt); }
+  .meter span { flex:1; height:100%; border-radius:5px; background:linear-gradient(var(--accent),var(--accent2)); transform:scaleY(.2); opacity:.9; }
+  .tr-wrap { padding:26px 38px 12px; }
+  .tr-head { display:flex; justify-content:space-between; font-size:21px; font-weight:650; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+  .tr-head small { font-weight:500; text-transform:none; letter-spacing:0; }
+  ol.tr { list-style:none; padding:0; }
+  ol.tr li { display:grid; grid-template-columns:78px 1fr; gap:6px 18px; height:150px; padding:20px 0; border-bottom:1px solid var(--line); }
+  ol.tr li:last-child { border-bottom:0; }
+  ol.tr time { grid-row:1 / span 2; padding-top:4px; font:500 19px 'JetBrains Mono',monospace; color:var(--muted); }
+  ol.tr b { font-size:19px; font-weight:700; letter-spacing:.04em; color:var(--accent); }
+  ol.tr li.cust b { color:var(--text2); }
+  ol.tr p { font-size:31px; line-height:1.4; color:var(--text); }
+  ol.tr .h { visibility:hidden; }
+
+  /* scene 3 */
+  .card h4 { display:flex; justify-content:space-between; align-items:baseline; padding:34px 42px 8px; font-size:34px; font-weight:700; }
+  .card h4 small { font-size:22px; font-weight:500; color:var(--muted); }
+  .kv { display:flex; justify-content:space-between; align-items:center; margin:0 42px; height:104px; border-bottom:1px solid var(--line); font-size:30px; color:var(--text2); }
+  .kv:last-child { border-bottom:0; }
+  .kv b { font-weight:650; color:var(--text); }
+  .kv b.ok { color:var(--ok); }
+  .sms { margin:26px 42px 0; padding:26px 30px; border-radius:30px; border-bottom-left-radius:8px; background:var(--accent-soft); font-size:34px; line-height:1.45; color:var(--text); }
+  .sms-meta { display:flex; align-items:center; gap:12px; margin:22px 42px 0; font-size:28px; font-weight:650; color:var(--ok); }
+
+  /* scene 4 */
+  .prog-head { display:flex; align-items:baseline; gap:20px; padding:10px 54px 0; font-size:30px; color:var(--muted); }
+  .prog-head b { font-size:120px; line-height:1; font-weight:800; letter-spacing:-.04em; color:var(--text); font-variant-numeric:tabular-nums; }
+  .track { height:20px; border-radius:999px; background:var(--alt); overflow:hidden; }
+  .fill { display:block; height:100%; width:0; border-radius:999px; background:var(--c, linear-gradient(90deg,var(--accent),var(--accent2))); }
+  .row { display:grid; grid-template-columns:240px 1fr 80px; align-items:center; gap:24px; margin:0 54px; height:84px; font-size:28px; color:var(--text2); }
+  .row .track { height:14px; }
+  .row b { text-align:right; color:var(--text); font-variant-numeric:tabular-nums; }
+  .chips { position:absolute; left:0; right:0; display:flex; justify-content:center; gap:16px; }
+  .chip { padding:12px 28px; border:1px solid var(--line); border-radius:999px; background:#fff; font-size:28px; font-weight:550; color:var(--text2); }
+  .chip.on { background:var(--accent-soft); border-color:transparent; color:var(--accent); }
+
+  /* scene 5 */
+  .final { position:absolute; left:160px; top:150px; width:1600px; height:780px; border-radius:56px; color:#fff; text-align:center; overflow:hidden;
+    background:radial-gradient(80% 140% at 50% 0%, #5b93ff 0%, #2559e8 50%, #5b3fd6 100%); box-shadow:0 60px 120px rgba(59,100,235,.35); }
+  .final h2 { position:absolute; left:100px; right:100px; top:110px; font-size:120px; line-height:1.08; font-weight:800; letter-spacing:-.04em; }
+  .btn { position:absolute; left:660px; top:440px; width:280px; height:112px; display:grid; place-items:center; border-radius:30px; background:#fff; color:#1d4ed8; font-size:34px; font-weight:700; box-shadow:0 24px 56px rgba(0,0,0,.25); }
+  .fbrand { position:absolute; left:0; right:0; bottom:60px; display:flex; justify-content:center; align-items:center; gap:18px; font-size:44px; font-weight:750; letter-spacing:-.03em; color:#fff; }
+  .fbrand img { width:64px; height:64px; }
+  .cursor { position:absolute; left:1120px; top:760px; width:56px; height:56px; filter:drop-shadow(0 6px 10px rgba(0,0,0,.35)); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="root" data-width="1920" data-height="1080" data-start="0" data-duration="21.6">
+
+  <!-- SCENE 1: hook -->
+  <div class="scene clip" id="s1" data-start="0" data-duration="4.3">
+    <div class="glow g"></div><div class="grid"></div>
+    <div class="brand" id="s1-brand"><img src="assets/img/logo.svg" alt="" />Voxline</div>
+    <div class="center">
+      <span class="pill" id="s1-pill"><i></i>Голосові ШІ-агенти для бізнесу по всьому світу</span>
+      <h1><span id="s1-a">Дзвінки клієнтам,</span><span class="grad" id="s1-b">які робить ШІ</span></h1>
+    </div>
+  </div>
+
+  <!-- SCENE 2: live call -->
+  <div class="scene clip" id="s2" data-start="3.7" data-duration="6.9">
+    <div class="glow g"></div><div class="grid"></div>
+    <div class="card" id="s2-card" style="left:440px; top:120px; width:1040px;">
+      <div class="call-top">
+        <div class="avatar">О</div>
+        <div class="who"><strong>Олена Коваленко</strong><small>+380 67 ••• ••-42</small></div>
+        <div class="status"><span class="live"><i></i>Триває розмова</span><time id="timer">00:00</time></div>
+      </div>
+      <div class="meter" id="meter"></div>
+      <div class="tr-wrap">
+        <div class="tr-head"><span>Розшифровка</span><small>UK</small></div>
+        <ol class="tr">
+          <li id="l1"><time>00:02</time><b>АГЕНТ</b><p><span class="v"></span><span class="h">Добрий день, Олено! Підтверджуємо замовлення №1042: доставка завтра з 10 до 14. Усе вірно?</span></p></li>
+          <li class="cust" id="l2"><time>00:14</time><b>КЛІЄНТ</b><p><span class="v"></span><span class="h">Так, але привезіть, будь ласка, після 12.</span></p></li>
+          <li id="l3"><time>00:19</time><b>АГЕНТ</b><p><span class="v"></span><span class="h">Записав: доставка після 12:00. Зараз надішлю підтвердження в SMS.</span></p></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 3: call result + SMS -->
+  <div class="scene clip" id="s3" data-start="10.01" data-duration="4.8">
+    <div class="glow g"></div><div class="grid"></div>
+    <div class="card" id="s3-res" style="left:130px; top:210px; width:960px; height:650px;">
+      <h4>Підсумок дзвінка</h4>
+      <div class="kv" id="r1"><span>Підсумок</span><b class="ok">Замовлення підтверджено</b></div>
+      <div class="kv" id="r2"><span>Зміна</span><b>Доставка після 12:00</b></div>
+      <div class="kv" id="r3"><span>Настрій</span><b class="ok">Позитивний</b></div>
+      <div class="kv" id="r4"><span>SMS</span><b class="ok">Доставлено</b></div>
+      <div class="kv" id="r5"><span>Тривалість</span><b>0:42</b></div>
+    </div>
+    <div class="card" id="s3-sms" style="left:1170px; top:310px; width:620px; height:430px;">
+      <h4>SMS</h4>
+      <div class="sms" id="sms-b">Замовлення №1042 підтверджено. Доставка завтра після 12:00.</div>
+      <div class="sms-meta" id="sms-m"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Доставлено</div>
+    </div>
+  </div>
+
+  <!-- SCENE 4: scale -->
+  <div class="scene clip" id="s4" data-start="14.22" data-duration="4.3">
+    <div class="glow g"></div><div class="grid"></div>
+    <div class="card" id="s4-card" style="left:310px; top:150px; width:1300px; height:590px;">
+      <h4>Кампанія «Замовлення»</h4>
+      <div class="prog-head"><b id="cnt">0</b><span>дзвінків із 1 240</span></div>
+      <div style="margin:24px 54px 22px"><div class="track"><span class="fill" id="f-main"></span></div></div>
+      <div class="row"><span>Підтвердили</span><span class="track"><span class="fill" id="f1" style="--c:#16a34a"></span></span><b>78%</b></div>
+      <div class="row"><span>Передзвонити</span><span class="track"><span class="fill" id="f2" style="--c:#d97706"></span></span><b>12%</b></div>
+      <div class="row"><span>Не дзвонити</span><span class="track"><span class="fill" id="f3" style="--c:#dc2626"></span></span><b>3%</b></div>
+    </div>
+    <div class="chips" id="chips" style="top:800px"><span class="chip on">Українська</span><span class="chip on">English</span><span class="chip on">Español</span><span class="chip">Português</span><span class="chip">Deutsch</span><span class="chip">Français</span></div>
+  </div>
+
+  <!-- SCENE 5: outro -->
+  <div class="scene clip" id="s5" data-start="17.91" data-duration="3.69">
+    <div class="glow g"></div><div class="grid"></div>
+    <div class="final" id="final">
+      <h2 id="fh">Готові почути, як це звучить?</h2>
+      <div class="btn" id="btn">Замовити демо</div>
+      <div class="fbrand"><img src="assets/img/logo.svg" alt="" />Voxline</div>
+    </div>
+    <svg class="cursor" id="cursor" viewBox="0 0 24 24"><path d="M4 2l16 9-7 2-3 7z" fill="#0b1220" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="bg-music" data-start="0" data-duration="21.6" data-track-index="10" data-volume="0.32" data-fade-in="0.6" data-fade-out="1.6" src="assets/music/happy-beats-business-moves-vol-11-by-ende-dot-app.mp3"></audio>
+  <audio id="sfx-reveal" data-start="3.6" data-duration="1" data-track-index="11" data-volume="0.7" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+  <audio id="sfx-l1" data-start="4.1" data-duration="1" data-track-index="12" data-volume="0.5" src="assets/sfx/drop_001.ogg"></audio>
+  <audio id="sfx-l2" data-start="6.34" data-duration="1" data-track-index="13" data-volume="0.5" src="assets/sfx/drop_002.ogg"></audio>
+  <audio id="sfx-l3" data-start="8.0" data-duration="1" data-track-index="14" data-volume="0.5" src="assets/sfx/drop_001.ogg"></audio>
+  <audio id="sfx-r1" data-start="10.54" data-duration="1" data-track-index="15" data-volume="0.5" src="assets/sfx/select_008.ogg"></audio>
+  <audio id="sfx-r2" data-start="11.6" data-duration="1" data-track-index="16" data-volume="0.5" src="assets/sfx/select_008.ogg"></audio>
+  <audio id="sfx-ok" data-start="12.65" data-duration="2" data-track-index="17" data-volume="0.7" src="assets/sfx/impactBell_heavy_000.ogg"></audio>
+  <audio id="sfx-fin" data-start="17.91" data-duration="2" data-track-index="18" data-volume="0.65" src="assets/sfx/impactBell_heavy_000.ogg"></audio>
+  <audio id="sfx-click" data-start="19.85" data-duration="1" data-track-index="19" data-volume="0.7" src="assets/sfx/mouseclick1.ogg"></audio>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var RMS = [0.785, 0.749, 0.491, 0.438, 0.367, 0.331, 0.335, 0.361, 0.48, 0.439, 0.441, 0.441, 0.435, 0.379, 0.34, 0.319, 1.0, 0.632, 0.42, 0.318, 0.328, 0.304, 0.314, 0.289, 0.323, 0.317, 0.314, 0.283, 0.276, 0.259, 0.258, 0.367, 0.894, 0.569, 0.447, 0.403, 0.323, 0.292, 0.271, 0.275, 0.261, 0.288, 0.274, 0.26, 0.351, 0.306, 0.257, 0.584, 0.827, 0.576, 0.421, 0.301, 0.247, 0.254, 0.223, 0.308, 0.483, 0.461, 0.418, 0.406, 0.32, 0.233, 0.198, 0.7, 0.74, 0.569, 0.411, 0.383, 0.325, 0.338, 0.317, 0.428, 0.408, 0.364, 0.32, 0.314, 0.264, 0.253, 0.256, 0.732, 0.736, 0.48, 0.344, 0.292, 0.312, 0.298, 0.322, 0.26, 0.262, 0.23, 0.256, 0.251, 0.25, 0.27, 0.228, 0.744, 0.732, 0.514, 0.403, 0.303, 0.286, 0.261, 0.245, 0.269, 0.258, 0.207, 0.201, 0.275, 0.251, 0.203, 0.183, 0.892, 0.631, 0.468, 0.337, 0.216, 0.184, 0.173, 0.152, 0.422, 0.391, 0.362, 0.327, 0.303, 0.227, 0.168, 0.39, 0.847, 0.54, 0.502, 0.356, 0.379, 0.355, 0.365, 0.417, 0.5, 0.452, 0.394, 0.391, 0.417, 0.352, 0.33, 0.537, 0.783, 0.427, 0.422, 0.33, 0.42, 0.338, 0.376, 0.441, 0.399, 0.325, 0.275, 0.276, 0.294, 0.296, 0.292, 0.665, 0.788, 0.459, 0.467, 0.384, 0.328, 0.305, 0.278, 0.287, 0.303, 0.282, 0.245, 0.259, 0.302, 0.26, 0.225, 0.807, 0.786, 0.49, 0.402, 0.233, 0.238, 0.196, 0.213, 0.37, 0.402, 0.344, 0.389, 0.342, 0.259, 0.197, 0.144, 0.788, 0.706, 0.487, 0.42, 0.318, 0.374, 0.309, 0.354, 0.431, 0.52, 0.447, 0.44, 0.328, 0.326, 0.282, 0.318, 0.916, 0.532, 0.374, 0.371, 0.29, 0.283, 0.245, 0.302, 0.308, 0.326, 0.331, 0.279, 0.355, 0.333, 0.31, 0.417, 0.862, 0.563, 0.357, 0.368, 0.264, 0.219, 0.205, 0.221, 0.283, 0.3, 0.26, 0.268, 0.356, 0.361, 0.309, 0.617, 0.856, 0.569, 0.418, 0.278, 0.327, 0.247, 0.257, 0.315, 0.334, 0.331, 0.319, 0.262, 0.229, 0.182, 0.14, 0.7, 0.751, 0.543, 0.444, 0.388, 0.367, 0.357, 0.348, 0.459, 0.441, 0.435, 0.392, 0.397, 0.369, 0.313, 0.269, 0.837, 0.739, 0.379, 0.344, 0.32, 0.318, 0.3, 0.288, 0.342, 0.334, 0.342, 0.319, 0.304, 0.296, 0.278, 0.25, 0.84, 0.622, 0.518, 0.445, 0.326, 0.301, 0.297, 0.253, 0.289, 0.287, 0.269, 0.263, 0.352, 0.375, 0.341, 0.447, 0.843, 0.619, 0.449, 0.385, 0.271, 0.242, 0.233, 0.249, 0.453, 0.457, 0.422, 0.38, 0.313, 0.234, 0.198, 0.405, 0.894, 0.54, 0.525, 0.384, 0.362, 0.391, 0.367, 0.416, 0.478, 0.412, 0.376, 0.35, 0.309, 0.288, 0.272, 0.532, 0.807, 0.461, 0.388, 0.315, 0.31, 0.318, 0.288, 0.29, 0.296, 0.265, 0.248, 0.249, 0.289, 0.272, 0.281, 0.652, 0.795, 0.546, 0.439, 0.362, 0.268, 0.271, 0.26, 0.261, 0.306, 0.206, 0.195, 0.242, 0.293, 0.231, 0.174, 0.797, 0.677, 0.479, 0.355, 0.253, 0.216, 0.191, 0.197, 0.348, 0.437, 0.355, 0.338, 0.323, 0.234, 0.201, 0.167, 0.842, 0.597, 0.567, 0.409, 0.412, 0.364, 0.359, 0.376, 0.511, 0.465, 0.449, 0.429, 0.371, 0.347, 0.336, 0.362, 0.791, 0.507, 0.423, 0.325, 0.401, 0.336, 0.35, 0.341, 0.318, 0.284, 0.275, 0.264, 0.286, 0.256, 0.285, 0.489, 0.832, 0.567, 0.467, 0.417, 0.328, 0.347, 0.32, 0.292, 0.314, 0.266, 0.251, 0.239, 0.341, 0.291, 0.222, 0.627, 0.842, 0.495, 0.374, 0.325, 0.243, 0.22, 0.211, 0.293, 0.441, 0.418, 0.398, 0.421, 0.291, 0.212, 0.162, 0.241, 0.322, 0.317, 0.326, 0.349, 0.365, 0.391, 0.454, 0.493, 0.518, 0.507, 0.436, 0.385, 0.341, 0.392, 0.366, 0.319, 0.351, 0.281, 0.286, 0.326, 0.339, 0.326, 0.313, 0.293, 0.326, 0.269, 0.246, 0.271, 0.31, 0.34, 0.317, 0.38, 0.395, 0.294, 0.343, 0.209, 0.212, 0.124, 0.112, 0.15, 0.106, 0.076, 0.076, 0.246, 0.206, 0.175, 0.17, 0.188, 0.174, 0.161, 0.135, 0.145, 0.166, 0.145, 0.146, 0.194, 0.204, 0.191, 0.187, 0.204, 0.193, 0.164, 0.694, 0.644, 0.524, 0.439, 0.403, 0.41, 0.421, 0.418, 0.39, 0.58, 0.523, 0.463, 0.454, 0.406, 0.38, 0.369, 0.796, 0.59, 0.45, 0.406, 0.375, 0.514, 0.479, 0.399, 0.347, 0.397, 0.394, 0.391, 0.392, 0.404, 0.385, 0.362, 0.845, 0.627, 0.513, 0.463, 0.362, 0.343, 0.326, 0.338, 0.289, 0.378, 0.373, 0.349, 0.431, 0.539, 0.455, 0.388, 0.827, 0.56, 0.375, 0.379, 0.327, 0.334, 0.333, 0.299, 0.528, 0.59, 0.549, 0.537, 0.52, 0.497, 0.445, 0.488, 0.798, 0.607, 0.387, 0.359, 0.374, 0.385, 0.412, 0.362, 0.547, 0.498, 0.4, 0.366, 0.321, 0.345, 0.339, 0.605, 0.759, 0.474, 0.35, 0.301, 0.48, 0.498, 0.436, 0.425, 0.397, 0.378, 0.366, 0.344, 0.339, 0.331, 0.319, 0.724, 0.66, 0.55, 0.458, 0.361, 0.374, 0.415, 0.396, 0.323, 0.372, 0.342, 0.357, 0.365, 0.529, 0.464, 0.353, 0.761, 0.644, 0.513, 0.373, 0.351, 0.354, 0.346, 0.348, 0.419, 0.481, 0.49, 0.443, 0.444];
+      var tl = gsap.timeline({ paused: true });
+      var set = function (sel, from, to, t) { return tl.fromTo(sel, from, to, t); };
+      var rms = function (t) { var i = Math.max(0, Math.min(RMS.length - 1, Math.round(t * 30))); return RMS[i]; };
+
+      // meter bars
+      var meter = document.getElementById('meter'), bars = [];
+      for (var i = 0; i < 52; i++) { var b = document.createElement('span'); meter.appendChild(b); bars.push(b); }
+
+      // ---- scene transitions: incoming scene slides over the previous one
+      [['#s2', 3.7], ['#s3', 10.01], ['#s4', 14.22], ['#s5', 17.91]].forEach(function (s) {
+        set(s[0], { x: 1920 }, { x: 0, duration: 0.55, ease: 'power3.out' }, s[1]);
+      });
+
+      // ---- scene 1: hook
+      set('#s1-brand', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.15);
+      set('#s1-pill', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 0.3);
+      set('#s1-a', { opacity: 0, y: 70, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: 'power4.out' }, 0.7);
+      set('#s1-b', { opacity: 0, y: 70, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: 'power4.out' }, 1.7);
+
+      // ---- scene 2: live call
+      set('#s2-card', { opacity: 0, y: 50, scale: .97 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: 'power3.out' }, 3.8);
+      var timer = { v: 0 }, tEl = document.getElementById('timer');
+      tl.to(timer, { v: 42, duration: 6.2, ease: 'none', onUpdate: function () {
+        var s = Math.round(timer.v); tEl.textContent = '00:' + (s < 10 ? '0' : '') + s; } }, 3.9);
+
+      function typeLine(id, t, dur) {
+        var li = document.getElementById(id), v = li.querySelector('.v'), h = li.querySelector('.h');
+        var full = h.textContent, o = { n: 0 };
+        set('#' + id, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, t);
+        tl.to(o, { n: full.length, duration: dur, ease: 'none', onUpdate: function () {
+          var k = Math.round(o.n); v.textContent = full.slice(0, k); h.textContent = full.slice(k); } }, t + 0.1);
+        h.textContent = full;
+        // keep layout: after typing, the hidden remainder is empty; before typing it holds the full text
+      }
+      // initial: lines hidden by opacity (set above), full text sits in .h (transparent)
+      typeLine('l1', 4.1, 1.3);   // beat-grid: first reply lands at 4.1
+      typeLine('l2', 6.34, 0.8);  // beat-locked: 6.34s
+      typeLine('l3', 8.0, 1.2);
+
+      // ---- scene 3: result
+      set('#s3-res', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 10.1);
+      [['#r1', 10.54], ['#r2', 11.06], ['#r3', 11.6], ['#r4', 12.65], ['#r5', 12.65]].forEach(function (r, i) { // beat-grid 10.54 / 11.06 / 11.60, beat-locked 12.65
+        set(r[0], { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power3.out' }, r[1]);
+      });
+      set('#s3-sms', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 12.12); // beat-grid 12.12
+      set('#sms-m', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, 12.65);
+      set('#sms-b', { opacity: 0 }, { opacity: 1, duration: 0.01 }, 12.12);
+
+      // ---- scene 4: scale
+      set('#s4-card', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 14.3);
+      var cnt = { v: 0 }, cEl = document.getElementById('cnt');
+      tl.to(cnt, { v: 812, duration: 1.6, ease: 'power2.out', onUpdate: function () { cEl.textContent = Math.round(cnt.v); } }, 14.8);
+      tl.to('#f-main', { width: '65%', duration: 1.6, ease: 'power2.out' }, 14.8);
+      tl.to('#f1', { width: '78%', duration: 1.0, ease: 'power3.out' }, 15.3);
+      tl.to('#f2', { width: '12%', duration: 1.0, ease: 'power3.out' }, 15.56);
+      tl.to('#f3', { width: '3%', duration: 1.0, ease: 'power3.out' }, 15.8);
+      set('#chips', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 16.3);
+
+      // ---- scene 5: outro
+      set('#final', { opacity: 0, scale: .94 }, { opacity: 1, scale: 1, duration: 0.6, ease: 'power3.out' }, 18.0);
+      set('#fh', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' }, 18.3);
+      set('#btn', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 19.0);
+      set('#cursor', { opacity: 0, x: 0, y: 0 }, { opacity: 1, x: -160, y: -110, duration: 0.7, ease: 'power2.inOut' }, 19.1);
+      tl.to('#btn', { scale: .94, duration: 0.1, ease: 'power2.in' }, 19.85);
+      tl.to('#btn', { scale: 1, duration: 0.25, ease: 'back.out(3)' }, 19.95);
+
+      // ---- continuous: audio-reactive glow + voice meter (pure functions of time)
+      var tick = { t: 0 };
+      var gl = document.querySelectorAll('.g');
+      tl.to(tick, { t: 21.6, duration: 21.6, ease: 'none', onUpdate: function () {
+        var t = tick.t, e = rms(t);
+        for (var i = 0; i < gl.length; i++) gl[i].style.opacity = (0.5 + 0.4 * e).toFixed(3);
+        if (t > 3.7 && t < 10.6) {
+          for (var k = 0; k < bars.length; k++) {
+            var w = 0.5 + 0.5 * Math.sin(t * 7.3 + k * 0.55) * Math.sin(t * 2.9 + k * 0.21);
+            bars[k].style.transform = 'scaleY(' + (0.14 + 0.86 * Math.abs(w) * (0.55 + 0.45 * e)).toFixed(3) + ')';
+          }
+        }
+      } }, 0);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines['root'] = tl;
+    })();
+  </script>
+</div>
+</body>
+</html>
