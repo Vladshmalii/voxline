@@ -3,8 +3,8 @@ import { registerMessages } from '../registry';
 // In-app login page (/login).
 registerMessages('auth', {
   en: {
-    title: 'Sign in to Voxline',
-    subtitle: 'Enter your credentials to open the admin panel.',
+    title: 'Sign in to Allo AI',
+    subtitle: 'Enter your credentials to open the voice AI panel.',
     email: 'Email',
     password: 'Password',
     signIn: 'Sign in',
@@ -19,8 +19,8 @@ registerMessages('auth', {
     orgFailed: 'Failed to switch organization',
   },
   ru: {
-    title: 'Вход в Voxline',
-    subtitle: 'Введите данные, чтобы открыть панель управления.',
+    title: 'Вход в Allo AI',
+    subtitle: 'Введите данные, чтобы открыть панель управления голосовыми агентами.',
     email: 'Эл. почта',
     password: 'Пароль',
     signIn: 'Войти',

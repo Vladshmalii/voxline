@@ -1,43 +1,49 @@
-// Voxline palette (light/dark). The accent is a violet used for solid UI (buttons, stats, profile icon); the brighter
-// neon violet (`accentNeon`) is reserved for the logo, borders & effects.
+// Allo AI palette (light/dark). The accent is an electric violet used for solid UI (buttons, stats, profile icon);
+// the brighter acoustic cyan neon (`accentNeon`) is reserved for the logo, waveform meters, active calls & glowing borders.
 
-const ACCENT = '#6E56CF';
-const ACCENT_HOVER = '#5B44B8';
-const ACCENT_NEON = '#9A7FFF';
-const ACCENT_NEON_HOVER = '#8668F5';
+const ACCENT = '#7928CA';
+const ACCENT_HOVER = '#6B21A8';
+const ACCENT_NEON = '#00F2FE';
+const ACCENT_NEON_HOVER = '#38BDF8';
 
 export const lightTheme = {
   mode: 'light',
   colors: {
-    background: '#FFFFFF',
-    surface: '#F9FAFB',
-    primary: '#0D0D0D',
-    secondary: '#6B6B6B',
-    muted: '#8E8E8E',
-    border: '#E5E5E5',
-    divider: '#ECECEC',
-    hover: '#F3F4F6',
+    background: '#F8FAFC',
+    surface: '#FFFFFF',
+    primary: '#0F172A',
+    secondary: '#475569',
+    muted: '#94A3B8',
+    border: '#E2E8F0',
+    divider: '#F1F5F9',
+    hover: '#F1F5F9',
     accent: ACCENT,
     accentHover: ACCENT_HOVER,
-    accentNeon: ACCENT_NEON,
-    accentNeonHover: ACCENT_NEON_HOVER,
+    accentNeon: '#0284C7',
+    accentNeonHover: '#0369A1',
+    accentCyan: '#00F2FE',
+    accentMagenta: '#FF0080',
+    stateLive: '#10B981',
   },
 };
 
 export const darkTheme = {
   mode: 'dark',
   colors: {
-    background: '#0D0D0D',
-    surface: '#1A1A1A',
-    primary: '#ECECEC',
-    secondary: '#ACACAC',
-    muted: '#8E8E8E',
-    border: '#2D2D2D',
-    divider: '#363636',
-    hover: '#2A2A2A',
+    background: '#050711',
+    surface: '#0A0F26',
+    primary: '#F8FAFC',
+    secondary: '#94A3B8',
+    muted: '#64748B',
+    border: '#1E264F',
+    divider: '#1E264F',
+    hover: '#12183A',
     accent: ACCENT,
     accentHover: ACCENT_HOVER,
     accentNeon: ACCENT_NEON,
     accentNeonHover: ACCENT_NEON_HOVER,
+    accentCyan: '#00F2FE',
+    accentMagenta: '#FF0080',
+    stateLive: '#10B981',
   },
 };

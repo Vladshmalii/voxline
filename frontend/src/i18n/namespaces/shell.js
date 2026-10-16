@@ -71,12 +71,12 @@ registerMessages('userMenu', {
 
 registerMessages('welcome', {
   en: {
-    title: 'Voxline Panel',
-    sub: 'Choose a section from the sidebar to get started.',
+    title: 'Allo AI Platform',
+    sub: 'Choose a section from the sidebar to manage voice agents and telephony.',
   },
   ru: {
-    title: 'Панель Voxline',
-    sub: 'Выберите раздел в боковом меню, чтобы начать.',
+    title: 'Платформа Allo AI',
+    sub: 'Выберите раздел в боковом меню, чтобы управлять голосовыми агентами и телефонией.',
   },
 });
 
