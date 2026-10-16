@@ -1,0 +1,57 @@
+name: landing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - landing/**
+      - .github/workflows/landing.yml
+  pull_request:
+    paths:
+      - landing/**
+      - .github/workflows/landing.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: landing-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: No localhost or out-of-tree links
+        run: |
+          if grep -nE 'localhost|127\.0\.0\.1|\.\./' landing/index.html; then
+            echo "::error::landing/index.html points outside the published site"
+            exit 1
+          fi
+
+  build:
+    needs: check
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/docker-publish
+        with:
+          image: voxline-landing
+          context: landing
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    needs: build
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      services: landing
+    secrets: inherit

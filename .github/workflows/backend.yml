@@ -1,0 +1,80 @@
+name: backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - backend/**
+      - deploy/**
+      - .github/workflows/backend.yml
+      - .github/workflows/_deploy.yml
+  pull_request:
+    paths:
+      - backend/**
+      - .github/workflows/backend.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      # tests/support.py reads these; CI redis has no password.
+      TEST_DB_HOST: 127.0.0.1
+      TEST_REDIS_HOST: 127.0.0.1
+      TEST_REDIS_PASSWORD: ""
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --frozen
+      - run: uv run ruff check src tests --select F,E9
+      - run: uv run pytest -q
+
+  build:
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/docker-publish
+        with:
+          image: voxline-backend
+          context: backend
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    needs: build
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      services: migrate app hooks worker scheduler
+    secrets: inherit

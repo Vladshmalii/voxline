@@ -1,0 +1,180 @@
+# Production stack on the server, behind the shared Traefik (see
+# traefik-deploy-guide.md). CI copies this file to $DEPLOY_PATH and pulls
+# images from GHCR; secrets live only in $DEPLOY_PATH/.env (see .env.example).
+#
+#   voxline.dvms.tech          landing
+#   voxline-admin.dvms.tech    frontend (admin); /api is proxied to `app` over
+#                              the internal network, so the session cookie
+#                              stays same-origin
+#   voxline-backend.dvms.tech  app (/api/...) + hooks (/hooks/..., prefix
+#                              stripped) for telephony media/status callbacks
+#
+# Only the public-facing containers join `proxy`; postgres/redis stay on the
+# project's default network.
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-backend: &backend
+  image: ghcr.io/${IMAGE_OWNER}/voxline-backend:${BACKEND_TAG:-latest}
+  restart: unless-stopped
+  env_file:
+    - .env
+  depends_on:
+    migrate:
+      condition: service_completed_successfully
+    redis:
+      condition: service_healthy
+  logging: *logging
+
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB__USER}
+      POSTGRES_PASSWORD: ${DB__PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    labels:
+      backup.database: "postgres"
+    mem_limit: 1g
+    logging: *logging
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    command: ["sh", "-c", "exec redis-server --requirepass \"$$REDIS__PASSWORD\" --appendonly yes"]
+    environment:
+      REDIS__PASSWORD: ${REDIS__PASSWORD}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS__PASSWORD\" ping | grep -q PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 256m
+    logging: *logging
+
+  migrate:
+    <<: *backend
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["/app/.venv/bin/python", "-m", "src.bootstrap"]
+    mem_limit: 512m
+
+  app:
+    <<: *backend
+    command: ["/app/scripts/app.sh"]
+    networks:
+      - proxy
+      - default
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "proxy"
+      traefik.http.routers.voxline-api.rule: Host(`voxline-backend.dvms.tech`)
+      traefik.http.routers.voxline-api.entrypoints: websecure
+      traefik.http.routers.voxline-api.tls.certresolver: le
+      traefik.http.routers.voxline-api.service: voxline-api
+      traefik.http.services.voxline-api.loadbalancer.server.port: "8080"
+    mem_limit: 1g
+
+  hooks:
+    <<: *backend
+    command: ["/app/scripts/hooks.sh"]
+    # Drains live calls on deploy (gunicorn graceful-timeout is 330s).
+    stop_grace_period: 340s
+    networks:
+      - proxy
+      - default
+    healthcheck:
+      # /ready answers only after the VAD/turn models have warmed up, so
+      # Traefik routes calls to a new container only once it can take them.
+      test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8081/ready')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "proxy"
+      traefik.http.routers.voxline-hooks.rule: Host(`voxline-backend.dvms.tech`) && PathPrefix(`/hooks`)
+      traefik.http.routers.voxline-hooks.priority: "100"
+      traefik.http.routers.voxline-hooks.entrypoints: websecure
+      traefik.http.routers.voxline-hooks.tls.certresolver: le
+      traefik.http.routers.voxline-hooks.middlewares: voxline-hooks-strip
+      traefik.http.routers.voxline-hooks.service: voxline-hooks
+      traefik.http.middlewares.voxline-hooks-strip.stripprefix.prefixes: /hooks
+      traefik.http.services.voxline-hooks.loadbalancer.server.port: "8081"
+    mem_limit: 2g
+
+  worker:
+    <<: *backend
+    command: ["/app/scripts/worker.sh"]
+    restart: always
+    mem_limit: 512m
+
+  scheduler:
+    <<: *backend
+    command: ["/app/scripts/scheduler.sh"]
+    restart: always
+    mem_limit: 256m
+
+  frontend:
+    image: ghcr.io/${IMAGE_OWNER}/voxline-frontend:${FRONTEND_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      API_UPSTREAM: http://app:8080
+    depends_on:
+      - app
+    networks:
+      - proxy
+      - default
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "proxy"
+      traefik.http.routers.voxline-admin.rule: Host(`voxline-admin.dvms.tech`)
+      traefik.http.routers.voxline-admin.entrypoints: websecure
+      traefik.http.routers.voxline-admin.tls.certresolver: le
+      traefik.http.services.voxline-admin.loadbalancer.server.port: "80"
+    mem_limit: 128m
+    logging: *logging
+
+  landing:
+    image: ghcr.io/${IMAGE_OWNER}/voxline-landing:${LANDING_TAG:-latest}
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.voxline-landing.rule: Host(`voxline.dvms.tech`)
+      traefik.http.routers.voxline-landing.entrypoints: websecure
+      traefik.http.routers.voxline-landing.tls.certresolver: le
+      traefik.http.services.voxline-landing.loadbalancer.server.port: "80"
+    mem_limit: 64m
+    logging: *logging
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  postgres_data:
+  redis_data:
