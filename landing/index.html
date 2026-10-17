@@ -256,9 +256,9 @@
             <div class="prog-head"><b>812</b><span data-i="sc_of">із 1 240</span></div>
             <div class="track big"><span class="fill" style="--w:68%"></span></div>
             <div style="margin-top:18px; display: grid; gap: 10px;">
-              <div class="kv"><span>Успішно підтверджено</span><b class="ok">78%</b></div>
-              <div class="kv"><span>Перенесено на інший час</span><b>14%</b></div>
-              <div class="kv"><span>Скинуто</span><b>8%</b></div>
+              <div class="kv"><span data-i="o1">Успішно підтверджено</span><b class="ok">78%</b></div>
+              <div class="kv"><span data-i="o3">Перенесено на інший час</span><b>14%</b></div>
+              <div class="kv"><span data-i="o4">Скинуто</span><b>8%</b></div>
             </div>
           </aside>
 
@@ -277,19 +277,19 @@
               </div>
               <div class="meter" id="meter" aria-hidden="true"></div>
               <div class="tr-wrap">
-                <div class="tr-head"><span>РОЗШИФРОВКА // LATENCY: 238ms</span><small>ALLO AI</small></div>
+                <div class="tr-head"><span data-i="tr_title">РОЗШИФРОВКА // LATENCY: 238ms</span><small>ALLO AI</small></div>
                 <ol class="tr" id="chat"></ol>
               </div>
             </div>
           </div>
 
           <aside class="side r" aria-label="Call result preview">
-            <h4><span>Результат розмови</span><small>CRM SYNC</small></h4>
-            <div class="kv"><span>Підсумок</span><b class="ok">Замовлення підтверджено</b></div>
-            <div class="kv"><span>Зміна</span><b>Доставка після 14:00</b></div>
-            <div class="kv"><span>Емоція</span><b class="ok">Позитивна</b></div>
-            <div class="kv"><span>SMS з реквізитами</span><b class="ok">Надіслано ✓</b></div>
-            <div class="kv"><span>Тривалість</span><b>0:42</b></div>
+            <h4><span data-i="rc_title">Результат розмови</span><small>CRM SYNC</small></h4>
+            <div class="kv"><span data-i="rc1">Підсумок</span><b class="ok" data-i="rc1v">Замовлення підтверджено</b></div>
+            <div class="kv"><span data-i="rc2">Зміна</span><b data-i="rc2v">Доставка після 14:00</b></div>
+            <div class="kv"><span data-i="rc3">Емоція</span><b class="ok" data-i="rc3v">Позитивна</b></div>
+            <div class="kv"><span data-i="rc4">SMS з реквізитами</span><b class="ok" data-i="rc4v">Надіслано ✓</b></div>
+            <div class="kv"><span data-i="rc5">Тривалість</span><b>0:42</b></div>
           </aside>
         </div>
       </div>
@@ -299,21 +299,40 @@
     <div class="facts">
       <div class="wrap">
         <div class="facts-row">
-          <div class="fact"><b>240 мс</b><span>відгук нейромережі — людська швидкість діалогу</span></div>
-          <div class="fact"><b>0 сек</b><span>очікування клієнта у черзі на лінії</span></div>
-          <div class="fact"><b>-65%</b><span>витрат на штат операторів та колл-центри</span></div>
-          <div class="fact"><b>1 000+</b><span>одночасних паралельних дзвінків без збоїв</span></div>
+          <div class="fact"><b>240 мс</b><span data-i="fa1">відгук нейромережі — людська швидкість діалогу</span></div>
+          <div class="fact"><b>0 сек</b><span data-i="fa2">очікування клієнта у черзі на лінії</span></div>
+          <div class="fact"><b>-65%</b><span data-i="fa3">витрат на штат операторів та колл-центри</span></div>
+          <div class="fact"><b>1 000+</b><span data-i="fa4">одночасних паралельних дзвінків без збоїв</span></div>
         </div>
       </div>
     </div>
+
+    <!-- WHO IT'S FOR -->
+    <section id="for">
+      <div class="wrap">
+        <div class="head center">
+          <span class="eyebrow" data-i="w_eyebrow">ДЛЯ КОГО</span>
+          <h2 data-i="w_title">Для бізнесу, який спілкується з клієнтами телефоном</h2>
+          <p class="sub" data-i="w_sub">Якщо співробітники витрачають години на однотипні дзвінки, а частина клієнтів лишається без відповіді, це робота для Allo AI.</p>
+        </div>
+        <div class="who-grid">
+          <article class="card"><div class="ico">🛒</div><h3 data-i="w1t">Інтернет-магазини та роздріб</h3><p data-i="w1d">Підтвердження замовлень, уточнення адреси й часу, дзвінок щодо покинутого кошика, опитування після покупки.</p></article>
+          <article class="card"><div class="ico">🚚</div><h3 data-i="w2t">Доставка та логістика</h3><p data-i="w2d">Узгодження вікна доставки, нагадування про замовлення, перенесення на зручний час, фіксація відповіді.</p></article>
+          <article class="card"><div class="ico">📅</div><h3 data-i="w3t">Сервіси та записи</h3><p data-i="w3d">Нагадування про візит, підтвердження запису, перенесення на прохання клієнта: салони, клініки, сервісні центри.</p></article>
+          <article class="card"><div class="ico">💼</div><h3 data-i="w4t">Підписки та сервісні компанії</h3><p data-i="w4d">Нагадування про оплату, повернення клієнтів, які пішли, з’ясування причини відмови від послуги.</p></article>
+          <article class="card"><div class="ico">🎧</div><h3 data-i="w5t">Підтримка та відгуки</h3><p data-i="w5d">Опитування задоволеності, збір відгуків, перша лінія на вхідні запитання без черги.</p></article>
+          <article class="card"><div class="ico">📞</div><h3 data-i="w6t">Будь-який обдзвін за списком</h3><p data-i="w6d">Якщо завдання можна описати сценарієм розмови, агент проведе його по всьому списку контактів.</p></article>
+        </div>
+      </div>
+    </section>
 
     <!-- USE CASES -->
     <section id="cases">
       <div class="wrap">
         <div class="head center">
-          <span class="eyebrow">СЦЕНАРІЇ ВИКОРИСТАННЯ</span>
-          <h2>Що Allo AI робить у вашому бізнесі щодня</h2>
-          <p class="sub">Асистент говорить за вашим індивідуальним скриптом, без шаблонного роботизованого звучання.</p>
+          <span class="eyebrow" data-i="u_eyebrow">СЦЕНАРІЇ ВИКОРИСТАННЯ</span>
+          <h2 data-i="u_title">Що Allo AI робить у вашому бізнесі щодня</h2>
+          <p class="sub" data-i="u_sub">Асистент говорить за вашим індивідуальним скриптом, без шаблонного роботизованого звучання.</p>
         </div>
         <div style="text-align:center"><div class="tabs" role="tablist" id="tabs"></div></div>
         <div class="case" id="case"></div>
@@ -324,26 +343,26 @@
     <section id="features" class="band">
       <div class="wrap">
         <div class="head">
-          <span class="eyebrow">МОЖЛИВОСТІ</span>
-          <h2>Усе для автономної телефонії в одному інтерфейсі</h2>
-          <p class="sub">Від гнучкого сценарію до повної інтеграції з CRM та аналізу кожного дзвінка.</p>
+          <span class="eyebrow" data-i="f_eyebrow">МОЖЛИВОСТІ</span>
+          <h2 data-i="f_title">Усе для автономної телефонії в одному інтерфейсі</h2>
+          <p class="sub" data-i="f_sub">Від гнучкого сценарію до повної інтеграції з CRM та аналізу кожного дзвінка.</p>
         </div>
         <div class="bento">
           <article class="tile w4">
-            <h3>Вхідні та вихідні дзвінки</h3>
-            <p>Один агент приймає вхідні запити та здійснює масові вихідні дзвінки по базі контактів.</p>
+            <h3 data-i="b1t">Вхідні та вихідні дзвінки</h3>
+            <p data-i="b1d">Один агент приймає вхідні запити та здійснює масові вихідні дзвінки по базі контактів.</p>
           </article>
           <article class="tile w2">
-            <h3>Години дзвінків за таймзоною</h3>
-            <p>ШІ ніколи не зателефонує вночі. Часовий пояс кожного клієнта розраховується індивідуально.</p>
+            <h3 data-i="b2t">Години дзвінків за таймзоною</h3>
+            <p data-i="b2d">ШІ ніколи не зателефонує вночі. Часовий пояс кожного клієнта розраховується індивідуально.</p>
           </article>
           <article class="tile w2">
-            <h3>SMS та месенджери</h3>
-            <p>Миттєва відправка реквізитів, номерів ТТН або адрес одразу після завершення розмови.</p>
+            <h3 data-i="b4t">SMS та месенджери</h3>
+            <p data-i="b4d">Миттєва відправка реквізитів, номерів ТТН або адрес одразу після завершення розмови.</p>
           </article>
           <article class="tile w4">
-            <h3>Глибока аналітика кожного діалогу</h3>
-            <p>Автоматичне визначення підсумку, заперечень, настрою клієнта та створення завдання у CRM.</p>
+            <h3 data-i="b6t">Глибока аналітика кожного діалогу</h3>
+            <p data-i="b6d">Автоматичне визначення підсумку, заперечень, настрою клієнта та створення завдання у CRM.</p>
           </article>
         </div>
       </div>
@@ -353,21 +372,21 @@
     <section id="how">
       <div class="wrap">
         <div class="head center">
-          <span class="eyebrow">ЗАПУСК ЗА 3 КРОКИ</span>
-          <h2>Як підключити Allo AI до вашого бізнесу</h2>
+          <span class="eyebrow" data-i="h_eyebrow">ЗАПУСК ЗА 3 КРОКИ</span>
+          <h2 data-i="h_title">Як підключити Allo AI до вашого бізнесу</h2>
         </div>
         <div class="steps">
           <div class="step">
-            <h3>1. Задайте сценарій</h3>
-            <p>Опишіть завдання, завантажте ціни та регламент. Протестуйте голос у браузері без телефонного дзвінка.</p>
+            <h3 data-i="s1t">1. Задайте сценарій</h3>
+            <p data-i="s1d">Опишіть завдання, завантажте ціни та регламент. Протестуйте голос у браузері без телефонного дзвінка.</p>
           </div>
           <div class="step">
-            <h3>2. Підключіть телефонію</h3>
-            <p>Підтримка будь-яких SIP-транків: Binotel, Ringostat, UniTalk або власних АТС за 5 хвилин.</p>
+            <h3 data-i="s2t">2. Підключіть телефонію</h3>
+            <p data-i="s2d">Підтримка будь-яких SIP-транків: Binotel, Ringostat, UniTalk або власних АТС за 5 хвилин.</p>
           </div>
           <div class="step">
-            <h3>3. Отримуйте готові угоди</h3>
-            <p>Allo AI самостійно веде розмови, створює картки в CRM та надсилає звіти вашій команді.</p>
+            <h3 data-i="s3t">3. Отримуйте готові угоди</h3>
+            <p data-i="s3d">Allo AI самостійно веде розмови, створює картки в CRM та надсилає звіти вашій команді.</p>
           </div>
         </div>
       </div>
@@ -377,8 +396,8 @@
     <section id="faq" class="band">
       <div class="wrap">
         <div class="head center">
-          <span class="eyebrow">ПИТАННЯ ТА ВІДПОВІДІ</span>
-          <h2>Часті запитання</h2>
+          <span class="eyebrow" data-i="q_eyebrow">ПИТАННЯ ТА ВІДПОВІДІ</span>
+          <h2 data-i="q_title">Часті запитання</h2>
         </div>
         <div style="display: grid; gap: 14px; max-width: 820px; margin: 0 auto;" id="faq-list"></div>
       </div>
@@ -388,9 +407,9 @@
     <section>
       <div class="wrap">
         <div class="final">
-          <h2>Готові почути, як Allo AI говорить за ваш бізнес?</h2>
-          <p>Покажемо роботу голосового ШІ-агента на вашому реальному сценарії та запустимо безкоштовний пілот на 7 днів.</p>
-          <a class="btn btn-light cta" href="#">Спробувати демо зараз</a>
+          <h2 data-i="fin_title">Готові почути, як Allo AI говорить за ваш бізнес?</h2>
+          <p data-i="fin_sub">Покажемо роботу голосового ШІ-агента на вашому реальному сценарії та запустимо безкоштовний пілот на 7 днів.</p>
+          <a class="btn btn-light cta" href="#" data-i="cta_demo">Спробувати демо зараз</a>
         </div>
       </div>
     </section>
@@ -399,7 +418,10 @@
   <footer style="padding: 40px 0; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted);">
     <div class="wrap" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
       <a class="brand" href="#top">Allo AI</a>
-      <span>© 2026 Allo AI Platform. Всі права захищено.</span>
+      <span data-i="foot">© 2026 Allo AI Platform. Всі права захищено.</span>
+      <div style="display: flex; gap: 16px;">
+        <a href="privacy.html" data-i="nav_privacy">Конфіденційність</a>
+      </div>
     </div>
   </footer>
 
@@ -407,22 +429,22 @@
   <div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-labelledby="m-title" hidden>
     <div class="dialog">
       <div class="dialog-head">
-        <h3 id="m-title">Замовити демо-дзвінок</h3>
+        <h3 id="m-title" data-i="m_title">Замовити демо-дзвінок</h3>
         <button class="x" type="button" id="m-close" aria-label="Close">✕</button>
       </div>
-      <p class="lead2">Залиште контакти — ми зв'яжемося та покажемо роботу ШІ на вашому сценарії.</p>
+      <p class="lead2" data-i="m_sub">Залиште контакти — ми зв'яжемося та покажемо роботу ШІ на вашому сценарії.</p>
       <div class="done" id="demo-done" hidden>
         <div class="done-ico">✓</div>
-        <h4>Дякуємо! Заявку отримано</h4>
-        <p>Ми зателефонуємо або напишемо вам найближчим часом.</p>
+        <h4 data-i="m_ok_title">Дякуємо! Заявку отримано</h4>
+        <p data-i="m_ok_text">Ми зателефонуємо або напишемо вам найближчим часом.</p>
       </div>
       <form id="demo-form" novalidate>
-        <div class="field"><label for="f-name">Ваше ім'я</label><input id="f-name" name="name" required placeholder="Олександр" /></div>
-        <div class="field"><label for="f-contact">Телефон або Telegram</label><input id="f-contact" name="contact" required placeholder="+380 67 ••• •• ••" /></div>
-        <div class="field"><label for="f-msg">Коментар або сайт компанії</label><textarea id="f-msg" name="msg" placeholder="Розкажіть про ваш бізнес..."></textarea></div>
-        <button class="btn btn-primary btn-block" type="submit" id="submit-lead">Надіслати заявку</button>
+        <div class="field"><label for="f-name" data-i="m_name">Ваше ім'я</label><input id="f-name" name="name" required placeholder="Олександр" /></div>
+        <div class="field"><label for="f-contact" data-i="m_contact">Телефон або Telegram</label><input id="f-contact" name="contact" required placeholder="+380 67 ••• •• ••" /></div>
+        <div class="field"><label for="f-msg" data-i="m_msg">Коментар або сайт компанії</label><textarea id="f-msg" name="msg" placeholder="Розкажіть про ваш бізнес..."></textarea></div>
+        <button class="btn btn-primary btn-block" type="submit" id="submit-lead" data-i="m_submit">Надіслати заявку</button>
         <div class="form-msg" id="form-msg" role="alert"></div>
-        <div class="or"><span>або напишіть менеджеру напряму</span></div>
+        <div class="or"><span data-i="m_or">або напишіть менеджеру напряму</span></div>
         <div class="send">
           <button class="btn btn-tg" type="button" id="send-tg">Telegram</button>
           <button class="btn btn-wa" type="button" id="send-wa">WhatsApp</button>
@@ -436,32 +458,130 @@
     var MANAGER_PHONE = '380665898141';
     var CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
 
-    var CASES = [
-      { tab: 'Підтвердження замовлень', h: 'Підтверджуйте 100% замовлень за перші 30 секунд', p: 'Агент телефонує одразу після кошика, звіряє товари, адресу доставки й надсилає SMS.', li: ['Дані замовлення підставляються в розмову автоматично', 'Прохання змінити час чи адресу потрапляє в CRM', 'Клієнту надходить SMS із реквізитами'],
-        dlg: [['bot', 'Вітаю! Підтверджуємо замовлення №1042 на завтра. Адреса доставки та сама?'], ['cust', 'Ні, привезіть на роботу, вул. Садова, 5.'], ['bot', 'Записав нову адресу. Надішлю підтвердження в SMS.']] },
-      { tab: 'Записи та клініки', h: 'Нагадуйте про візит і скорочуйте неявки на 45%', p: 'Агент нагадує про запис за добу, підтверджує присутність або пропонує перенести.', li: ['Синхронізація з календарем та CRM', 'Миттєве звільнення вікна у разі скасування', 'Зниження навантаження на адміністраторів'],
-        dlg: [['bot', 'Доброго дня! Нагадуємо про візит до лікаря завтра о 14:00. Будете?'], ['cust', 'Так, обов\'язково буду.'], ['bot', 'Чудово! Чекаємо на вас. Надіслав схему проїзду в SMS.']] },
-      { tab: 'Обробка вечірніх лідів', h: 'Жоден нічний клієнт не піде до конкурента', p: 'Allo AI підхоплює дзвінки після 18:00, проводить кваліфікацію та записує лід.', li: ['Миттєва відповідь на 1-й секунді', 'Кваліфікація бюджету та потреби', 'Готовий лід у CRM на ранок'],
-        dlg: [['cust', 'Добрий вечір! Чи працюєте ви зараз?'], ['bot', 'Вітаю! Наш офіс працює з 9:00, але я можу зафіксувати ваше замовлення просто зараз.'], ['cust', 'Чудово, хочу розрахувати вартість.']] }
-    ];
+    var T = {
+      uk: {
+        nav_for: 'Для кого', nav_cases: 'Сценарії', nav_features: 'Можливості', nav_how: 'Як працює', nav_faq: 'Питання', nav_privacy: 'Конфіденційність',
+        cta_demo: 'Замовити демо', cta_how: 'Як це працює',
+        pill: 'Голосові ШІ-агенти реального часу 24/7',
+        h1a: 'Дзвінки клієнтам,', h1b: 'які здійснює ШІ за 240 мс',
+        lead: 'Підтверджує замовлення, нагадує про запис і доставку, відповідає на вхідні без черги. Говорить живою мовою, надсилає SMS та створює картку у CRM.',
+        proof1: '0 секунд очікування на лінії', proof2: 'Живе перебивання (Barge-in)', proof3: '1 000 ліній одночасно',
+        call_name: 'Олена Коваленко', live: 'В ЕФІРІ', tr_title: 'РОЗШИФРОВКА // LATENCY: 238ms',
+        sc_title: 'Кампанія «Підтвердження»', sc_of: 'із 1 240', p_note: 'LIVE',
+        rc_title: 'Результат розмови', rc1: 'Підсумок', rc1v: 'Замовлення підтверджено', rc2: 'Зміна', rc2v: 'Доставка після 14:00', rc3: 'Емоція', rc3v: 'Позитивна', rc4: 'SMS з реквізитами', rc4v: 'Надіслано ✓', rc5: 'Тривалість',
+        fa1: 'відгук нейромережі — людська швидкість діалогу', fa2: 'очікування клієнта у черзі на лінії', fa3: 'витрат на штат операторів та колл-центри', fa4: 'одночасних паралельних дзвінків без збоїв',
+        w_eyebrow: 'ДЛЯ КОГО', w_title: 'Для бізнесу, який спілкується з клієнтами телефоном', w_sub: 'Якщо співробітники витрачають години на однотипні дзвінки, а частина клієнтів лишається без відповіді, це робота для Allo AI.',
+        w1t: 'Інтернет-магазини та роздріб', w1d: 'Підтвердження замовлень, уточнення адреси й часу, дзвінок щодо покинутого кошика, опитування після покупки.',
+        w2t: 'Доставка та логістика', w2d: 'Узгодження вікна доставки, нагадування про замовлення, перенесення на зручний час, фіксація відповіді.',
+        w3t: 'Сервіси та записи', w3d: 'Нагадування про візит, підтвердження запису, перенесення на прохання клієнта: салони, клініки, сервісні центри.',
+        w4t: 'Підписки та сервісні компанії', w4d: 'Нагадування про оплату, повернення клієнтів, які пішли, з’ясування причини відмови від послуги.',
+        w5t: 'Підтримка та відгуки', w5d: 'Опитування задоволеності, збір відгуків, перша лінія на вхідні запитання без черги.',
+        w6t: 'Будь-який обдзвін за списком', w6d: 'Якщо завдання можна описати сценарієм розмови, агент проведе його по всьому списку контактів.',
+        u_eyebrow: 'СЦЕНАРІЇ ВИКОРИСТАННЯ', u_title: 'Що Allo AI робить у вашому бізнесі щодня', u_sub: 'Асистент говорить за вашим індивідуальним скриптом, без шаблонного роботизованого звучання.',
+        f_eyebrow: 'МОЖЛИВОСТІ', f_title: 'Усе для автономної телефонії в одному інтерфейсі', f_sub: 'Від гнучкого сценарію до повної інтеграції з CRM та аналізу кожного дзвінка.',
+        b1t: 'Вхідні та вихідні дзвінки', b1d: 'Один агент приймає вхідні запити та здійснює масові вихідні дзвінки по базі контактів.',
+        b2t: 'Години дзвінків за таймзоною', b2d: 'ШІ ніколи не зателефонує вночі. Часовий пояс кожного клієнта розраховується індивідуально.',
+        b4t: 'SMS та месенджери', b4d: 'Миттєва відправка реквізитів, номерів ТТН або адрес одразу після завершення розмови.',
+        b6t: 'Глибока аналітика кожного діалогу', b6d: 'Автоматичне визначення підсумку, заперечень, настрою клієнта та створення завдання у CRM.',
+        h_eyebrow: 'ЗАПУСК ЗА 3 КРОКИ', h_title: 'Як підключити Allo AI до вашого бізнесу',
+        s1t: '1. Задайте сценарій', s1d: 'Опишіть завдання, завантажте ціни та регламент. Протестуйте голос у браузері без телефонного дзвінка.',
+        s2t: '2. Підключіть телефонію', s2d: 'Підтримка будь-яких SIP-транків: Binotel, Ringostat, UniTalk або власних АТС за 5 хвилин.',
+        s3t: '3. Отримуйте готові угоди', s3d: 'Allo AI самостійно веде розмови, створює картки в CRM та надсилає звіти вашій команді.',
+        q_eyebrow: 'ПИТАННЯ ТА ВІДПОВІДІ', q_title: 'Часті запитання',
+        fin_title: 'Готові почути, як Allo AI говорить за ваш бізнес?', fin_sub: 'Покажемо роботу голосового ШІ-агента на вашому реальному сценарії та запустимо безкоштовний пілот на 7 днів.',
+        foot: '© 2026 Allo AI Platform. Всі права захищено.',
+        m_title: 'Замовити демо-дзвінок', m_sub: 'Залиште контакти — ми зв\'яжемося та покажемо роботу ШІ на вашому сценарії.',
+        m_name: 'Ваше ім\'я', m_contact: 'Телефон або Telegram', m_msg: 'Коментар або сайт компанії',
+        m_submit: 'Надіслати заявку', m_or: 'або напишіть менеджеру напряму',
+        m_ok_title: 'Дякуємо! Заявку отримано', m_ok_text: 'Ми зателефонуємо або напишемо вам найближчим часом.',
+        o1: 'Успішно підтверджено', o3: 'Перенесено', o4: 'Скинуто'
+      },
+      en: {
+        nav_for: 'Who it’s for', nav_cases: 'Use Cases', nav_features: 'Features', nav_how: 'How it works', nav_faq: 'FAQ', nav_privacy: 'Privacy Policy',
+        cta_demo: 'Request Demo', cta_how: 'How it works',
+        pill: 'Real-Time Conversational Voice AI 24/7',
+        h1a: 'Customer calls', h1b: 'handled by AI in 240ms',
+        lead: 'Confirms orders, schedules appointments, answers inbound inquiries without queues. Natural human speech, instant SMS confirmation and automated CRM sync.',
+        proof1: '0 seconds queue time', proof2: 'Live interruption (Barge-in)', proof3: '1,000 parallel lines',
+        call_name: 'Elena Smith', live: 'LIVE CALL', tr_title: 'TRANSCRIPT // LATENCY: 238ms',
+        sc_title: 'Campaign “Confirmation”', sc_of: 'of 1,240', p_note: 'LIVE',
+        rc_title: 'Call Summary', rc1: 'Outcome', rc1v: 'Order Confirmed', rc2: 'Change', rc2v: 'Delivery after 2:00 PM', rc3: 'Sentiment', rc3v: 'Positive', rc4: 'SMS Details', rc4v: 'Sent ✓', rc5: 'Duration',
+        fa1: 'voice neural response — human dialogue speed', fa2: 'customer waiting time in line', fa3: 'call center operating costs', fa4: 'parallel concurrent calls handled',
+        w_eyebrow: 'WHO IT’S FOR', w_title: 'For businesses that communicate with customers by phone', w_sub: 'If your team spends hours on repetitive calls and leads go unanswered, this is the job for Allo AI.',
+        w1t: 'E-commerce & Retail', w1d: 'Order confirmation, address verification, abandoned cart follow-up, post-purchase surveys.',
+        w2t: 'Delivery & Logistics', w2d: 'Delivery window coordination, arrival notifications, rescheduling, recording responses.',
+        w3t: 'Bookings & Clinics', w3d: 'Visit reminders, appointment confirmation, customer-requested rescheduling for salons & clinics.',
+        w4t: 'Subscriptions & Services', w4d: 'Payment reminders, churn win-back, feedback on cancelled services.',
+        w5t: 'Support & Feedback', w5d: 'NPS satisfaction surveys, review collection, zero-queue tier-1 inbound call handling.',
+        w6t: 'Any Custom Call List', w6d: 'If your process can be described in a conversation script, Allo AI executes it across your entire contact database.',
+        u_eyebrow: 'USE CASES', u_title: 'What Allo AI does for your business every day', u_sub: 'Your AI assistant speaks according to your exact script without robotic cliches.',
+        f_eyebrow: 'CAPABILITIES', f_title: 'Everything for autonomous telephony in one interface', f_sub: 'From dynamic scripts to full CRM integration and deep sentiment analytics.',
+        b1t: 'Inbound & Outbound Calling', b1d: 'One agent handles incoming requests and executes high-volume outbound campaigns.',
+        b2t: 'Timezone-Aware Calling', b2d: 'AI never calls at night. Calling windows are dynamically evaluated per customer timezone.',
+        b4t: 'SMS & Messengers', b4d: 'Instant delivery of payment details, tracking numbers, or appointment info right after the call.',
+        b6t: 'Deep Conversation Analytics', b6d: 'Automatic classification of call outcome, customer sentiment, objections and task creation in CRM.',
+        h_eyebrow: 'LAUNCH IN 3 STEPS', h_title: 'How to connect Allo AI to your business',
+        s1t: '1. Define your script', s1d: 'Specify your goals, upload price lists and FAQs. Test the voice in browser playground with zero setup.',
+        s2t: '2. Connect telephony', s2d: 'Connect standard SIP trunks (Twilio, Asterisk, Binotel, UniTalk) in under 5 minutes.',
+        s3t: '3. Receive closed deals', s3d: 'Allo AI conducts calls, creates CRM deals, and sends executive summaries to your team.',
+        q_eyebrow: 'FAQ', q_title: 'Frequently Asked Questions',
+        fin_title: 'Ready to hear how Allo AI speaks for your business?', fin_sub: 'We’ll demonstrate the voice AI agent on your exact script and launch a free 7-day pilot.',
+        foot: '© 2026 Allo AI Platform. All rights reserved.',
+        m_title: 'Request a Demo Call', m_sub: 'Leave your contact info — we will get in touch and demo the AI agent on your custom script.',
+        m_name: 'Your Name', m_contact: 'Phone or Telegram', m_msg: 'Comment or Company Website',
+        m_submit: 'Send Request', m_or: 'or message our manager directly',
+        m_ok_title: 'Thank you! Request received', m_ok_text: 'We will call or message you shortly.',
+        o1: 'Confirmed', o3: 'Rescheduled', o4: 'Dropped'
+      }
+    };
 
-    var FAQ = [
-      ['Чи помітять клієнти, що це штучний інтелект?', 'Завдяки відгуку за 240 мс та здатності розуміти перебивання (Barge-in), 92% клієнтів ведуть розмову як зі звичайним ввічливим співробітником.'],
-      ['Як підключити мій існуючий номер телефону?', 'Allo AI підключається до будь-якої віртуальної АТС (Binotel, Ringostat, UniTalk, Kyivstar) через стандартний SIP-транк за 5 хвилин.'],
-      ['Чи можна навчити агента на нашій специфіці?', 'Так. Ви просто завантажуєте прайс, регламент, відповіді на часті запитання та правила роботи з запереченнями у базу знань.'],
-      ['Як дані передаються в нашу CRM?', 'Після завершення розмови аудіозапис, текстовий транскрипт та розпізнані поля (адреса, сума, статус) автоматично передаються у KeyCRM, HubSpot або через Webhook.']
-    ];
+    var CASES = {
+      uk: [
+        { tab: 'Підтвердження замовлень', h: 'Підтверджуйте 100% замовлень за перші 30 секунд', p: 'Агент телефонує одразу після кошика, звіряє товари, адресу доставки й надсилає SMS.', li: ['Дані замовлення підставляються в розмову автоматично', 'Прохання змінити час чи адресу потрапляє в CRM', 'Клієнту надходить SMS із реквізитами'],
+          dlg: [['bot', 'Вітаю! Підтверджуємо замовлення №1042 на завтра. Адреса доставки та сама?'], ['cust', 'Ні, привезіть на роботу, вул. Садова, 5.'], ['bot', 'Записав нову адресу. Надішлю підтвердження в SMS.']] },
+        { tab: 'Записи та клініки', h: 'Нагадуйте про візит і скорочуйте неявки на 45%', p: 'Агент нагадує про запис за добу, підтверджує присутність або пропонує перенести.', li: ['Синхронізація з календарем та CRM', 'Миттєве звільнення вікна у разі скасування', 'Зниження навантаження на адміністраторів'],
+          dlg: [['bot', 'Доброго дня! Нагадуємо про візит до лікаря завтра о 14:00. Будете?'], ['cust', 'Так, обов\'язково буду.'], ['bot', 'Чудово! Чекаємо на вас. Надіслав схему проїзду в SMS.']] },
+        { tab: 'Обробка вечірніх лідів', h: 'Жоден нічний клієнт не піде до конкурента', p: 'Allo AI підхоплює дзвінки після 18:00, проводить кваліфікацію та записує лід.', li: ['Миттєва відповідь на 1-й секунді', 'Кваліфікація бюджету та потреби', 'Готовий лід у CRM на ранок'],
+          dlg: [['cust', 'Добрий вечір! Чи працюєте ви зараз?'], ['bot', 'Вітаю! Наш офіс працює з 9:00, але я можу зафіксувати ваше замовлення просто зараз.'], ['cust', 'Чудово, хочу розрахувати вартість.']] }
+      ],
+      en: [
+        { tab: 'Order Confirmation', h: 'Confirm 100% of orders within the first 30 seconds', p: 'AI calls immediately after checkout, verifies items, address, and sends SMS confirmation.', li: ['Order data is merged into the dialogue automatically', 'Address and delivery updates sync to CRM', 'Customer receives immediate SMS details'],
+          dlg: [['bot', 'Hello! Confirming order #1042 for tomorrow. Is the delivery address unchanged?'], ['cust', 'No, please deliver to my office at 5 Garden St.'], ['bot', 'Updated address noted. I’ve texted your confirmation.']] },
+        { tab: 'Appointments & Clinics', h: 'Remind about bookings and cut no-shows by 45%', p: 'AI reminds patients in advance, confirms attendance, or reschedules instantly.', li: ['Live calendar & CRM synchronization', 'Instant slot release upon cancellation', 'Eliminates repetitive admin calls'],
+          dlg: [['bot', 'Hi! Reminding about your appointment tomorrow at 2:00 PM. Will you attend?'], ['cust', 'Yes, I will be there.'], ['bot', 'Great! Looking forward to seeing you. Directions texted!']] },
+        { tab: 'After-Hours Lead Capture', h: 'Never lose an evening customer to competitors', p: 'Allo AI handles calls after 6:00 PM and on weekends, qualifies budget and registers leads.', li: ['Instant pickup on the 1st second', 'Lead budget & urgency qualification', 'Ready CRM deal waiting in the morning'],
+          dlg: [['cust', 'Good evening! Are you open right now?'], ['bot', 'Hello! Our main office opens at 9 AM, but I can register your request right now.'], ['cust', 'Awesome, I’d like a quote.']] }
+      ]
+    };
 
+    var FAQ = {
+      uk: [
+        ['Чи помітять клієнти, що це штучний інтелект?', 'Завдяки відгуку за 240 мс та здатності розуміти перебивання (Barge-in), 92% клієнтів ведуть розмову як зі звичайним ввічливим співробітником.'],
+        ['Як підключити мій існуючий номер телефону?', 'Allo AI підключається до будь-якої віртуальної АТС (Binotel, Ringostat, UniTalk, Kyivstar) через стандартний SIP-транк за 5 хвилин.'],
+        ['Чи можна навчити агента на нашій специфіці?', 'Так. Ви просто завантажуєте прайс, регламент, відповіді на часті запитання та правила роботи з запереченнями у базу знань.'],
+        ['Як дані передаються в нашу CRM?', 'Після завершення розмови аудіозапис, текстовий транскрипт та розпізнані поля (адреса, сума, статус) автоматично передаються у KeyCRM, HubSpot або через Webhook.']
+      ],
+      en: [
+        ['Will customers notice they are speaking to AI?', 'With sub-240ms latency and real-time interruption (Barge-in), over 92% of customers converse naturally as with a polite human agent.'],
+        ['How do I connect my existing phone numbers?', 'Allo AI connects to any IP telephony provider (Twilio, Asterisk, Ringostat, Binotel) via standard SIP trunking in 5 minutes.'],
+        ['Can I train the agent on our specific script and prices?', 'Yes. Upload your product catalog, knowledge base, objections handling, and business rules directly in the dashboard.'],
+        ['How is data synchronized with our CRM?', 'Audio recordings, transcripts, call outcomes, and extracted parameters automatically sync to KeyCRM, HubSpot, or custom webhooks.']
+      ]
+    };
+
+    var lang = 'uk';
     var caseIdx = 0;
+
     function renderCase() {
-      var c = CASES[caseIdx];
+      var c = CASES[lang][caseIdx];
+      var d = T[lang];
       document.getElementById('case').innerHTML =
         '<div><h3>' + c.h + '</h3><p>' + c.p + '</p><ul>' +
         c.li.map(function (x) { return '<li>' + CHECK + '<span>' + x + '</span></li>'; }).join('') + '</ul></div>' +
         '<div class="mini"><ol class="tr">' +
-        c.dlg.map(function(m) { return '<li class="' + m[0] + '"><b>' + (m[0] === 'bot' ? 'Allo AI' : 'Клієнт') + '</b><p>' + m[1] + '</p></li>'; }).join('') +
+        c.dlg.map(function(m) { return '<li class="' + m[0] + '"><b>' + (m[0] === 'bot' ? 'Allo AI' : (lang === 'uk' ? 'Клієнт' : 'Customer')) + '</b><p>' + m[1] + '</p></li>'; }).join('') +
         '</ol></div>';
-      document.getElementById('tabs').innerHTML = CASES.map(function (x, i) {
+      document.getElementById('tabs').innerHTML = CASES[lang].map(function (x, i) {
         return '<button type="button" role="tab" aria-selected="' + (i === caseIdx) + '" data-case="' + i + '">' + x.tab + '</button>';
       }).join('');
       document.querySelectorAll('[data-case]').forEach(function (b) {
@@ -469,16 +589,35 @@
       });
     }
 
-    document.getElementById('chat').innerHTML = 
-      '<li><time>0:03</time><b>Allo AI</b><p>Вітаю, Олено! Магазин «Nord». Підтверджуємо замовлення №1042: доставка завтра після 14:00. Усе вірно?</p></li>' +
-      '<li class="cust"><time>0:12</time><b>Клієнт</b><p>Так, але надішліть, будь ласка, реквізити для оплати в SMS.</p></li>' +
-      '<li><time>0:19</time><b>Allo AI</b><p>Звісно! Реквізити вже надіслано на цей номер. Дякуємо за замовлення!</p></li>';
+    function render() {
+      document.documentElement.lang = lang;
+      var d = T[lang];
+      document.querySelectorAll('[data-i]').forEach(function (el) {
+        var key = el.getAttribute('data-i');
+        if (d[key]) el.textContent = d[key];
+      });
+      document.querySelectorAll('[data-lang]').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
+      });
+      
+      document.getElementById('chat').innerHTML = 
+        '<li><time>0:03</time><b>Allo AI</b><p>' + (lang === 'uk' ? 'Вітаю, Олено! Магазин «Nord». Підтверджуємо замовлення №1042: доставка завтра після 14:00. Усе вірно?' : 'Hello Elena! Nord Store confirming order #1042: delivery tomorrow after 2 PM. Is everything correct?') + '</p></li>' +
+        '<li class="cust"><time>0:12</time><b>' + (lang === 'uk' ? 'Клієнт' : 'Customer') + '</b><p>' + (lang === 'uk' ? 'Так, але надішліть, будь ласка, реквізити для оплати в SMS.' : 'Yes, but please text me payment details via SMS.') + '</p></li>' +
+        '<li><time>0:19</time><b>Allo AI</b><p>' + (lang === 'uk' ? 'Звісно! Реквізити вже надіслано на цей номер. Дякуємо за замовлення!' : 'Done! Payment details have been texted to your number. Thank you!') + '</p></li>';
 
-    document.getElementById('faq-list').innerHTML = FAQ.map(function (q, i) {
-      return '<details style="border: 1px solid var(--line); border-radius: 16px; background: var(--surface); padding: 20px 24px;"' + (i === 0 ? ' open' : '') + '><summary style="font-size: 16.5px; font-weight: 750; cursor: pointer;">' + q[0] + '</summary><p style="margin-top: 12px; color: var(--text2); font-size: 15px;">' + q[1] + '</p></details>';
-    }).join('');
+      document.getElementById('faq-list').innerHTML = FAQ[lang].map(function (q, i) {
+        return '<details style="border: 1px solid var(--line); border-radius: 16px; background: var(--surface); padding: 20px 24px;"' + (i === 0 ? ' open' : '') + '><summary style="font-size: 16.5px; font-weight: 750; cursor: pointer;">' + q[0] + '</summary><p style="margin-top: 12px; color: var(--text2); font-size: 15px;">' + q[1] + '</p></details>';
+      }).join('');
 
-    renderCase();
+      renderCase();
+    }
+
+    document.querySelectorAll('[data-lang]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        lang = b.getAttribute('data-lang');
+        render();
+      });
+    });
 
     // Bars visualizer
     var meterHtml = '';
@@ -515,11 +654,11 @@
       var contact = document.getElementById('f-contact').value.trim();
       var msg = document.getElementById('f-msg').value.trim();
       var formMsg = document.getElementById('form-msg');
-      if (!name || contact.length < 3) { formMsg.textContent = 'Вкажіть ім\'я та контактний номер!'; return; }
+      if (!name || contact.length < 3) { formMsg.textContent = lang === 'uk' ? 'Вкажіть ім\'я та контактний номер!' : 'Please provide your name and phone number!'; return; }
       
       var btn = document.getElementById('submit-lead');
       btn.disabled = true;
-      btn.textContent = 'Надсилаємо…';
+      btn.textContent = lang === 'uk' ? 'Надсилаємо…' : 'Sending…';
       fetch(LEAD_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -528,7 +667,7 @@
         document.getElementById('demo-form').hidden = true;
         document.getElementById('demo-done').hidden = false;
       }).catch(function() {
-        formMsg.textContent = 'Заявку збережено! Ми зв\'яжемося з вами.';
+        formMsg.textContent = lang === 'uk' ? 'Заявку збережено! Ми зв\'яжемося з вами.' : 'Request saved! We will be in touch.';
       });
     });
 
@@ -538,6 +677,8 @@
     document.getElementById('send-wa').addEventListener('click', function() {
       window.open('https://wa.me/' + MANAGER_PHONE, '_blank');
     });
+
+    render();
   </script>
 </body>
 </html>
