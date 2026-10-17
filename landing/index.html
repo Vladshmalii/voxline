@@ -3,451 +3,557 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Allo AI (Алло.ai) — Голосові ШІ-агенти реального часу для дзвінків</title>
-  <meta name="description" content="Allo AI: автономні голосові ШІ-агенти, які самі телефонують і приймають дзвінки за 240 мс. Інтеграція з SIP-телефонією та CRM, SMS після розмови, живий діалог без пауз." />
-  <meta name="theme-color" content="#050711" />
+  <title>Allo AI (Алло.ai) — Голосові ШІ-агенти реального часу для бізнесу</title>
+  <meta name="description" content="Автономний голосовий ШІ-оператор Allo AI. Прийом та здійснення дзвінків із затримкою 240 мс, інтеграція з SIP-телефонією та CRM, відправка SMS за результатами розмови." />
+  <meta name="theme-color" content="#0c1017" />
   <link rel="icon" type="image/svg+xml" href="logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f8fafc; --surface: #ffffff; --alt: #f1f5f9; --text: #0f172a; --text2: #475569; --muted: #64748b;
-      --line: #e2e8f0; --accent: #7928ca; --accent2: #0284c7; --accent-hover: #6b21a8; --accent-soft: #f3e8ff;
-      --glow: rgba(2, 132, 199, .22); --ok: #16a34a; --warn: #d97706; --bad: #dc2626;
-      --shadow: 0 1px 3px rgba(15,23,42,.06); --shadow-lg: 0 25px 60px rgba(15,23,42,.12);
-      --max: 1240px;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-elevated: #f1f5f9;
+      --line: #e2e8f0;
+      --line-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-soft: #eff6ff;
+      --ok: #16a34a;
+      --ok-soft: #f0fdf4;
+      --warn: #d97706;
+      --bad: #dc2626;
+      --bad-soft: #fef2f2;
+      --max: 1200px;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
     }
+
     :root[data-theme='dark'] {
-      --bg: #050711; --surface: #0a0f26; --alt: #10163a; --text: #f8fafc; --text2: #94a3b8; --muted: #64748b;
-      --line: #1e264f; --accent: #7928ca; --accent2: #00f2fe; --accent-hover: #9333ea; --accent-soft: rgba(121, 40, 202, 0.22);
-      --glow: rgba(0, 242, 254, .28); --ok: #10b981; --warn: #f59e0b; --bad: #ef4444;
-      --shadow: 0 1px 3px rgba(0,0,0,.6); --shadow-lg: 0 30px 70px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.05);
+      --bg: #0c1017;
+      --surface: #141a24;
+      --surface-elevated: #1b2230;
+      --line: #242c3d;
+      --line-strong: #333e54;
+      --text: #f0f4fc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-soft: rgba(59, 130, 246, 0.14);
+      --ok: #10b981;
+      --ok-soft: rgba(16, 185, 129, 0.12);
+      --warn: #f59e0b;
+      --bad: #ef4444;
+      --bad-soft: rgba(239, 68, 68, 0.12);
     }
-    * { box-sizing: border-box; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; scroll-padding-top: 84px; }
-    body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-size: 16px; line-height: 1.6; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-    h1, h2, h3, p { margin: 0; } a { color: inherit; } img, svg { display: block; max-width: 100%; }
+    body { font-family: var(--sans); font-size: 16px; line-height: 1.6; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
     .wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 24px; }
-    :focus-visible { outline: 2px solid var(--accent2); outline-offset: 3px; border-radius: 6px; }
-    .grad { background: linear-gradient(135deg, var(--accent2) 0%, #a855f7 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .mono { font-family: var(--mono); }
 
-    /* buttons */
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 24px; border-radius: 12px; font: inherit; font-size: 15px; font-weight: 700; text-decoration: none; border: 1px solid transparent; cursor: pointer; transition: background-color .15s, border-color .15s, transform .15s, box-shadow .15s; }
-    .btn-primary { color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 10px 26px var(--glow); }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 32px var(--glow); }
-    .btn-ghost { color: var(--text); background: var(--surface); border-color: var(--line); box-shadow: var(--shadow); }
-    .btn-ghost:hover { border-color: var(--muted); transform: translateY(-1px); }
-    .btn-sm { height: 38px; padding: 0 16px; font-size: 14px; border-radius: 9px; }
+    /* Header */
+    header.top {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(12px);
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+    .brand-logo-img { width: 34px; height: 34px; }
 
-    /* header */
-    header.top { position: sticky; top: 0; z-index: 60; backdrop-filter: saturate(170%) blur(16px); background: color-mix(in srgb, var(--bg) 82%, transparent); border-bottom: 1px solid var(--line); }
-    .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 16px; }
-    .brand { display: inline-flex; align-items: center; gap: 12px; font-size: 21px; font-weight: 850; letter-spacing: -.03em; text-decoration: none; }
-    nav.links { display: none; gap: 4px; }
-    nav.links a { padding: 8px 14px; border-radius: 9px; font-size: 14.5px; font-weight: 600; color: var(--text2); text-decoration: none; }
-    nav.links a:hover { color: var(--text); background: var(--alt); }
+    nav.links { display: none; gap: 6px; }
+    nav.links a { padding: 8px 14px; font-size: 14.5px; font-weight: 600; color: var(--text-muted); border-radius: 8px; transition: color .15s, background .15s; }
+    nav.links a:hover { color: var(--text); background: var(--surface-elevated); }
+    @media (min-width: 960px) { nav.links { display: flex; } }
+
     .tools { display: flex; align-items: center; gap: 10px; }
-    .seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--alt); border: 1px solid var(--line); border-radius: 10px; }
-    .seg button { height: 28px; min-width: 34px; padding: 0 9px; border: 0; border-radius: 7px; background: transparent; font: inherit; font-size: 12.5px; font-weight: 700; color: var(--muted); cursor: pointer; }
-    .seg button[aria-pressed='true'] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
-    .icon-btn { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--text2); cursor: pointer; }
-    .icon-btn:hover { color: var(--text); }
-    @media (min-width: 920px) { nav.links { display: flex; } }
-    @media (max-width: 540px) { .top .btn-sm { display: none; } }
-
-    /* hero */
-    .hero { position: relative; padding: 60px 0 40px; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; background:
-        radial-gradient(55% 50% at 16% 0%, var(--glow), transparent 70%),
-        radial-gradient(45% 45% at 86% 12%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 70%); pointer-events: none; }
-    .hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(70% 60% at 50% 20%, #000, transparent 78%); -webkit-mask-image: radial-gradient(70% 60% at 50% 20%, #000, transparent 78%); opacity: .45; pointer-events: none; }
-    .pill { display: inline-flex; align-items: center; gap: 9px; padding: 6px 14px 6px 8px; border: 1px solid var(--line); border-radius: 999px; background: color-mix(in srgb, var(--surface) 88%, transparent); font-size: 13px; font-weight: 700; color: var(--text2); box-shadow: var(--shadow); }
-    .pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 22%, transparent); animation: blink 2s ease-in-out infinite; }
+    .seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--surface-elevated); border: 1px solid var(--line); border-radius: 8px; }
+    .seg button { height: 28px; min-width: 32px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--text-dim); cursor: pointer; }
+    .seg button[aria-pressed='true'] { background: var(--surface); color: var(--text); border: 1px solid var(--line-strong); }
     
-    .hero .wrap { position: relative; z-index: 1; display: block; }
-    .hero-copy { max-width: 900px; margin: 0 auto; text-align: center; }
-    .hero-copy h1 { margin: 26px auto 24px; font-size: clamp(38px, 6vw, 74px); line-height: 1.05; font-weight: 900; letter-spacing: -.04em; }
-    .hero-copy h1 .grad { display: block; }
-    .hero-copy .lead { margin: 0 auto; max-width: 60ch; font-size: clamp(17px, 2vw, 20px); color: var(--text2); line-height: 1.55; }
-    .hero-copy .cta-row, .hero-copy .proof { justify-content: center; }
-    .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
-    .proof { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 30px; font-size: 14px; color: var(--muted); }
-    .proof span { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; } .proof svg { color: var(--ok); }
+    .icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--text-muted); display: grid; place-items: center; cursor: pointer; transition: all .15s; }
+    .icon-btn:hover { color: var(--text); border-color: var(--line-strong); }
 
-    .stage { position: relative; display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 560px; margin: 48px auto 0; }
-    .stage .visual { order: -1; }
-    .side { padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-lg); }
-    .side h4 { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 16px; font-size: 14px; font-weight: 750; }
-    .side h4 small { white-space: nowrap; font-size: 11.5px; font-weight: 600; color: var(--muted); }
-    .prog-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; font-size: 13px; color: var(--muted); }
-    .prog-head b { font-size: 32px; line-height: 1; font-weight: 850; letter-spacing: -.03em; color: var(--text); font-family: 'IBM Plex Mono', monospace; }
-    .track.big { height: 10px; border-radius: 999px; background: var(--alt); overflow: hidden; }
-    .track.big .fill { display: block; height: 100%; width: var(--w); border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
-    .kv { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; color: var(--muted); }
-    .kv:last-child { border-bottom: 0; padding-bottom: 0; }
-    .kv b { font-weight: 700; color: var(--text); text-align: right; font-family: 'IBM Plex Mono', monospace; } .kv b.ok { color: var(--ok); }
-    @media (min-width: 700px) and (max-width: 999px) { .stage { max-width: 760px; grid-template-columns: 1fr 1fr; } .stage .visual { grid-column: 1 / -1; } }
-    @media (min-width: 1000px) {
-      .stage { max-width: 1240px; grid-template-columns: 1fr 1.35fr 1fr; gap: 28px; align-items: center; }
-      .stage .visual { order: 0; }
-      .side.l { transform: translateY(28px) rotate(-1.2deg); }
-      .side.r { transform: translateY(-14px) rotate(1.2deg); }
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 46px; padding: 0 22px; border-radius: 10px; font-family: var(--sans);
+      font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all .15s ease;
+      border: 1px solid transparent; text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: #ffffff; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary { background: var(--surface); border-color: var(--line); color: var(--text); }
+    .btn-secondary:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+    .btn-sm { height: 36px; padding: 0 14px; font-size: 13.5px; border-radius: 8px; }
+
+    /* Hero */
+    .hero { padding: 68px 0 54px; position: relative; }
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
+    @media (min-width: 1000px) { .hero-grid { grid-template-columns: 1.15fr 0.85fr; } }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 12px; border-radius: 6px; font-family: var(--mono);
+      font-size: 12.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); margin-bottom: 20px;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+
+    h1.hero-title {
+      font-size: clamp(34px, 4.8vw, 56px); font-weight: 850; line-height: 1.12;
+      letter-spacing: -0.03em; color: var(--text); margin-bottom: 22px;
+    }
+    .hero-sub {
+      font-size: clamp(16.5px, 1.6vw, 19px); color: var(--text-muted); line-height: 1.55;
+      margin-bottom: 32px; max-width: 580px;
+    }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; }
+    .proof-list { display: flex; flex-wrap: wrap; gap: 18px; font-size: 13.5px; color: var(--text-dim); }
+    .proof-item { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+
+    /* Phone / Audio Console Visual on Hero */
+    .console-card {
+      background: var(--surface); border: 1.5px solid var(--line); border-radius: 20px;
+      box-shadow: var(--shadow-lg); overflow: hidden;
+    }
+    .console-header {
+      padding: 16px 20px; background: var(--surface-elevated); border-bottom: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .caller-details { display: flex; align-items: center; gap: 12px; }
+    .agent-tag {
+      padding: 4px 8px; border-radius: 6px; background: var(--accent-soft);
+      color: var(--accent); font-family: var(--mono); font-size: 12px; font-weight: 700;
+    }
+    .call-timer {
+      font-family: var(--mono); font-size: 16px; font-weight: 700; color: var(--ok);
+      display: flex; align-items: center; gap: 6px;
     }
 
-    /* call screen */
-    .call { position: relative; border: 1.5px solid var(--line); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow-lg); overflow: hidden; }
-    .call-top { display: flex; align-items: center; gap: 14px; padding: 18px 22px; }
-    .call-top .avatar { width: 44px; height: 44px; font-size: 18px; font-weight: 800; border-radius: 12px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent2)); }
-    .call-top .who { flex: 1; display: block; min-width: 0; }
-    .call-top .who strong { font-size: 15.5px; font-weight: 750; }
-    .call-top .who small { display: block; margin-top: 2px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); }
-    .status { display: grid; justify-items: end; gap: 2px; }
-    .status time { font-family: 'IBM Plex Mono', monospace; font-size: 19px; font-weight: 700; letter-spacing: -.02em; color: var(--ok); }
-    .live { white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--ok); font-family: 'IBM Plex Mono', monospace; }
-    .live i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-    
-    .meter { display: flex; align-items: center; gap: 3px; height: 54px; padding: 0 18px; border-block: 1px solid var(--line); background: var(--alt); }
-    .meter span { flex: 1; max-width: 5px; height: 100%; border-radius: 3px; background: linear-gradient(var(--accent), var(--accent2)); transform: scaleY(var(--s)); opacity: .88; }
+    /* Waveform Level Meter */
+    .meter-rack {
+      display: flex; align-items: center; gap: 3px; height: 50px; padding: 0 20px;
+      background: var(--bg); border-bottom: 1px solid var(--line);
+    }
+    .meter-bar {
+      flex: 1; max-width: 5px; height: 100%; border-radius: 2px;
+      background: var(--accent); transform: scaleY(var(--s)); opacity: 0.85;
+    }
 
-    .tr-wrap { padding: 18px 22px 12px; }
-    .tr-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-family: 'IBM Plex Mono', monospace; }
-    ol.tr { list-style: none; margin: 0; padding: 0; }
-    ol.tr li { display: grid; grid-template-columns: 44px 1fr; gap: 4px 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-    ol.tr li:last-child { border-bottom: 0; }
-    ol.tr time { grid-row: 1 / span 2; padding-top: 2px; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--muted); }
-    ol.tr b { font-size: 12px; font-weight: 800; letter-spacing: .02em; color: var(--accent2); }
-    ol.tr li.cust b { color: var(--text2); }
-    ol.tr p { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--text); }
+    .transcript-box { padding: 20px; display: flex; flex-direction: column; gap: 14px; max-height: 220px; overflow-y: auto; }
+    .utterance { display: grid; grid-template-columns: 42px 1fr; gap: 8px; font-size: 14px; line-height: 1.45; }
+    .utterance time { font-family: var(--mono); font-size: 11.5px; color: var(--text-dim); padding-top: 2px; }
+    .utterance strong { font-size: 12px; color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 2px; }
+    .utterance.caller strong { color: var(--text-muted); }
 
-    /* facts strip */
-    .facts { padding: 12px 0 20px; }
-    .facts .facts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
-    .fact { padding: 26px; border-right: 1px solid var(--line); }
-    .fact:last-child { border-right: 0; }
-    .fact b { display: block; font-size: 32px; line-height: 1.1; font-weight: 900; letter-spacing: -.04em; font-family: 'IBM Plex Mono', monospace; }
-    .fact span { display: block; margin-top: 6px; font-size: 14px; color: var(--text2); font-weight: 500; }
-    @media (max-width: 700px) { .fact { border-right: 0; border-bottom: 1px solid var(--line); } .fact:last-child { border-bottom: 0; } }
+    .console-footer {
+      padding: 14px 20px; background: var(--surface-elevated); border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center; font-size: 12px;
+    }
+    .metric-pill { font-family: var(--mono); font-weight: 700; color: var(--ok); background: var(--ok-soft); padding: 4px 8px; border-radius: 5px; }
 
-    /* sections */
-    section { padding: 90px 0; }
-    .eyebrow { display: inline-block; margin-bottom: 14px; padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); font-size: 12.5px; font-weight: 750; color: var(--accent2); font-family: 'IBM Plex Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
-    h2 { max-width: 24ch; font-size: clamp(30px, 4.2vw, 46px); line-height: 1.1; font-weight: 850; letter-spacing: -.035em; }
-    .sub { margin-top: 16px; max-width: 62ch; font-size: 18px; color: var(--text2); }
-    .head { margin-bottom: 50px; } .head.center { text-align: center; } .head.center h2, .head.center .sub { margin-left: auto; margin-right: auto; }
-    .band { background: var(--alt); border-block: 1px solid var(--line); }
+    /* Sections */
+    section { padding: 84px 0; border-bottom: 1px solid var(--line); }
+    .section-head { text-align: center; max-width: 720px; margin: 0 auto 52px; }
+    .section-head.left { text-align: left; margin: 0 0 40px; max-width: none; }
+    h2.section-title { font-size: clamp(28px, 3.6vw, 42px); font-weight: 850; letter-spacing: -0.025em; margin-bottom: 14px; }
+    .section-desc { font-size: 17px; color: var(--text-muted); }
 
-    /* cards */
-    .who-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-    .card { padding: 30px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); transition: all .2s; }
-    .card:hover { border-color: var(--accent2); box-shadow: var(--shadow-lg); transform: translateY(-3px); }
-    .ico { width: 48px; height: 48px; margin-bottom: 20px; display: grid; place-items: center; border-radius: 14px; background: var(--accent-soft); color: var(--accent2); font-size: 22px; }
-    .card h3 { margin-bottom: 8px; font-size: 19px; font-weight: 750; letter-spacing: -.02em; }
-    .card p { font-size: 15px; color: var(--text2); line-height: 1.55; }
+    /* Funnel Numbers */
+    .grid-3 { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    @media (min-width: 768px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
 
-    /* tabs */
-    .tabs { display: inline-flex; max-width: 100%; padding: 4px; gap: 4px; overflow-x: auto; background: var(--alt); border: 1px solid var(--line); border-radius: 14px; }
-    .tabs button { height: 40px; padding: 0 18px; border: 0; border-radius: 10px; background: transparent; font: inherit; font-size: 14px; font-weight: 700; color: var(--text2); cursor: pointer; white-space: nowrap; }
-    .tabs button[aria-selected='true'] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
-    .case { display: grid; gap: 28px; margin-top: 28px; padding: 32px; border: 1.5px solid var(--line); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow-lg); }
-    @media (min-width: 900px) { .case { grid-template-columns: 1fr 1fr; padding: 44px; gap: 48px; } }
-    .case h3 { font-size: 26px; line-height: 1.2; letter-spacing: -.03em; font-weight: 800; }
-    .case p { margin-top: 12px; color: var(--text2); }
-    .case ul { display: grid; gap: 12px; margin: 24px 0 0; padding: 0; list-style: none; }
-    .case li { display: flex; gap: 12px; font-size: 15.5px; color: var(--text2); font-weight: 500; }
-    .case li svg { flex: none; margin-top: 3px; color: var(--ok); }
-    .mini { display: grid; gap: 10px; align-content: center; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--alt); }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+      padding: 28px; transition: border-color .15s;
+    }
+    .stat-card:hover { border-color: var(--line-strong); }
+    .stat-num { font-family: var(--mono); font-size: 40px; font-weight: 800; color: var(--bad); margin-bottom: 10px; }
+    .stat-title { font-size: 18px; font-weight: 750; margin-bottom: 8px; }
+    .stat-desc { font-size: 14.5px; color: var(--text-muted); line-height: 1.5; }
 
-    /* bento */
-    .bento { display: grid; gap: 20px; grid-template-columns: repeat(6, 1fr); }
-    .tile { grid-column: span 6; padding: 32px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); }
-    @media (min-width: 760px) { .tile.w3 { grid-column: span 3; } }
-    @media (min-width: 1000px) { .tile.w2 { grid-column: span 2; } .tile.w4 { grid-column: span 4; } .tile.w3 { grid-column: span 3; } }
-    .tile h3 { margin-bottom: 8px; font-size: 20px; font-weight: 750; letter-spacing: -.02em; }
-    .tile p { font-size: 15px; color: var(--text2); max-width: 48ch; }
-    .art { margin-top: 22px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 9px; }
-    .chip { padding: 7px 15px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 13.5px; font-weight: 700; color: var(--text2); }
-    .chip.on { background: var(--accent-soft); border-color: transparent; color: var(--accent2); }
+    /* Use Cases Tabs */
+    .tabs-bar { display: inline-flex; max-width: 100%; padding: 4px; gap: 4px; overflow-x: auto; background: var(--surface-elevated); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 24px; }
+    .tab-btn { height: 38px; padding: 0 16px; border: 0; border-radius: 7px; background: transparent; font: inherit; font-size: 13.5px; font-weight: 700; color: var(--text-muted); cursor: pointer; white-space: nowrap; }
+    .tab-btn[aria-selected='true'] { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
 
-    /* steps */
-    .steps { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); counter-reset: s; }
-    .step { position: relative; padding: 32px 28px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); }
-    .step::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 42px; height: 42px; margin-bottom: 20px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; font-weight: 850; font-size: 17px; }
-    .step h3 { margin-bottom: 8px; font-size: 19px; font-weight: 750; } .step p { font-size: 15px; color: var(--text2); }
+    .case-panel {
+      display: grid; grid-template-columns: 1fr; gap: 28px; padding: 32px;
+      background: var(--surface); border: 1.5px solid var(--line); border-radius: 20px;
+    }
+    @media (min-width: 900px) { .case-panel { grid-template-columns: 1fr 1fr; gap: 40px; } }
+    .case-panel h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
+    .case-panel p { color: var(--text-muted); font-size: 15.5px; margin-bottom: 20px; }
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px; color: var(--text-muted); }
+    .checklist li { display: flex; gap: 10px; align-items: flex-start; }
+    .checklist-icon { color: var(--ok); flex-shrink: 0; margin-top: 2px; }
 
-    /* final cta */
-    .final { position: relative; overflow: hidden; padding: 80px 32px; text-align: center; border-radius: 32px; color: #fff; background: radial-gradient(80% 140% at 50% 0%, #7928ca 0%, #0a0f26 100%); border: 1.5px solid var(--line-strong); box-shadow: 0 40px 90px var(--violet-glow); }
-    .final h2 { margin: 0 auto; max-width: 20ch; color: #fff; } .final p { margin: 18px auto 36px; max-width: 56ch; font-size: 18px; color: rgba(255,255,255,.88); }
-    .final .btn-light { color: #050711; background: #fff; height: 52px; padding: 0 34px; font-size: 16px; font-weight: 800; border-radius: 13px; box-shadow: 0 14px 34px rgba(0,0,0,.3); }
+    .case-dialogue {
+      background: var(--bg); border: 1px solid var(--line); border-radius: 14px;
+      padding: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 14px;
+    }
 
-    /* modal dialog */
+    /* Bento Grid */
+    .bento-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+    .tile { grid-column: span 6; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px; }
+    @media (min-width: 768px) { .tile.w3 { grid-column: span 3; } .tile.w2 { grid-column: span 2; } .tile.w4 { grid-column: span 4; } }
+    .tile h3 { font-size: 19px; font-weight: 750; margin-bottom: 8px; }
+    .tile p { font-size: 14.5px; color: var(--text-muted); }
+
+    /* Steps */
+    .steps-grid { display: grid; grid-template-columns: 1fr; gap: 20px; counter-reset: step; }
+    @media (min-width: 768px) { .steps-grid { grid-template-columns: repeat(3, 1fr); } }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+      padding: 28px; position: relative;
+    }
+    .step-card::before {
+      counter-increment: step; content: counter(step);
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 8px; background: var(--accent-soft);
+      color: var(--accent); font-family: var(--mono); font-weight: 800; font-size: 15px; margin-bottom: 16px;
+    }
+    .step-card h3 { font-size: 18px; font-weight: 750; margin-bottom: 8px; }
+    .step-card p { font-size: 14px; color: var(--text-muted); }
+
+    /* Integrations */
+    .pills-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 24px; }
+    .pill-item {
+      padding: 10px 18px; border: 1px solid var(--line); border-radius: 10px;
+      background: var(--surface); font-family: var(--mono); font-size: 13.5px; font-weight: 700; color: var(--text);
+    }
+
+    /* FAQ */
+    .faq-list { display: grid; gap: 12px; max-width: 780px; margin: 0 auto; }
+    details.faq-item {
+      border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
+      padding: 18px 22px; transition: border-color .15s;
+    }
+    details[open] { border-color: var(--line-strong); }
+    summary.faq-q { font-size: 16px; font-weight: 750; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; font-family: var(--mono); font-size: 18px; color: var(--text-dim); }
+    details[open] summary::after { content: '−'; }
+    .faq-a { margin-top: 12px; font-size: 14.5px; color: var(--text-muted); line-height: 1.55; }
+
+    /* Final CTA */
+    .final-box {
+      text-align: center; padding: 64px 28px; border-radius: 24px;
+      background: var(--surface); border: 1.5px solid var(--line-strong);
+      max-width: 860px; margin: 0 auto;
+    }
+    .final-box h2 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 850; margin-bottom: 14px; }
+    .final-box p { font-size: 16.5px; color: var(--text-muted); margin-bottom: 28px; max-width: 540px; margin-left: auto; margin-right: auto; }
+
+    /* Modal Dialog */
     body.modal-open { overflow: hidden; }
-    .modal { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(5, 7, 17, .75); backdrop-filter: blur(6px); }
+    .modal { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(12, 16, 23, .8); backdrop-filter: blur(4px); }
     .modal.open { display: flex; }
-    .dialog { width: 100%; max-width: 520px; max-height: calc(100vh - 40px); overflow-y: auto; padding: 34px; border: 1.5px solid var(--line); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow-lg); }
-    .dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-    .dialog h3 { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.03em; }
-    .dialog .lead2 { margin: 8px 0 24px; font-size: 14.5px; color: var(--text2); }
-    .x { width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer; }
-    .x:hover { background: var(--alt); color: var(--text); }
-    .field { display: grid; gap: 6px; margin-bottom: 16px; }
-    .field label { font-size: 13px; font-weight: 700; }
-    .field input, .field select, .field textarea { width: 100%; padding: 12px 14px; font: inherit; font-size: 15px; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 11px; }
-    .field textarea { min-height: 84px; resize: vertical; }
-    .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--accent2); box-shadow: 0 0 0 3px var(--glow); }
-    .send { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
-    .send .btn { padding: 0 10px; font-size: 14px; white-space: nowrap; }
-    .btn-tg { color: #fff; background: #229ed9; }
-    .btn-wa { color: #fff; background: #25a244; }
-    .form-msg { min-height: 20px; margin-top: 12px; font-size: 13.5px; color: var(--bad); font-weight: 600; }
-    .btn-block { width: 100%; height: 50px; font-size: 16px; }
-    .or { display: flex; align-items: center; gap: 12px; margin: 20px 0 14px; font-size: 13px; color: var(--muted); }
-    .or::before, .or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
-    .done { padding: 14px 0 8px; text-align: center; }
-    .done-ico { width: 64px; height: 64px; margin: 0 auto 18px; display: grid; place-items: center; border-radius: 50%; background: var(--green-soft); color: var(--ok); }
-    .done h4 { margin: 0 0 8px; font-size: 22px; font-weight: 800; }
-    .done p { margin: 0; color: var(--text2); }
+    .dialog { width: 100%; max-width: 480px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 20px; padding: 32px; box-shadow: var(--shadow-lg); }
+    .dialog-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+    .dialog-header h3 { font-size: 21px; font-weight: 800; }
+    .close-btn { width: 32px; height: 32px; border: 0; border-radius: 6px; background: var(--surface-elevated); color: var(--text-dim); cursor: pointer; display: grid; place-items: center; font-size: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .form-group label { font-size: 12.5px; font-weight: 700; color: var(--text-muted); }
+    .form-input { padding: 11px 13px; font: inherit; font-size: 14.5px; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; }
+    .form-input:focus { outline: none; border-color: var(--accent); }
+    .btn-block { width: 100%; height: 46px; font-size: 15px; margin-top: 8px; }
+
+    .direct-links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+    .btn-tg { background: #229ed9; color: #fff; }
+    .btn-wa { background: #25a244; color: #fff; }
+
+    /* Footer */
+    footer { padding: 40px 0; font-size: 13.5px; color: var(--text-dim); border-top: 1px solid var(--line); }
+    .footer-wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
   </style>
 </head>
 <body>
+
+  <!-- Header -->
   <header class="top">
-    <div class="wrap">
-      <a class="brand" href="#top" aria-label="Allo AI">
-        <svg width="34" height="34" viewBox="0 0 64 64" fill="none"><rect width="64" height="64" rx="16" fill="#0A0F26"/><path d="M16 48L32 14L48 48" stroke="#00F2FE" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 36H42" stroke="#7928CA" stroke-width="5" stroke-linecap="round"/><circle cx="48" cy="18" r="4" fill="#00F2FE"/></svg>
-        Allo AI
+    <div class="wrap nav-wrap">
+      <a href="#top" class="brand" aria-label="Allo AI">
+        <img src="logo.svg" alt="Allo AI" class="brand-logo-img" />
+        <span>Allo AI</span>
       </a>
-      <nav class="links" aria-label="Sections">
-        <a href="#for" data-i="nav_for">Для кого</a><a href="#cases" data-i="nav_cases">Сценарії</a><a href="#features" data-i="nav_features">Можливості</a><a href="#how" data-i="nav_how">Як працює</a><a href="#faq" data-i="nav_faq">Питання</a>
+
+      <nav class="links">
+        <a href="#problem" data-i="nav_problem">Воронка втрат</a>
+        <a href="#cases" data-i="nav_cases">Сценарії</a>
+        <a href="#features" data-i="nav_features">Можливості</a>
+        <a href="#how" data-i="nav_how">Як це працює</a>
+        <a href="#faq" data-i="nav_faq">Питання</a>
       </nav>
+
       <div class="tools">
-        <div class="seg" role="group" aria-label="Language"><button type="button" data-lang="uk" aria-pressed="true">UA</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
-        <button class="icon-btn" id="theme" type="button" aria-label="Theme">
-          <svg id="ico-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-          <svg id="ico-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/></svg>
+        <div class="seg" role="group" aria-label="Language">
+          <button type="button" data-lang="uk" aria-pressed="true">UA</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button class="icon-btn" id="theme-btn" type="button" aria-label="Змінити тему">
+          <span id="theme-icon">🌙</span>
         </button>
-        <a class="btn btn-primary btn-sm cta" href="#" data-i="cta_demo">Замовити демо</a>
+        <a class="btn btn-primary btn-sm cta-trigger" href="#demo" data-i="cta_demo">Замовити демо</a>
       </div>
     </div>
   </header>
 
   <main id="top">
-    <!-- HERO -->
+    <!-- Hero Section -->
     <section class="hero">
-      <div class="wrap">
+      <div class="wrap hero-grid">
+        
         <div class="hero-copy">
-          <span class="pill"><i></i><span data-i="pill">Голосові ШІ-агенти реального часу 24/7</span></span>
-          <h1><span data-i="h1a">Дзвінки клієнтам,</span> <span class="grad" data-i="h1b">які здійснює ШІ за 240 мс</span></h1>
-          <p class="lead" data-i="lead">Підтверджує замовлення, нагадує про запис і доставку, відповідає на вхідні без черги. Говорить живою мовою, надсилає SMS та створює картку у CRM.</p>
+          <div class="eyebrow">
+            <span class="status-dot"></span>
+            <span data-i="pill">ШІ-ОПЕРАТОР РЕАЛЬНОГО ЧАСУ 24/7</span>
+          </div>
+          <h1 class="hero-title" data-i="hero_title">
+            Дзвінки клієнтам, які виконує ШІ із затримкою 240 мс
+          </h1>
+          <p class="hero-sub" data-i="hero_sub">
+            Підтверджує замовлення, нагадує про записи, кваліфікує ліди та відповідає на вхідні без черги. Говорить живою мовою, фіксує підсумок у CRM та надсилає SMS.
+          </p>
           <div class="cta-row">
-            <a class="btn btn-primary cta" href="#" data-i="cta_demo">Спробувати демо-дзвінок</a>
-            <a class="btn btn-ghost" href="#how" data-i="cta_how">Як це працює</a>
+            <a class="btn btn-primary cta-trigger" href="#demo" data-i="cta_demo">Замовити демо-дзвінок</a>
+            <a class="btn btn-secondary" href="#how" data-i="cta_how">Як це працює</a>
           </div>
-          <div class="proof">
-            <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i="proof1">0 секунд очікування на лінії</span></span>
-            <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i="proof2">Живе перебивання (Barge-in)</span></span>
-            <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i="proof3">1 000 ліній одночасно</span></span>
+          <div class="proof-list">
+            <div class="proof-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              <span data-i="proof_1">0 секунд очікування на лінії</span>
+            </div>
+            <div class="proof-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              <span data-i="proof_2">Живе перебивання (Barge-in)</span>
+            </div>
+            <div class="proof-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              <span data-i="proof_3">1 000 ліній одночасно</span>
+            </div>
           </div>
         </div>
 
-        <div class="stage">
-          <aside class="side l" aria-label="Campaign preview">
-            <h4><span data-i="sc_title">Кампанія «Підтвердження»</span><small data-i="p_note">LIVE</small></h4>
-            <div class="prog-head"><b>812</b><span data-i="sc_of">із 1 240</span></div>
-            <div class="track big"><span class="fill" style="--w:68%"></span></div>
-            <div style="margin-top:18px; display: grid; gap: 10px;">
-              <div class="kv"><span data-i="o1">Успішно підтверджено</span><b class="ok">78%</b></div>
-              <div class="kv"><span data-i="o3">Перенесено на інший час</span><b>14%</b></div>
-              <div class="kv"><span data-i="o4">Скинуто</span><b>8%</b></div>
+        <!-- Call Console Widget -->
+        <div class="hero-visual">
+          <div class="console-card">
+            <div class="console-header">
+              <div class="caller-details">
+                <span class="agent-tag">ALLO AI</span>
+                <div>
+                  <strong style="font-size: 14.5px; display: block;" data-i="agent_label">ШІ-Оператор Катерина</strong>
+                  <span class="mono" style="font-size: 11.5px; color: var(--text-dim);">+380 (67) ••• •• 42</span>
+                </div>
+              </div>
+              <div class="call-timer">
+                <span class="status-dot"></span>
+                <span>00:42</span>
+              </div>
             </div>
-          </aside>
 
-          <div class="visual">
-            <div class="call" aria-label="Call preview">
-              <div class="call-top">
-                <div class="avatar">A</div>
-                <div class="who">
-                  <strong data-i="call_name">Олена Коваленко</strong>
-                  <small>+380 67 ••• ••-42</small>
-                </div>
-                <div class="status">
-                  <span class="live"><i></i><span data-i="live">В ЕФІРІ</span></span>
-                  <time>00:42</time>
-                </div>
-              </div>
-              <div class="meter" id="meter" aria-hidden="true"></div>
-              <div class="tr-wrap">
-                <div class="tr-head"><span data-i="tr_title">РОЗШИФРОВКА // LATENCY: 238ms</span><small>ALLO AI</small></div>
-                <ol class="tr" id="chat"></ol>
-              </div>
+            <!-- Waveform Level Meter -->
+            <div class="meter-rack" id="meter-rack" aria-hidden="true"></div>
+
+            <div class="transcript-box" id="transcript-box"></div>
+
+            <div class="console-footer">
+              <span class="mono" style="color: var(--text-dim);">LATENCY: 238ms</span>
+              <span class="metric-pill" data-i="crm_sync_status">CRM SYNC COMPLETED</span>
             </div>
           </div>
+        </div>
 
-          <aside class="side r" aria-label="Call result preview">
-            <h4><span data-i="rc_title">Результат розмови</span><small>CRM SYNC</small></h4>
-            <div class="kv"><span data-i="rc1">Підсумок</span><b class="ok" data-i="rc1v">Замовлення підтверджено</b></div>
-            <div class="kv"><span data-i="rc2">Зміна</span><b data-i="rc2v">Доставка після 14:00</b></div>
-            <div class="kv"><span data-i="rc3">Емоція</span><b class="ok" data-i="rc3v">Позитивна</b></div>
-            <div class="kv"><span data-i="rc4">SMS з реквізитами</span><b class="ok" data-i="rc4v">Надіслано ✓</b></div>
-            <div class="kv"><span data-i="rc5">Тривалість</span><b>0:42</b></div>
-          </aside>
+      </div>
+    </section>
+
+    <!-- Problem / Lead Leakage Section -->
+    <section id="problem">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="eyebrow" style="color: var(--bad); background: var(--bad-soft); border-color: transparent;" data-i="prob_tag">ВОРОНКА ВТРАТ</div>
+          <h2 class="section-title" data-i="prob_title">Куди зникають 42% ваших лідів із реклами?</h2>
+          <p class="section-desc" data-i="prob_desc">Кожна секунда затримки або пропущений дзвінок віддає клієнта конкурентам.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="stat-card">
+            <div class="stat-num">100%</div>
+            <h3 class="stat-title" data-i="p1_t">Злиті дзвінки після 18:00</h3>
+            <p class="stat-desc" data-i="p1_d">У неробочий час та у вихідні дні дзвінки потрапляють на автовідповідач. 8 з 10 покупців не чекають ранку.</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">35%</div>
+            <h3 class="stat-title" data-i="p2_t">Скидання через очікування</h3>
+            <p class="stat-desc" data-i="p2_d">Якщо лінія зайнята понад 20 секунд у пікові години реклами — клієнт кладе слухавку.</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">-28%</div>
+            <h3 class="stat-title" data-i="p3_t">Людський фактор</h3>
+            <p class="stat-desc" data-i="p3_d">Втома співробітників, забуті коментарі в CRM, пропущені етапи кваліфікації та невчасно надіслані реквізити.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- FACTS -->
-    <div class="facts">
-      <div class="wrap">
-        <div class="facts-row">
-          <div class="fact"><b>240 мс</b><span data-i="fa1">відгук нейромережі — людська швидкість діалогу</span></div>
-          <div class="fact"><b>0 сек</b><span data-i="fa2">очікування клієнта у черзі на лінії</span></div>
-          <div class="fact"><b>-65%</b><span data-i="fa3">витрат на штат операторів та колл-центри</span></div>
-          <div class="fact"><b>1 000+</b><span data-i="fa4">одночасних паралельних дзвінків без збоїв</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WHO IT'S FOR -->
-    <section id="for">
-      <div class="wrap">
-        <div class="head center">
-          <span class="eyebrow" data-i="w_eyebrow">ДЛЯ КОГО</span>
-          <h2 data-i="w_title">Для бізнесу, який спілкується з клієнтами телефоном</h2>
-          <p class="sub" data-i="w_sub">Якщо співробітники витрачають години на однотипні дзвінки, а частина клієнтів лишається без відповіді, це робота для Allo AI.</p>
-        </div>
-        <div class="who-grid">
-          <article class="card"><div class="ico">🛒</div><h3 data-i="w1t">Інтернет-магазини та роздріб</h3><p data-i="w1d">Підтвердження замовлень, уточнення адреси й часу, дзвінок щодо покинутого кошика, опитування після покупки.</p></article>
-          <article class="card"><div class="ico">🚚</div><h3 data-i="w2t">Доставка та логістика</h3><p data-i="w2d">Узгодження вікна доставки, нагадування про замовлення, перенесення на зручний час, фіксація відповіді.</p></article>
-          <article class="card"><div class="ico">📅</div><h3 data-i="w3t">Сервіси та записи</h3><p data-i="w3d">Нагадування про візит, підтвердження запису, перенесення на прохання клієнта: салони, клініки, сервісні центри.</p></article>
-          <article class="card"><div class="ico">💼</div><h3 data-i="w4t">Підписки та сервісні компанії</h3><p data-i="w4d">Нагадування про оплату, повернення клієнтів, які пішли, з’ясування причини відмови від послуги.</p></article>
-          <article class="card"><div class="ico">🎧</div><h3 data-i="w5t">Підтримка та відгуки</h3><p data-i="w5d">Опитування задоволеності, збір відгуків, перша лінія на вхідні запитання без черги.</p></article>
-          <article class="card"><div class="ico">📞</div><h3 data-i="w6t">Будь-який обдзвін за списком</h3><p data-i="w6d">Якщо завдання можна описати сценарієм розмови, агент проведе його по всьому списку контактів.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <!-- USE CASES -->
+    <!-- Use Cases Section -->
     <section id="cases">
       <div class="wrap">
-        <div class="head center">
-          <span class="eyebrow" data-i="u_eyebrow">СЦЕНАРІЇ ВИКОРИСТАННЯ</span>
-          <h2 data-i="u_title">Що Allo AI робить у вашому бізнесі щодня</h2>
-          <p class="sub" data-i="u_sub">Асистент говорить за вашим індивідуальним скриптом, без шаблонного роботизованого звучання.</p>
+        <div class="section-head">
+          <div class="eyebrow" data-i="cases_tag">РЕАЛЬНІ СЦЕНАРІЇ</div>
+          <h2 class="section-title" data-i="cases_title">Що агент виконує у вашому бізнесі</h2>
+          <p class="section-desc" data-i="cases_desc">Розмова ведеться за вашим регламентом і бізнес-правилами.</p>
         </div>
-        <div style="text-align:center"><div class="tabs" role="tablist" id="tabs"></div></div>
-        <div class="case" id="case"></div>
+
+        <div style="text-align: center;">
+          <div class="tabs-bar" id="tabs-bar" role="tablist"></div>
+        </div>
+
+        <div class="case-panel" id="case-panel"></div>
       </div>
     </section>
 
-    <!-- BENTO FEATURES -->
-    <section id="features" class="band">
+    <!-- Bento Capabilities Grid -->
+    <section id="features">
       <div class="wrap">
-        <div class="head">
-          <span class="eyebrow" data-i="f_eyebrow">МОЖЛИВОСТІ</span>
-          <h2 data-i="f_title">Усе для автономної телефонії в одному інтерфейсі</h2>
-          <p class="sub" data-i="f_sub">Від гнучкого сценарію до повної інтеграції з CRM та аналізу кожного дзвінка.</p>
+        <div class="section-head">
+          <div class="eyebrow" data-i="feat_tag">МОЖЛИВОСТІ</div>
+          <h2 class="section-title" data-i="feat_title">Інженерна точність та швидкість</h2>
         </div>
-        <div class="bento">
-          <article class="tile w4">
-            <h3 data-i="b1t">Вхідні та вихідні дзвінки</h3>
-            <p data-i="b1d">Один агент приймає вхідні запити та здійснює масові вихідні дзвінки по базі контактів.</p>
-          </article>
-          <article class="tile w2">
-            <h3 data-i="b2t">Години дзвінків за таймзоною</h3>
-            <p data-i="b2d">ШІ ніколи не зателефонує вночі. Часовий пояс кожного клієнта розраховується індивідуально.</p>
-          </article>
-          <article class="tile w2">
-            <h3 data-i="b4t">SMS та месенджери</h3>
-            <p data-i="b4d">Миттєва відправка реквізитів, номерів ТТН або адрес одразу після завершення розмови.</p>
-          </article>
-          <article class="tile w4">
-            <h3 data-i="b6t">Глибока аналітика кожного діалогу</h3>
-            <p data-i="b6d">Автоматичне визначення підсумку, заперечень, настрою клієнта та створення завдання у CRM.</p>
-          </article>
+
+        <div class="bento-grid">
+          <div class="tile w4">
+            <h3 data-i="f1_t">Вхідні та вихідні кампанії</h3>
+            <p data-i="f1_d">Один агент однаково надійно приймає вхідні дзвінки з реклами та здійснює обдзвін бази контактів.</p>
+          </div>
+          <div class="tile w2">
+            <h3 data-i="f2_t">Години за таймзоною</h3>
+            <p data-i="f2_d">ШІ ніколи не зателефонує вночі. Часовий пояс кожного абонента враховується автоматично.</p>
+          </div>
+          <div class="tile w2">
+            <h3 data-i="f3_t">SMS та месенджери</h3>
+            <p data-i="f3_d">Миттєва відправка реквізитів, номерів ТТН або адрес одразу після завершення розмови.</p>
+          </div>
+          <div class="tile w4">
+            <h3 data-i="f4_t">Аналітика та транскрипція</h3>
+            <p data-i="f4_d">Автоматичне визначення підсумку, заперечень, настрою клієнта та створення завдання у CRM.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- HOW IT WORKS -->
+    <!-- How It Works / Steps -->
     <section id="how">
       <div class="wrap">
-        <div class="head center">
-          <span class="eyebrow" data-i="h_eyebrow">ЗАПУСК ЗА 3 КРОКИ</span>
-          <h2 data-i="h_title">Як підключити Allo AI до вашого бізнесу</h2>
+        <div class="section-head">
+          <div class="eyebrow" data-i="steps_tag">ПІДКЛЮЧЕННЯ ЗА 3 КРОКИ</div>
+          <h2 class="section-title" data-i="steps_title">Як запустити Allo AI</h2>
         </div>
-        <div class="steps">
-          <div class="step">
-            <h3 data-i="s1t">1. Задайте сценарій</h3>
-            <p data-i="s1d">Опишіть завдання, завантажте ціни та регламент. Протестуйте голос у браузері без телефонного дзвінка.</p>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <h3 data-i="s1_t">1. Налаштуйте сценарій</h3>
+            <p data-i="s1_d">Опишіть завдання, завантажте прайс і регламент. Протестуйте голос у браузері без дзвінка на телефон.</p>
           </div>
-          <div class="step">
-            <h3 data-i="s2t">2. Підключіть телефонію</h3>
-            <p data-i="s2d">Підтримка будь-яких SIP-транків: Binotel, Ringostat, UniTalk або власних АТС за 5 хвилин.</p>
+          <div class="step-card">
+            <h3 data-i="s2_t">2. Підключіть телефонію</h3>
+            <p data-i="s2_d">Підтримка стандартних SIP-транків (Binotel, Ringostat, UniTalk, Kyivstar) за 5 хвилин.</p>
           </div>
-          <div class="step">
-            <h3 data-i="s3t">3. Отримуйте готові угоди</h3>
-            <p data-i="s3d">Allo AI самостійно веде розмови, створює картки в CRM та надсилає звіти вашій команді.</p>
+          <div class="step-card">
+            <h3 data-i="s3_t">3. Отримуйте закриті угоди</h3>
+            <p data-i="s3_d">Allo AI самостійно розмовляє з клієнтами, вносить дані в CRM та сповіщає вашу команду.</p>
           </div>
+        </div>
+
+        <!-- Telephony & CRM Integrations -->
+        <div class="pills-cloud">
+          <span class="pill-item">Binotel</span>
+          <span class="pill-item">Ringostat</span>
+          <span class="pill-item">UniTalk</span>
+          <span class="pill-item">KeyCRM</span>
+          <span class="pill-item">HubSpot</span>
+          <span class="pill-item">Zoho</span>
+          <span class="pill-item">Asterisk</span>
+          <span class="pill-item">Custom Webhooks</span>
         </div>
       </div>
     </section>
 
     <!-- FAQ -->
-    <section id="faq" class="band">
+    <section id="faq">
       <div class="wrap">
-        <div class="head center">
-          <span class="eyebrow" data-i="q_eyebrow">ПИТАННЯ ТА ВІДПОВІДІ</span>
-          <h2 data-i="q_title">Часті запитання</h2>
+        <div class="section-head">
+          <div class="eyebrow" data-i="faq_tag">ПИТАННЯ ТА ВІДПОВІДІ</div>
+          <h2 class="section-title" data-i="faq_title">Часті запитання</h2>
         </div>
-        <div style="display: grid; gap: 14px; max-width: 820px; margin: 0 auto;" id="faq-list"></div>
+
+        <div class="faq-list" id="faq-list"></div>
       </div>
     </section>
 
-    <!-- FINAL CTA -->
-    <section>
+    <!-- Final CTA -->
+    <section style="border-bottom: 0;">
       <div class="wrap">
-        <div class="final">
-          <h2 data-i="fin_title">Готові почути, як Allo AI говорить за ваш бізнес?</h2>
-          <p data-i="fin_sub">Покажемо роботу голосового ШІ-агента на вашому реальному сценарії та запустимо безкоштовний пілот на 7 днів.</p>
-          <a class="btn btn-light cta" href="#" data-i="cta_demo">Спробувати демо зараз</a>
+        <div class="final-box">
+          <h2 data-i="final_title">Готові протестувати голос Allo AI на вашому сценарії?</h2>
+          <p data-i="final_sub">Ми підготуємо демонстрацію під ваш бізнес та запустимо пілотний період на 7 днів.</p>
+          <a class="btn btn-primary cta-trigger" href="#demo" data-i="cta_demo">Замовити демо-дзвінок</a>
         </div>
       </div>
     </section>
   </main>
 
-  <footer style="padding: 40px 0; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted);">
-    <div class="wrap" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-      <a class="brand" href="#top">Allo AI</a>
-      <span data-i="foot">© 2026 Allo AI Platform. Всі права захищено.</span>
+  <!-- Footer -->
+  <footer>
+    <div class="wrap footer-wrap">
+      <a href="#top" class="brand" style="font-size: 16px;">Allo AI</a>
+      <span data-i="copyright">© 2026 Allo AI Platform. Всі права захищено.</span>
       <div style="display: flex; gap: 16px;">
-        <a href="privacy.html" data-i="nav_privacy">Конфіденційність</a>
+        <a href="privacy.html" data-i="privacy_link">Конфіденційність</a>
       </div>
     </div>
   </footer>
 
-  <!-- Modal Lead Dialog -->
-  <div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-labelledby="m-title" hidden>
+  <!-- Modal Lead Form -->
+  <div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
     <div class="dialog">
-      <div class="dialog-head">
-        <h3 id="m-title" data-i="m_title">Замовити демо-дзвінок</h3>
-        <button class="x" type="button" id="m-close" aria-label="Close">✕</button>
+      <div class="dialog-header">
+        <h3 id="modal-title" data-i="m_title">Замовити демо-дзвінок</h3>
+        <button class="close-btn" id="modal-close" type="button" aria-label="Закрити">✕</button>
       </div>
-      <p class="lead2" data-i="m_sub">Залиште контакти — ми зв'яжемося та покажемо роботу ШІ на вашому сценарії.</p>
-      <div class="done" id="demo-done" hidden>
-        <div class="done-ico">✓</div>
-        <h4 data-i="m_ok_title">Дякуємо! Заявку отримано</h4>
-        <p data-i="m_ok_text">Ми зателефонуємо або напишемо вам найближчим часом.</p>
-      </div>
-      <form id="demo-form" novalidate>
-        <div class="field"><label for="f-name" data-i="m_name">Ваше ім'я</label><input id="f-name" name="name" required placeholder="Олександр" /></div>
-        <div class="field"><label for="f-contact" data-i="m_contact">Телефон або Telegram</label><input id="f-contact" name="contact" required placeholder="+380 67 ••• •• ••" /></div>
-        <div class="field"><label for="f-msg" data-i="m_msg">Коментар або сайт компанії</label><textarea id="f-msg" name="msg" placeholder="Розкажіть про ваш бізнес..."></textarea></div>
-        <button class="btn btn-primary btn-block" type="submit" id="submit-lead" data-i="m_submit">Надіслати заявку</button>
-        <div class="form-msg" id="form-msg" role="alert"></div>
-        <div class="or"><span data-i="m_or">або напишіть менеджеру напряму</span></div>
-        <div class="send">
-          <button class="btn btn-tg" type="button" id="send-tg">Telegram</button>
-          <button class="btn btn-wa" type="button" id="send-wa">WhatsApp</button>
+
+      <form id="lead-form" novalidate>
+        <div class="form-group">
+          <label for="f-name" data-i="m_name">Ваше ім'я</label>
+          <input class="form-input" id="f-name" name="name" required placeholder="Олександр" />
+        </div>
+        <div class="form-group">
+          <label for="f-contact" data-i="m_contact">Номер телефону або Telegram</label>
+          <input class="form-input" id="f-contact" name="contact" required placeholder="+380 67 ••• •• ••" />
+        </div>
+        <div class="form-group">
+          <label for="f-msg" data-i="m_msg">Коментар або сфера бізнесу</label>
+          <input class="form-input" id="f-msg" name="msg" placeholder="Інтернет-магазин автозапчастин..." />
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" id="btn-submit" data-i="m_submit">Надіслати заявку</button>
+        <div id="form-status" style="margin-top: 10px; font-size: 13px; font-weight: 600; text-align: center;" role="alert"></div>
+
+        <div style="text-align: center; margin: 16px 0 10px; font-size: 12.5px; color: var(--text-dim);" data-i="m_or">
+          або зв'яжіться з нами у месенджерах
+        </div>
+        <div class="direct-links">
+          <button class="btn btn-tg" type="button" id="btn-tg">Telegram</button>
+          <button class="btn btn-wa" type="button" id="btn-wa">WhatsApp</button>
         </div>
       </form>
     </div>
@@ -456,110 +562,144 @@
   <script>
     var LEAD_ENDPOINT = 'https://voxline-backend.dvms.tech/api/v1/leads';
     var MANAGER_PHONE = '380665898141';
-    var CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+    var CHECK_ICON = '<svg class="checklist-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>';
 
     var T = {
       uk: {
-        nav_for: 'Для кого', nav_cases: 'Сценарії', nav_features: 'Можливості', nav_how: 'Як працює', nav_faq: 'Питання', nav_privacy: 'Конфіденційність',
+        nav_problem: 'Воронка втрат', nav_cases: 'Сценарії', nav_features: 'Можливості', nav_how: 'Як це працює', nav_faq: 'Питання',
         cta_demo: 'Замовити демо', cta_how: 'Як це працює',
-        pill: 'Голосові ШІ-агенти реального часу 24/7',
-        h1a: 'Дзвінки клієнтам,', h1b: 'які здійснює ШІ за 240 мс',
-        lead: 'Підтверджує замовлення, нагадує про запис і доставку, відповідає на вхідні без черги. Говорить живою мовою, надсилає SMS та створює картку у CRM.',
-        proof1: '0 секунд очікування на лінії', proof2: 'Живе перебивання (Barge-in)', proof3: '1 000 ліній одночасно',
-        call_name: 'Олена Коваленко', live: 'В ЕФІРІ', tr_title: 'РОЗШИФРОВКА // LATENCY: 238ms',
-        sc_title: 'Кампанія «Підтвердження»', sc_of: 'із 1 240', p_note: 'LIVE',
-        rc_title: 'Результат розмови', rc1: 'Підсумок', rc1v: 'Замовлення підтверджено', rc2: 'Зміна', rc2v: 'Доставка після 14:00', rc3: 'Емоція', rc3v: 'Позитивна', rc4: 'SMS з реквізитами', rc4v: 'Надіслано ✓', rc5: 'Тривалість',
-        fa1: 'відгук нейромережі — людська швидкість діалогу', fa2: 'очікування клієнта у черзі на лінії', fa3: 'витрат на штат операторів та колл-центри', fa4: 'одночасних паралельних дзвінків без збоїв',
-        w_eyebrow: 'ДЛЯ КОГО', w_title: 'Для бізнесу, який спілкується з клієнтами телефоном', w_sub: 'Якщо співробітники витрачають години на однотипні дзвінки, а частина клієнтів лишається без відповіді, це робота для Allo AI.',
-        w1t: 'Інтернет-магазини та роздріб', w1d: 'Підтвердження замовлень, уточнення адреси й часу, дзвінок щодо покинутого кошика, опитування після покупки.',
-        w2t: 'Доставка та логістика', w2d: 'Узгодження вікна доставки, нагадування про замовлення, перенесення на зручний час, фіксація відповіді.',
-        w3t: 'Сервіси та записи', w3d: 'Нагадування про візит, підтвердження запису, перенесення на прохання клієнта: салони, клініки, сервісні центри.',
-        w4t: 'Підписки та сервісні компанії', w4d: 'Нагадування про оплату, повернення клієнтів, які пішли, з’ясування причини відмови від послуги.',
-        w5t: 'Підтримка та відгуки', w5d: 'Опитування задоволеності, збір відгуків, перша лінія на вхідні запитання без черги.',
-        w6t: 'Будь-який обдзвін за списком', w6d: 'Якщо завдання можна описати сценарієм розмови, агент проведе його по всьому списку контактів.',
-        u_eyebrow: 'СЦЕНАРІЇ ВИКОРИСТАННЯ', u_title: 'Що Allo AI робить у вашому бізнесі щодня', u_sub: 'Асистент говорить за вашим індивідуальним скриптом, без шаблонного роботизованого звучання.',
-        f_eyebrow: 'МОЖЛИВОСТІ', f_title: 'Усе для автономної телефонії в одному інтерфейсі', f_sub: 'Від гнучкого сценарію до повної інтеграції з CRM та аналізу кожного дзвінка.',
-        b1t: 'Вхідні та вихідні дзвінки', b1d: 'Один агент приймає вхідні запити та здійснює масові вихідні дзвінки по базі контактів.',
-        b2t: 'Години дзвінків за таймзоною', b2d: 'ШІ ніколи не зателефонує вночі. Часовий пояс кожного клієнта розраховується індивідуально.',
-        b4t: 'SMS та месенджери', b4d: 'Миттєва відправка реквізитів, номерів ТТН або адрес одразу після завершення розмови.',
-        b6t: 'Глибока аналітика кожного діалогу', b6d: 'Автоматичне визначення підсумку, заперечень, настрою клієнта та створення завдання у CRM.',
-        h_eyebrow: 'ЗАПУСК ЗА 3 КРОКИ', h_title: 'Як підключити Allo AI до вашого бізнесу',
-        s1t: '1. Задайте сценарій', s1d: 'Опишіть завдання, завантажте ціни та регламент. Протестуйте голос у браузері без телефонного дзвінка.',
-        s2t: '2. Підключіть телефонію', s2d: 'Підтримка будь-яких SIP-транків: Binotel, Ringostat, UniTalk або власних АТС за 5 хвилин.',
-        s3t: '3. Отримуйте готові угоди', s3d: 'Allo AI самостійно веде розмови, створює картки в CRM та надсилає звіти вашій команді.',
-        q_eyebrow: 'ПИТАННЯ ТА ВІДПОВІДІ', q_title: 'Часті запитання',
-        fin_title: 'Готові почути, як Allo AI говорить за ваш бізнес?', fin_sub: 'Покажемо роботу голосового ШІ-агента на вашому реальному сценарії та запустимо безкоштовний пілот на 7 днів.',
-        foot: '© 2026 Allo AI Platform. Всі права захищено.',
-        m_title: 'Замовити демо-дзвінок', m_sub: 'Залиште контакти — ми зв\'яжемося та покажемо роботу ШІ на вашому сценарії.',
-        m_name: 'Ваше ім\'я', m_contact: 'Телефон або Telegram', m_msg: 'Коментар або сайт компанії',
-        m_submit: 'Надіслати заявку', m_or: 'або напишіть менеджеру напряму',
-        m_ok_title: 'Дякуємо! Заявку отримано', m_ok_text: 'Ми зателефонуємо або напишемо вам найближчим часом.',
-        o1: 'Успішно підтверджено', o3: 'Перенесено', o4: 'Скинуто'
+        pill: 'ШІ-ОПЕРАТОР РЕАЛЬНОГО ЧАСУ 24/7',
+        hero_title: 'Дзвінки клієнтам, які виконує ШІ із затримкою 240 мс',
+        hero_sub: 'Підтверджує замовлення, нагадує про записи, кваліфікує ліди та відповідає на вхідні без черги. Говорить живою мовою, фіксує підсумок у CRM та надсилає SMS.',
+        proof_1: '0 секунд очікування на лінії', proof_2: 'Живе перебивання (Barge-in)', proof_3: '1 000 ліній одночасно',
+        agent_label: 'ШІ-Оператор Катерина', crm_sync_status: 'CRM SYNC COMPLETED',
+        prob_tag: 'ВОРОНКА ВТРАТ', prob_title: 'Куди зникають 42% ваших лідів із реклами?', prob_desc: 'Кожна секунда затримки або пропущений дзвінок віддає клієнта конкурентам.',
+        p1_t: 'Злиті дзвінки після 18:00', p1_d: 'У неробочий час та у вихідні дні дзвінки потрапляють на автовідповідач. 8 з 10 покупців не чекають ранку.',
+        p2_t: 'Скидання через очікування', p2_d: 'Якщо лінія зайнята понад 20 секунд у пікові години реклами — клієнт кладе слухавку.',
+        p3_t: 'Людський фактор', p3_d: 'Втома співробітників, забуті коментарі в CRM, пропущені етапи кваліфікації та невчасно надіслані реквізити.',
+        cases_tag: 'РЕАЛЬНІ СЦЕНАРІЇ', cases_title: 'Що агент виконує у вашому бізнесі', cases_desc: 'Розмова ведеться за вашим регламентом і бізнес-правилами.',
+        feat_tag: 'МОЖЛИВОСТІ', feat_title: 'Інженерна точність та швидкість',
+        f1_t: 'Вхідні та вихідні кампанії', f1_d: 'Один агент однаково надійно приймає вхідні дзвінки з реклами та здійснює обдзвін бази контактів.',
+        f2_t: 'Години за таймзоною', f2_d: 'ШІ ніколи не зателефонує вночі. Часовий пояс кожного абонента враховується автоматично.',
+        f3_t: 'SMS та месенджери', f3_d: 'Миттєва відправка реквізитів, номерів ТТН або адрес одразу після завершення розмови.',
+        f4_t: 'Аналітика та транскрипція', f4_d: 'Автоматичне визначення підсумку, заперечень, настрою клієнта та створення завдання у CRM.',
+        steps_tag: 'ПІДКЛЮЧЕННЯ ЗА 3 КРОКИ', steps_title: 'Як запустити Allo AI',
+        s1_t: '1. Налаштуйте сценарій', s1_d: 'Опишіть завдання, завантажте прайс і регламент. Протестуйте голос у браузері без дзвінка на телефон.',
+        s2_t: '2. Підключіть телефонію', s2_d: 'Підтримка стандартних SIP-транків (Binotel, Ringostat, UniTalk, Kyivstar) за 5 хвилин.',
+        s3_t: '3. Отримуйте закриті угоди', s3_d: 'Allo AI самостійно розмовляє з клієнтами, вносить дані в CRM та сповіщає вашу команду.',
+        faq_tag: 'ПИТАННЯ ТА ВІДПОВІДІ', faq_title: 'Часті запитання',
+        final_title: 'Готові протестувати голос Allo AI на вашому сценарії?', final_sub: 'Ми підготуємо демонстрацію під ваш бізнес та запустимо пілотний період на 7 днів.',
+        copyright: '© 2026 Allo AI Platform. Всі права захищено.', privacy_link: 'Конфіденційність',
+        m_title: 'Замовити демо-дзвінок', m_name: 'Ваше ім\'я', m_contact: 'Номер телефону або Telegram', m_msg: 'Коментар або сфера бізнесу',
+        m_submit: 'Надіслати заявку', m_or: 'або зв\'яжіться з нами у месенджерах'
       },
       en: {
-        nav_for: 'Who it’s for', nav_cases: 'Use Cases', nav_features: 'Features', nav_how: 'How it works', nav_faq: 'FAQ', nav_privacy: 'Privacy Policy',
-        cta_demo: 'Request Demo', cta_how: 'How it works',
-        pill: 'Real-Time Conversational Voice AI 24/7',
-        h1a: 'Customer calls', h1b: 'handled by AI in 240ms',
-        lead: 'Confirms orders, schedules appointments, answers inbound inquiries without queues. Natural human speech, instant SMS confirmation and automated CRM sync.',
-        proof1: '0 seconds queue time', proof2: 'Live interruption (Barge-in)', proof3: '1,000 parallel lines',
-        call_name: 'Elena Smith', live: 'LIVE CALL', tr_title: 'TRANSCRIPT // LATENCY: 238ms',
-        sc_title: 'Campaign “Confirmation”', sc_of: 'of 1,240', p_note: 'LIVE',
-        rc_title: 'Call Summary', rc1: 'Outcome', rc1v: 'Order Confirmed', rc2: 'Change', rc2v: 'Delivery after 2:00 PM', rc3: 'Sentiment', rc3v: 'Positive', rc4: 'SMS Details', rc4v: 'Sent ✓', rc5: 'Duration',
-        fa1: 'voice neural response — human dialogue speed', fa2: 'customer waiting time in line', fa3: 'call center operating costs', fa4: 'parallel concurrent calls handled',
-        w_eyebrow: 'WHO IT’S FOR', w_title: 'For businesses that communicate with customers by phone', w_sub: 'If your team spends hours on repetitive calls and leads go unanswered, this is the job for Allo AI.',
-        w1t: 'E-commerce & Retail', w1d: 'Order confirmation, address verification, abandoned cart follow-up, post-purchase surveys.',
-        w2t: 'Delivery & Logistics', w2d: 'Delivery window coordination, arrival notifications, rescheduling, recording responses.',
-        w3t: 'Bookings & Clinics', w3d: 'Visit reminders, appointment confirmation, customer-requested rescheduling for salons & clinics.',
-        w4t: 'Subscriptions & Services', w4d: 'Payment reminders, churn win-back, feedback on cancelled services.',
-        w5t: 'Support & Feedback', w5d: 'NPS satisfaction surveys, review collection, zero-queue tier-1 inbound call handling.',
-        w6t: 'Any Custom Call List', w6d: 'If your process can be described in a conversation script, Allo AI executes it across your entire contact database.',
-        u_eyebrow: 'USE CASES', u_title: 'What Allo AI does for your business every day', u_sub: 'Your AI assistant speaks according to your exact script without robotic cliches.',
-        f_eyebrow: 'CAPABILITIES', f_title: 'Everything for autonomous telephony in one interface', f_sub: 'From dynamic scripts to full CRM integration and deep sentiment analytics.',
-        b1t: 'Inbound & Outbound Calling', b1d: 'One agent handles incoming requests and executes high-volume outbound campaigns.',
-        b2t: 'Timezone-Aware Calling', b2d: 'AI never calls at night. Calling windows are dynamically evaluated per customer timezone.',
-        b4t: 'SMS & Messengers', b4d: 'Instant delivery of payment details, tracking numbers, or appointment info right after the call.',
-        b6t: 'Deep Conversation Analytics', b6d: 'Automatic classification of call outcome, customer sentiment, objections and task creation in CRM.',
-        h_eyebrow: 'LAUNCH IN 3 STEPS', h_title: 'How to connect Allo AI to your business',
-        s1t: '1. Define your script', s1d: 'Specify your goals, upload price lists and FAQs. Test the voice in browser playground with zero setup.',
-        s2t: '2. Connect telephony', s2d: 'Connect standard SIP trunks (Twilio, Asterisk, Binotel, UniTalk) in under 5 minutes.',
-        s3t: '3. Receive closed deals', s3d: 'Allo AI conducts calls, creates CRM deals, and sends executive summaries to your team.',
-        q_eyebrow: 'FAQ', q_title: 'Frequently Asked Questions',
-        fin_title: 'Ready to hear how Allo AI speaks for your business?', fin_sub: 'We’ll demonstrate the voice AI agent on your exact script and launch a free 7-day pilot.',
-        foot: '© 2026 Allo AI Platform. All rights reserved.',
-        m_title: 'Request a Demo Call', m_sub: 'Leave your contact info — we will get in touch and demo the AI agent on your custom script.',
-        m_name: 'Your Name', m_contact: 'Phone or Telegram', m_msg: 'Comment or Company Website',
-        m_submit: 'Send Request', m_or: 'or message our manager directly',
-        m_ok_title: 'Thank you! Request received', m_ok_text: 'We will call or message you shortly.',
-        o1: 'Confirmed', o3: 'Rescheduled', o4: 'Dropped'
+        nav_problem: 'Leakage Funnel', nav_cases: 'Use Cases', nav_features: 'Features', nav_how: 'How It Works', nav_faq: 'FAQ',
+        cta_demo: 'Request Demo', cta_how: 'How It Works',
+        pill: 'REAL-TIME VOICE AI AGENT 24/7',
+        hero_title: 'Customer calls handled by AI with 240ms latency',
+        hero_sub: 'Confirms orders, schedules bookings, qualifies leads and answers incoming calls without queues. Speaks natural language, syncs deals to CRM, and sends SMS.',
+        proof_1: '0 seconds queue wait time', proof_2: 'Live interruption (Barge-in)', proof_3: '1,000 concurrent lines',
+        agent_label: 'AI Operator Catherine', crm_sync_status: 'CRM SYNC COMPLETED',
+        prob_tag: 'LEAD LEAKAGE', prob_title: 'Where do 42% of your advertising leads go?', prob_desc: 'Every second of queue delay or missed call hands customers directly to competitors.',
+        p1_t: 'Calls lost after 6:00 PM', p1_d: 'After hours and on weekends, incoming calls hit voicemail. 8 out of 10 buyers will not wait until morning.',
+        p2_t: 'Queue dropouts', p2_d: 'If your lines are busy for over 20 seconds during ad spikes — the customer simply hangs up.',
+        p3_t: 'Human error & fatigue', p3_d: 'Tired staff, forgotten CRM notes, missed qualification stages, and delayed payment details.',
+        cases_tag: 'USE CASES', cases_title: 'What Allo AI handles for your business', cases_desc: 'Conversations follow your exact business logic and rules.',
+        feat_tag: 'CAPABILITIES', feat_title: 'Engineering precision & velocity',
+        f1_t: 'Inbound & outbound campaigns', f1_d: 'One agent handles incoming ad traffic and executes high-volume customer contact list campaigns.',
+        f2_t: 'Timezone-aware scheduling', f2_d: 'AI never calls at night. Each customer timezone is evaluated dynamically before dialing.',
+        f3_t: 'SMS & messaging sync', f3_d: 'Instant dispatch of invoices, tracking numbers, or booking details immediately after the call.',
+        f4_t: 'Deep sentiment analytics', f4_d: 'Automated outcome tagging, objection recording, sentiment analysis, and task creation in CRM.',
+        steps_tag: '3-STEP SETUP', steps_title: 'How to launch Allo AI',
+        s1_t: '1. Configure script', s1_d: 'Define goals, upload product catalogs and rules. Test the agent voice in browser playground.',
+        s2_t: '2. Connect telephony', s2_d: 'Integrate standard SIP trunks (Twilio, Asterisk, Binotel, UniTalk) in under 5 minutes.',
+        s3_t: '3. Receive closed deals', s3d: 'Allo AI conducts calls, logs data to CRM, and sends structured summaries to your team.',
+        faq_tag: 'FAQ', faq_title: 'Frequently Asked Questions',
+        final_title: 'Ready to test Allo AI on your exact scenario?', final_sub: 'We will configure a live demo tailored to your company and activate a 7-day pilot.',
+        copyright: '© 2026 Allo AI Platform. All rights reserved.', privacy_link: 'Privacy Policy',
+        m_title: 'Request a Demo Call', m_name: 'Your Name', m_contact: 'Phone Number or Telegram', m_msg: 'Comment or Business Type',
+        m_submit: 'Submit Request', m_or: 'or message our manager directly'
       }
     };
 
-    var CASES = {
+    var CASES_DATA = {
       uk: [
-        { tab: 'Підтвердження замовлень', h: 'Підтверджуйте 100% замовлень за перші 30 секунд', p: 'Агент телефонує одразу після кошика, звіряє товари, адресу доставки й надсилає SMS.', li: ['Дані замовлення підставляються в розмову автоматично', 'Прохання змінити час чи адресу потрапляє в CRM', 'Клієнту надходить SMS із реквізитами'],
-          dlg: [['bot', 'Вітаю! Підтверджуємо замовлення №1042 на завтра. Адреса доставки та сама?'], ['cust', 'Ні, привезіть на роботу, вул. Садова, 5.'], ['bot', 'Записав нову адресу. Надішлю підтвердження в SMS.']] },
-        { tab: 'Записи та клініки', h: 'Нагадуйте про візит і скорочуйте неявки на 45%', p: 'Агент нагадує про запис за добу, підтверджує присутність або пропонує перенести.', li: ['Синхронізація з календарем та CRM', 'Миттєве звільнення вікна у разі скасування', 'Зниження навантаження на адміністраторів'],
-          dlg: [['bot', 'Доброго дня! Нагадуємо про візит до лікаря завтра о 14:00. Будете?'], ['cust', 'Так, обов\'язково буду.'], ['bot', 'Чудово! Чекаємо на вас. Надіслав схему проїзду в SMS.']] },
-        { tab: 'Обробка вечірніх лідів', h: 'Жоден нічний клієнт не піде до конкурента', p: 'Allo AI підхоплює дзвінки після 18:00, проводить кваліфікацію та записує лід.', li: ['Миттєва відповідь на 1-й секунді', 'Кваліфікація бюджету та потреби', 'Готовий лід у CRM на ранок'],
-          dlg: [['cust', 'Добрий вечір! Чи працюєте ви зараз?'], ['bot', 'Вітаю! Наш офіс працює з 9:00, але я можу зафіксувати ваше замовлення просто зараз.'], ['cust', 'Чудово, хочу розрахувати вартість.']] }
+        {
+          tab: 'Підтвердження замовлень',
+          title: 'Підтвердження 100% замовлень за перші 30 секунд',
+          desc: 'Агент телефонує одразу після оформлення кошика, звіряє товари, адресу доставки й надсилає SMS.',
+          bullets: ['Автоматичне підставлення номеру та суми замовлення', 'Фіксація побажань щодо часу доставки у CRM', 'Миттєве надсилання SMS із реквізитами'],
+          dialogue: [
+            { who: 'Allo AI', time: '0:02', text: 'Вітаю, Олено! Це магазин «Nord». Підтверджуємо замовлення №1042: доставка завтра після 14:00. Усе вірно?' },
+            { who: 'Клієнт', time: '0:11', text: 'Так, але надішліть, будь ласка, реквізити для оплати в SMS.' },
+            { who: 'Allo AI', time: '0:18', text: 'Звісно! Реквізити вже надіслано на ваш номер. Дякуємо за замовлення!' }
+          ]
+        },
+        {
+          tab: 'Записи та візити',
+          title: 'Нагадування про візити та скорочення неявок на 45%',
+          desc: 'Агент нагадує про запис за добу, підтверджує присутність або пропонує зручний перенос.',
+          bullets: ['Синхронізація з графіком лікарів та CRM', 'Миттєве звільнення вікна у разі скасування', 'Зниження навантаження на адміністраторів'],
+          dialogue: [
+            { who: 'Allo AI', time: '0:02', text: 'Доброго дня! Нагадуємо про візит до клініки завтра о 14:00. Чи плануєте бути?' },
+            { who: 'Клієнт', time: '0:09', text: 'Так, обов\'язково буду.' },
+            { who: 'Allo AI', time: '0:15', text: 'Чудово! Чекаємо на вас. Надіслав схему проїзду в повідомленні.' }
+          ]
+        },
+        {
+          tab: 'Вечірні ліди',
+          title: 'Жоден нічний клієнт не піде до конкурентів',
+          desc: 'Allo AI підхоплює дзвінки після 18:00, проводить кваліфікацію та фіксує заявку в CRM.',
+          bullets: ['Миттєва відповідь на 1-й секунді без черги', 'Кваліфікація бюджету та потреби клієнта', 'Створена угода у CRM чекає менеджера на ранок'],
+          dialogue: [
+            { who: 'Клієнт', time: '0:02', text: 'Добрий вечір! Чи працюєте ви зараз? Хочу дізнатися вартість.' },
+            { who: 'Allo AI', time: '0:08', text: 'Вітаю! Наш офіс відкриється о 9:00, але я можу розрахувати вартість та зареєструвати заявку просто зараз.' }
+          ]
+        }
       ],
       en: [
-        { tab: 'Order Confirmation', h: 'Confirm 100% of orders within the first 30 seconds', p: 'AI calls immediately after checkout, verifies items, address, and sends SMS confirmation.', li: ['Order data is merged into the dialogue automatically', 'Address and delivery updates sync to CRM', 'Customer receives immediate SMS details'],
-          dlg: [['bot', 'Hello! Confirming order #1042 for tomorrow. Is the delivery address unchanged?'], ['cust', 'No, please deliver to my office at 5 Garden St.'], ['bot', 'Updated address noted. I’ve texted your confirmation.']] },
-        { tab: 'Appointments & Clinics', h: 'Remind about bookings and cut no-shows by 45%', p: 'AI reminds patients in advance, confirms attendance, or reschedules instantly.', li: ['Live calendar & CRM synchronization', 'Instant slot release upon cancellation', 'Eliminates repetitive admin calls'],
-          dlg: [['bot', 'Hi! Reminding about your appointment tomorrow at 2:00 PM. Will you attend?'], ['cust', 'Yes, I will be there.'], ['bot', 'Great! Looking forward to seeing you. Directions texted!']] },
-        { tab: 'After-Hours Lead Capture', h: 'Never lose an evening customer to competitors', p: 'Allo AI handles calls after 6:00 PM and on weekends, qualifies budget and registers leads.', li: ['Instant pickup on the 1st second', 'Lead budget & urgency qualification', 'Ready CRM deal waiting in the morning'],
-          dlg: [['cust', 'Good evening! Are you open right now?'], ['bot', 'Hello! Our main office opens at 9 AM, but I can register your request right now.'], ['cust', 'Awesome, I’d like a quote.']] }
+        {
+          tab: 'Order Confirmation',
+          title: 'Confirm 100% of orders within 30 seconds',
+          desc: 'AI calls immediately after checkout, verifies items and address, and sends SMS details.',
+          bullets: ['Automatic merge of order number and items', 'Delivery window updates recorded to CRM', 'Instant SMS confirmation sent to customer'],
+          dialogue: [
+            { who: 'Allo AI', time: '0:02', text: 'Hello Elena! Nord Store confirming order #1042: delivery tomorrow after 2 PM. Is everything correct?' },
+            { who: 'Customer', time: '0:11', text: 'Yes, but please text me payment details via SMS.' },
+            { who: 'Allo AI', time: '0:18', text: 'Done! Payment details have been texted to your number. Thank you!' }
+          ]
+        },
+        {
+          tab: 'Appointments & Clinics',
+          title: 'Remind about bookings and cut no-shows by 45%',
+          desc: 'AI reminds patients in advance, confirms attendance, or reschedules appointments.',
+          bullets: ['Direct sync with staff calendars & CRM', 'Instant slot release upon cancellation', 'Eliminates repetitive admin phone calls'],
+          dialogue: [
+            { who: 'Allo AI', time: '0:02', text: 'Hello! Reminding you about your clinic appointment tomorrow at 2:00 PM. Will you attend?' },
+            { who: 'Customer', time: '0:09', text: 'Yes, I will definitely be there.' },
+            { who: 'Allo AI', time: '0:15', text: 'Great! Looking forward to seeing you. Directions have been texted.' }
+          ]
+        },
+        {
+          tab: 'After-Hours Leads',
+          title: 'Never lose evening customers to competitors',
+          desc: 'Allo AI answers calls after 6:00 PM and on weekends, qualifies budget, and logs deals.',
+          bullets: ['Instant pickup on the 1st second', 'Lead urgency and budget qualification', 'Structured CRM deal waiting in the morning'],
+          dialogue: [
+            { who: 'Customer', time: '0:02', text: 'Good evening! Are you open right now? I need a quote.' },
+            { who: 'Allo AI', time: '0:08', text: 'Hello! Our office opens at 9 AM, but I can calculate your quote and register the request right now.' }
+          ]
+        }
       ]
     };
 
-    var FAQ = {
+    var FAQ_DATA = {
       uk: [
-        ['Чи помітять клієнти, що це штучний інтелект?', 'Завдяки відгуку за 240 мс та здатності розуміти перебивання (Barge-in), 92% клієнтів ведуть розмову як зі звичайним ввічливим співробітником.'],
+        ['Чи помітять клієнти, що це штучний інтелект?', 'Завдяки затримці відгуку 240 мс та здатності розпізнавати перебивання (Barge-in), понад 92% клієнтів ведуть розмову як зі звичайним ввічливим співробітником.'],
         ['Як підключити мій існуючий номер телефону?', 'Allo AI підключається до будь-якої віртуальної АТС (Binotel, Ringostat, UniTalk, Kyivstar) через стандартний SIP-транк за 5 хвилин.'],
-        ['Чи можна навчити агента на нашій специфіці?', 'Так. Ви просто завантажуєте прайс, регламент, відповіді на часті запитання та правила роботи з запереченнями у базу знань.'],
-        ['Як дані передаються в нашу CRM?', 'Після завершення розмови аудіозапис, текстовий транскрипт та розпізнані поля (адреса, сума, статус) автоматично передаються у KeyCRM, HubSpot або через Webhook.']
+        ['Чи можна навчити агента на нашій специфіці?', 'Так. Ви завантажуєте регламент, прайс-лист, часті запитання та правила роботи з запереченнями у базу знань.'],
+        ['Як дані передаються в нашу CRM?', 'Після завершення розмови аудіозапис, текстовий транскрипт та розпізнані поля автоматично передаються у KeyCRM, HubSpot або через Webhook.']
       ],
       en: [
         ['Will customers notice they are speaking to AI?', 'With sub-240ms latency and real-time interruption (Barge-in), over 92% of customers converse naturally as with a polite human agent.'],
@@ -569,116 +709,159 @@
       ]
     };
 
-    var lang = 'uk';
-    var caseIdx = 0;
+    var currentLang = 'uk';
+    var activeCaseIndex = 0;
 
-    function renderCase() {
-      var c = CASES[lang][caseIdx];
-      var d = T[lang];
-      document.getElementById('case').innerHTML =
-        '<div><h3>' + c.h + '</h3><p>' + c.p + '</p><ul>' +
-        c.li.map(function (x) { return '<li>' + CHECK + '<span>' + x + '</span></li>'; }).join('') + '</ul></div>' +
-        '<div class="mini"><ol class="tr">' +
-        c.dlg.map(function(m) { return '<li class="' + m[0] + '"><b>' + (m[0] === 'bot' ? 'Allo AI' : (lang === 'uk' ? 'Клієнт' : 'Customer')) + '</b><p>' + m[1] + '</p></li>'; }).join('') +
-        '</ol></div>';
-      document.getElementById('tabs').innerHTML = CASES[lang].map(function (x, i) {
-        return '<button type="button" role="tab" aria-selected="' + (i === caseIdx) + '" data-case="' + i + '">' + x.tab + '</button>';
-      }).join('');
-      document.querySelectorAll('[data-case]').forEach(function (b) {
-        b.addEventListener('click', function () { caseIdx = +b.getAttribute('data-case'); renderCase(); });
-      });
-    }
-
-    function render() {
-      document.documentElement.lang = lang;
-      var d = T[lang];
-      document.querySelectorAll('[data-i]').forEach(function (el) {
-        var key = el.getAttribute('data-i');
-        if (d[key]) el.textContent = d[key];
-      });
-      document.querySelectorAll('[data-lang]').forEach(function (b) {
-        b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
-      });
+    function renderCases() {
+      var cases = CASES_DATA[currentLang];
+      var activeCase = cases[activeCaseIndex];
       
-      document.getElementById('chat').innerHTML = 
-        '<li><time>0:03</time><b>Allo AI</b><p>' + (lang === 'uk' ? 'Вітаю, Олено! Магазин «Nord». Підтверджуємо замовлення №1042: доставка завтра після 14:00. Усе вірно?' : 'Hello Elena! Nord Store confirming order #1042: delivery tomorrow after 2 PM. Is everything correct?') + '</p></li>' +
-        '<li class="cust"><time>0:12</time><b>' + (lang === 'uk' ? 'Клієнт' : 'Customer') + '</b><p>' + (lang === 'uk' ? 'Так, але надішліть, будь ласка, реквізити для оплати в SMS.' : 'Yes, but please text me payment details via SMS.') + '</p></li>' +
-        '<li><time>0:19</time><b>Allo AI</b><p>' + (lang === 'uk' ? 'Звісно! Реквізити вже надіслано на цей номер. Дякуємо за замовлення!' : 'Done! Payment details have been texted to your number. Thank you!') + '</p></li>';
-
-      document.getElementById('faq-list').innerHTML = FAQ[lang].map(function (q, i) {
-        return '<details style="border: 1px solid var(--line); border-radius: 16px; background: var(--surface); padding: 20px 24px;"' + (i === 0 ? ' open' : '') + '><summary style="font-size: 16.5px; font-weight: 750; cursor: pointer;">' + q[0] + '</summary><p style="margin-top: 12px; color: var(--text2); font-size: 15px;">' + q[1] + '</p></details>';
+      // Tabs
+      document.getElementById('tabs-bar').innerHTML = cases.map(function(c, idx) {
+        return '<button class="tab-btn" type="button" role="tab" aria-selected="' + (idx === activeCaseIndex) + '" data-idx="' + idx + '">' + c.tab + '</button>';
       }).join('');
 
-      renderCase();
+      document.querySelectorAll('#tabs-bar .tab-btn').forEach(function(b) {
+        b.addEventListener('click', function() {
+          activeCaseIndex = +b.getAttribute('data-idx');
+          renderCases();
+        });
+      });
+
+      // Panel
+      document.getElementById('case-panel').innerHTML =
+        '<div>' +
+          '<h3>' + activeCase.title + '</h3>' +
+          '<p>' + activeCase.desc + '</p>' +
+          '<ul class="checklist">' +
+            activeCase.bullets.map(function(b) { return '<li>' + CHECK_ICON + '<span>' + b + '</span></li>'; }).join('') +
+          '</ul>' +
+        '</div>' +
+        '<div class="case-dialogue">' +
+          activeCase.dialogue.map(function(d) {
+            return '<div class="utterance' + (d.who !== 'Allo AI' ? ' caller' : '') + '">' +
+              '<time>' + d.time + '</time>' +
+              '<div><strong>' + d.who + '</strong><p>' + d.text + '</p></div>' +
+            '</div>';
+          }).join('') +
+        '</div>';
     }
 
-    document.querySelectorAll('[data-lang]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        lang = b.getAttribute('data-lang');
-        render();
+    function renderFaq() {
+      var faqs = FAQ_DATA[currentLang];
+      document.getElementById('faq-list').innerHTML = faqs.map(function(item, idx) {
+        return '<details class="faq-item"' + (idx === 0 ? ' open' : '') + '>' +
+          '<summary class="faq-q">' + item[0] + '</summary>' +
+          '<div class="faq-a">' + item[1] + '</div>' +
+        '</details>';
+      }).join('');
+    }
+
+    function renderHeroDialogue() {
+      var d = CASES_DATA[currentLang][0].dialogue;
+      document.getElementById('transcript-box').innerHTML = d.map(function(item) {
+        return '<div class="utterance' + (item.who !== 'Allo AI' ? ' caller' : '') + '">' +
+          '<time>' + item.time + '</time>' +
+          '<div><strong>' + item.who + '</strong><p>' + item.text + '</p></div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      var dict = T[lang];
+
+      document.querySelectorAll('[data-i]').forEach(function(el) {
+        var key = el.getAttribute('data-i');
+        if (dict[key]) el.textContent = dict[key];
+      });
+
+      document.querySelectorAll('[data-lang]').forEach(function(btn) {
+        btn.setAttribute('aria-pressed', String(btn.getAttribute('data-lang') === lang));
+      });
+
+      renderCases();
+      renderFaq();
+      renderHeroDialogue();
+    }
+
+    // Language switcher buttons
+    document.querySelectorAll('[data-lang]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        applyLanguage(btn.getAttribute('data-lang'));
       });
     });
 
-    // Bars visualizer
-    var meterHtml = '';
-    for (var i = 0; i < 44; i++) {
-      var w = (Math.sin(i * 1.7) + Math.sin(i * 0.63 + 1.3) + 2) / 4;
-      meterHtml += '<span style="--s:' + (0.18 + w * 0.82).toFixed(2) + '"></span>';
+    // Level meter equalizer bars (deterministic math)
+    var meterEl = document.getElementById('meter-rack');
+    var meterHTML = '';
+    for (var i = 0; i < 42; i++) {
+      var scale = (Math.sin(i * 1.6) + Math.sin(i * 0.7 + 1.2) + 2) / 4;
+      meterHTML += '<span class="meter-bar" style="--s:' + (0.18 + scale * 0.82).toFixed(2) + '"></span>';
     }
-    document.getElementById('meter').innerHTML = meterHtml;
+    meterEl.innerHTML = meterHTML;
 
-    // Theme toggle
-    var html = document.documentElement;
-    document.getElementById('theme').addEventListener('click', function() {
-      var cur = html.getAttribute('data-theme');
-      var next = cur === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      document.getElementById('ico-moon').style.display = next === 'dark' ? 'none' : '';
-      document.getElementById('ico-sun').style.display = next === 'dark' ? '' : 'none';
+    // Theme Switcher
+    var themeBtn = document.getElementById('theme-btn');
+    var themeIcon = document.getElementById('theme-icon');
+    themeBtn.addEventListener('click', function() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      themeIcon.textContent = next === 'dark' ? '🌙' : '☀️';
     });
 
-    // Modal
+    // Modal Form handlers
     var modal = document.getElementById('demo-modal');
     function openModal() { modal.hidden = false; modal.classList.add('open'); document.body.classList.add('modal-open'); }
     function closeModal() { modal.classList.remove('open'); modal.hidden = true; document.body.classList.remove('modal-open'); }
-    document.querySelectorAll('.cta').forEach(function(a) {
+
+    document.querySelectorAll('.cta-trigger').forEach(function(a) {
       a.addEventListener('click', function(e) { e.preventDefault(); openModal(); });
     });
-    document.getElementById('m-close').addEventListener('click', closeModal);
+    document.getElementById('modal-close').addEventListener('click', closeModal);
     modal.addEventListener('mousedown', function(e) { if (e.target === modal) closeModal(); });
 
-    // Send Form
-    document.getElementById('demo-form').addEventListener('submit', function(e) {
+    document.getElementById('lead-form').addEventListener('submit', function(e) {
       e.preventDefault();
       var name = document.getElementById('f-name').value.trim();
       var contact = document.getElementById('f-contact').value.trim();
       var msg = document.getElementById('f-msg').value.trim();
-      var formMsg = document.getElementById('form-msg');
-      if (!name || contact.length < 3) { formMsg.textContent = lang === 'uk' ? 'Вкажіть ім\'я та контактний номер!' : 'Please provide your name and phone number!'; return; }
-      
-      var btn = document.getElementById('submit-lead');
+      var status = document.getElementById('form-status');
+
+      if (!name || contact.length < 3) {
+        status.style.color = 'var(--bad)';
+        status.textContent = currentLang === 'uk' ? 'Вкажіть ім\'я та контакт!' : 'Please enter your name and contact!';
+        return;
+      }
+
+      var btn = document.getElementById('btn-submit');
       btn.disabled = true;
-      btn.textContent = lang === 'uk' ? 'Надсилаємо…' : 'Sending…';
+      btn.textContent = currentLang === 'uk' ? 'Надсилаємо…' : 'Sending…';
+
       fetch(LEAD_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, contact: contact, message: msg, source: 'allo.ai landing' })
-      }).then(function(r) {
-        document.getElementById('demo-form').hidden = true;
-        document.getElementById('demo-done').hidden = false;
+        body: JSON.stringify({ name: name, contact: contact, message: msg, lang: currentLang })
+      }).then(function() {
+        status.style.color = 'var(--ok)';
+        status.textContent = currentLang === 'uk' ? 'Дякуємо! Заявку отримано.' : 'Thank you! Request received.';
       }).catch(function() {
-        formMsg.textContent = lang === 'uk' ? 'Заявку збережено! Ми зв\'яжемося з вами.' : 'Request saved! We will be in touch.';
+        status.style.color = 'var(--ok)';
+        status.textContent = currentLang === 'uk' ? 'Заявку збережено!' : 'Request saved!';
       });
     });
 
-    document.getElementById('send-tg').addEventListener('click', function() {
+    document.getElementById('btn-tg').addEventListener('click', function() {
       window.open('https://t.me/+' + MANAGER_PHONE, '_blank');
     });
-    document.getElementById('send-wa').addEventListener('click', function() {
+    document.getElementById('btn-wa').addEventListener('click', function() {
       window.open('https://wa.me/' + MANAGER_PHONE, '_blank');
     });
 
-    render();
+    // Initial render
+    applyLanguage('uk');
   </script>
 </body>
 </html>
