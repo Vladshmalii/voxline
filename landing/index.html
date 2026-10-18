@@ -1,988 +1,867 @@
 <!doctype html>
-<html lang="uk" data-theme="light">
+<html lang="uk" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Voxline — голосові ШІ-агенти для дзвінків</title>
-  <meta name="description" content="Voxline: голосові ШІ-агенти, які самі телефонують і приймають дзвінки. Кампанії, сценарії, SMS після розмови, аналіз кожного дзвінка." />
-  <meta name="theme-color" content="#2563EB" />
-  <link rel="icon" type="image/svg+xml" href="../frontend/public/logo.svg" />
+  <title>Allo AI (Алло.ai) — Голосові ШІ-агенти реального часу для бізнесу</title>
+  <meta name="description" content="Автономний голосовий ШІ-оператор Allo AI. Прийом та здійснення дзвінків із затримкою 240 мс, інтеграція з SIP-телефонією та CRM, відправка SMS за результатами розмови." />
+  <meta name="theme-color" content="#0c1017" />
+  <link rel="icon" type="image/svg+xml" href="logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f6f7fb; --surface: #ffffff; --alt: #eef1f6; --text: #0b1220; --text2: #475569; --muted: #64748b;
-      --line: #e3e7ee; --accent: #2563eb; --accent2: #7c5cff; --accent-hover: #1d4ed8; --accent-soft: #eaf1ff;
-      --glow: rgba(59, 130, 246, .28); --ok: #16a34a; --warn: #d97706; --bad: #dc2626;
-      --shadow: 0 1px 2px rgba(15,23,42,.05); --shadow-lg: 0 30px 70px rgba(15,23,42,.16), 0 2px 8px rgba(15,23,42,.06);
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-elevated: #f1f5f9;
+      --line: #e2e8f0;
+      --line-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-soft: #eff6ff;
+      --ok: #16a34a;
+      --ok-soft: #f0fdf4;
+      --warn: #d97706;
+      --bad: #dc2626;
+      --bad-soft: #fef2f2;
       --max: 1200px;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
     }
+
     :root[data-theme='dark'] {
-      --bg: #070a10; --surface: #111621; --alt: #0c1019; --text: #eaeef6; --text2: #a5afc0; --muted: #7d889b;
-      --line: #212838; --accent: #3b7bff; --accent2: #8b6dff; --accent-hover: #5a92ff; --accent-soft: #14213d;
-      --glow: rgba(59, 123, 255, .34); --ok: #4ade80; --warn: #fbbf24; --bad: #f87171;
-      --shadow: 0 1px 2px rgba(0,0,0,.4); --shadow-lg: 0 30px 70px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04);
+      --bg: #0c1017;
+      --surface: #141a24;
+      --surface-elevated: #1b2230;
+      --line: #242c3d;
+      --line-strong: #333e54;
+      --text: #f0f4fc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-soft: rgba(59, 130, 246, 0.14);
+      --ok: #10b981;
+      --ok-soft: rgba(16, 185, 129, 0.12);
+      --warn: #f59e0b;
+      --bad: #ef4444;
+      --bad-soft: rgba(239, 68, 68, 0.12);
     }
-    * { box-sizing: border-box; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; scroll-padding-top: 84px; }
-    body { margin: 0; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size: 16px; line-height: 1.6; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-    h1, h2, h3, p { margin: 0; } a { color: inherit; } img, svg { display: block; max-width: 100%; }
+    body { font-family: var(--sans); font-size: 16px; line-height: 1.6; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
     .wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 24px; }
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-    .grad { background: linear-gradient(100deg, var(--accent) 10%, var(--accent2) 90%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .mono { font-family: var(--mono); }
 
-    /* buttons */
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 24px; border-radius: 13px; font: inherit; font-size: 15px; font-weight: 600; text-decoration: none; border: 1px solid transparent; cursor: pointer; transition: background-color .15s, border-color .15s, transform .15s, box-shadow .15s; }
-    .btn-primary { color: #fff; background: linear-gradient(135deg, var(--accent), #1d4ed8); box-shadow: 0 10px 26px var(--glow); }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 32px var(--glow); }
-    .btn-ghost { color: var(--text); background: var(--surface); border-color: var(--line); box-shadow: var(--shadow); }
-    .btn-ghost:hover { border-color: var(--muted); transform: translateY(-1px); }
-    .btn-sm { height: 38px; padding: 0 16px; font-size: 14px; border-radius: 10px; }
+    /* Header */
+    header.top {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(12px);
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+    .brand-logo-img { width: 34px; height: 34px; }
 
-    /* header */
-    header.top { position: sticky; top: 0; z-index: 60; backdrop-filter: saturate(170%) blur(14px); background: color-mix(in srgb, var(--bg) 78%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--line) 80%, transparent); }
-    .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 70px; gap: 16px; }
-    .brand { display: inline-flex; align-items: center; gap: 11px; font-size: 20px; font-weight: 750; letter-spacing: -.03em; text-decoration: none; }
-    nav.links { display: none; gap: 4px; }
-    nav.links a { padding: 8px 13px; border-radius: 9px; font-size: 14.5px; font-weight: 500; color: var(--text2); text-decoration: none; }
-    nav.links a:hover { color: var(--text); background: var(--alt); }
-    .tools { display: flex; align-items: center; gap: 8px; }
-    .seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--alt); border: 1px solid var(--line); border-radius: 10px; }
-    .seg button { height: 28px; min-width: 34px; padding: 0 9px; border: 0; border-radius: 7px; background: transparent; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--muted); cursor: pointer; }
-    .seg button[aria-pressed='true'] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
-    .icon-btn { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--text2); cursor: pointer; }
-    .icon-btn:hover { color: var(--text); }
-    @media (min-width: 920px) { nav.links { display: flex; } }
-    @media (max-width: 540px) { .top .btn-sm { display: none; } }
+    nav.links { display: none; gap: 6px; }
+    nav.links a { padding: 8px 14px; font-size: 14.5px; font-weight: 600; color: var(--text-muted); border-radius: 8px; transition: color .15s, background .15s; }
+    nav.links a:hover { color: var(--text); background: var(--surface-elevated); }
+    @media (min-width: 960px) { nav.links { display: flex; } }
 
-    /* hero */
-    .hero { position: relative; padding: 70px 0 70px; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; background:
-        radial-gradient(60% 50% at 18% 0%, var(--glow), transparent 70%),
-        radial-gradient(45% 45% at 88% 12%, color-mix(in srgb, var(--accent2) 26%, transparent), transparent 70%); pointer-events: none; }
-    .hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(70% 60% at 50% 20%, #000, transparent 78%); -webkit-mask-image: radial-gradient(70% 60% at 50% 20%, #000, transparent 78%); opacity: .55; pointer-events: none; }
-    .pill { display: inline-flex; align-items: center; gap: 9px; padding: 6px 14px 6px 8px; border: 1px solid var(--line); border-radius: 999px; background: color-mix(in srgb, var(--surface) 88%, transparent); font-size: 13px; font-weight: 550; color: var(--text2); box-shadow: var(--shadow); }
-    .pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 22%, transparent); animation: blink 2s ease-in-out infinite; }
-    h1 { margin: 24px 0 22px; font-size: clamp(38px, 5.6vw, 66px); line-height: 1.02; font-weight: 800; letter-spacing: -.045em; }
-    .lead { max-width: 54ch; font-size: clamp(17px, 2vw, 20px); color: var(--text2); }
-    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
-    .proof { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 30px; font-size: 14px; color: var(--muted); }
-    .proof span { display: inline-flex; align-items: center; gap: 7px; } .proof svg { color: var(--ok); }
+    .tools { display: flex; align-items: center; gap: 10px; }
+    .seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--surface-elevated); border: 1px solid var(--line); border-radius: 8px; }
+    .seg button { height: 28px; min-width: 32px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--text-dim); cursor: pointer; }
+    .seg button[aria-pressed='true'] { background: var(--surface); color: var(--text); border: 1px solid var(--line-strong); }
+    
+    .icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--text-muted); display: grid; place-items: center; cursor: pointer; transition: all .15s; }
+    .icon-btn:hover { color: var(--text); border-color: var(--line-strong); }
 
-    /* call card */
-    .visual { position: relative; }
-    .visual::before { content: ''; position: absolute; inset: 8% -4% -6% 6%; border-radius: 30px; background: linear-gradient(135deg, var(--accent), var(--accent2)); opacity: .22; filter: blur(46px); }
-    .call { position: relative; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow-lg); overflow: hidden; }
-    .who { display: flex; align-items: center; gap: 12px; min-width: 0; }
-    .avatar { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 15px; background: linear-gradient(135deg, #4f8bff, #7c5cff); }
-    .who strong { display: block; font-size: 14.5px; line-height: 1.3; } .who small { color: var(--muted); font-size: 12.5px; }
-    .live { white-space: nowrap; display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: var(--ok); }
-    .live i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-    .meter { display: flex; align-items: center; gap: 3px; height: 46px; padding: 0 18px; border-bottom: 1px solid var(--line); background: var(--alt); }
-    .meter span { flex: 1; max-width: 6px; height: 100%; border-radius: 3px; background: linear-gradient(var(--accent), var(--accent2)); transform: scaleY(var(--s)); opacity: .9; }
-    .tags { display: flex; flex-wrap: wrap; gap: 8px; min-height: 58px; padding: 14px 18px 18px; border-top: 1px solid var(--line); }
-    .tag { display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 600; background: color-mix(in srgb, var(--c) 14%, transparent); color: color-mix(in srgb, var(--c) 78%, var(--text));  }
-    .tag.ok { --c: var(--ok); } .tag.info { --c: var(--accent); } .tag.warn { --c: var(--warn); }
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 46px; padding: 0 22px; border-radius: 10px; font-family: var(--sans);
+      font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all .15s ease;
+      border: 1px solid transparent; text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: #ffffff; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary { background: var(--surface); border-color: var(--line); color: var(--text); }
+    .btn-secondary:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+    .btn-sm { height: 36px; padding: 0 14px; font-size: 13.5px; border-radius: 8px; }
 
-    @keyframes bar { 0%,100% { transform: scaleY(.16); } 50% { transform: scaleY(1); } }
-    @keyframes blink { 50% { opacity: .28; } }
-    @keyframes pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
-    @keyframes dot { 0%,100% { opacity: .3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
-    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    /* Hero */
+    .hero { padding: 68px 0 54px; position: relative; }
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
+    @media (min-width: 1000px) { .hero-grid { grid-template-columns: 1.15fr 0.85fr; } }
 
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 12px; border-radius: 6px; font-family: var(--mono);
+      font-size: 12.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); margin-bottom: 20px;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
 
-    /* hero, centered */
-    .hero { padding: 56px 0 36px; }
-    .hero .wrap { position: relative; z-index: 1; display: block; }
-    .hero-copy { max-width: 900px; margin: 0 auto; text-align: center; }
-    .hero-copy h1 { margin: 26px auto 24px; font-size: clamp(40px, 6.4vw, 78px); line-height: 1.04; }
-    .hero-copy h1 .grad { display: block; }
-    .hero-copy .lead { margin: 0 auto; max-width: 60ch; }
-    .hero-copy .cta-row, .hero-copy .proof { justify-content: center; }
-    .stage { position: relative; display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 560px; margin: 48px auto 0; }
-    .stage .visual { order: -1; }
-    .side { padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-lg); }
-    .side h4 { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 16px; font-size: 14px; font-weight: 680; }
-    .side h4 small { white-space: nowrap; font-size: 11.5px; font-weight: 500; color: var(--muted); }
-    .prog-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; font-size: 13px; color: var(--muted); }
-    .prog-head b { font-size: 30px; line-height: 1; font-weight: 780; letter-spacing: -.03em; color: var(--text); }
-    .track.big { height: 10px; border-radius: 999px; background: var(--alt); overflow: hidden; }
-    .track.big .fill { display: block; height: 100%; width: var(--w); border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
-    .kv { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; color: var(--muted); }
-    .kv:last-child { border-bottom: 0; padding-bottom: 0; }
-    .kv b { font-weight: 620; color: var(--text); text-align: right; } .kv b.ok { color: var(--ok); }
-    @media (min-width: 700px) and (max-width: 999px) { .stage { max-width: 760px; grid-template-columns: 1fr 1fr; } .stage .visual { grid-column: 1 / -1; } }
-    @media (min-width: 1000px) {
-      .stage { max-width: 1240px; grid-template-columns: 1fr 1.32fr 1fr; gap: 28px; align-items: center; }
-      .stage .visual { order: 0; }
-      .side.l { transform: translateY(34px) rotate(-1.2deg); }
-      .side.r { transform: translateY(-14px) rotate(1.2deg); }
+    h1.hero-title {
+      font-size: clamp(34px, 4.8vw, 56px); font-weight: 850; line-height: 1.12;
+      letter-spacing: -0.03em; color: var(--text); margin-bottom: 22px;
+    }
+    .hero-sub {
+      font-size: clamp(16.5px, 1.6vw, 19px); color: var(--text-muted); line-height: 1.55;
+      margin-bottom: 32px; max-width: 580px;
+    }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; }
+    .proof-list { display: flex; flex-wrap: wrap; gap: 18px; font-size: 13.5px; color: var(--text-dim); }
+    .proof-item { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+
+    /* Phone / Audio Console Visual on Hero */
+    .console-card {
+      background: var(--surface); border: 1.5px solid var(--line); border-radius: 20px;
+      box-shadow: var(--shadow-lg); overflow: hidden;
+    }
+    .console-header {
+      padding: 16px 20px; background: var(--surface-elevated); border-bottom: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .caller-details { display: flex; align-items: center; gap: 12px; }
+    .agent-tag {
+      padding: 4px 8px; border-radius: 6px; background: var(--accent-soft);
+      color: var(--accent); font-family: var(--mono); font-size: 12px; font-weight: 700;
+    }
+    .call-timer {
+      font-family: var(--mono); font-size: 16px; font-weight: 700; color: var(--ok);
+      display: flex; align-items: center; gap: 6px;
     }
 
-    /* call screen */
-    .call-top { display: flex; align-items: center; gap: 14px; padding: 18px 20px; }
-    .call-top .avatar { width: 46px; height: 46px; font-size: 17px; }
-    .call-top .who { flex: 1; display: block; min-width: 0; }
-    .call-top .who strong { font-size: 16px; }
-    .call-top .who small { display: block; margin-top: 1px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12.5px; color: var(--muted); }
-    .status { display: grid; justify-items: end; gap: 2px; }
-    .status time { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
-    .meter { height: 64px; border-top: 1px solid var(--line); }
-    .tr-wrap { padding: 16px 20px 10px; }
-    .tr-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; font-size: 12.5px; font-weight: 650; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
-    .tr-head small { font-weight: 500; text-transform: none; letter-spacing: 0; }
-    ol.tr { list-style: none; margin: 0; padding: 0; }
-    ol.tr li { display: grid; grid-template-columns: 40px 1fr; gap: 4px 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-    ol.tr li:last-child { border-bottom: 0; }
-    ol.tr time { grid-row: 1 / span 2; padding-top: 2px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--muted); }
-    ol.tr b { font-size: 12px; font-weight: 700; letter-spacing: .02em; color: var(--accent); }
-    ol.tr li.cust b { color: var(--text2); }
-    :root[data-theme='dark'] ol.tr b { color: #7fa8ff; } :root[data-theme='dark'] ol.tr li.cust b { color: var(--text2); }
-    ol.tr p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--text); }
-    .sum { padding: 14px 20px 18px; border-top: 1px solid var(--line); background: var(--alt); }
-    .sum-head { margin-bottom: 10px; font-size: 12.5px; font-weight: 650; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
-    .sum .tags { min-height: 0; padding: 0; border: 0; }
-    .mini ol.tr { padding: 0 4px; }
+    /* Waveform Level Meter */
+    .meter-rack {
+      display: flex; align-items: center; gap: 3px; height: 50px; padding: 0 20px;
+      background: var(--bg); border-bottom: 1px solid var(--line);
+    }
+    .meter-bar {
+      flex: 1; max-width: 5px; height: 100%; border-radius: 2px;
+      background: var(--accent); transform: scaleY(var(--s)); opacity: 0.85;
+    }
 
-    /* facts strip */
-    .facts { padding: 0 0 8px; }
-    .facts .facts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
-    .fact { padding: 26px 26px; border-right: 1px solid var(--line); }
-    .fact:last-child { border-right: 0; }
-    .fact b { display: block; font-size: 30px; line-height: 1.15; font-weight: 800; letter-spacing: -.04em; }
-    .fact span { display: block; margin-top: 6px; font-size: 14px; color: var(--text2); }
-    @media (max-width: 700px) { .fact { border-right: 0; border-bottom: 1px solid var(--line); } .fact:last-child { border-bottom: 0; } }
+    .transcript-box { padding: 20px; display: flex; flex-direction: column; gap: 14px; max-height: 220px; overflow-y: auto; }
+    .utterance { display: grid; grid-template-columns: 42px 1fr; gap: 8px; font-size: 14px; line-height: 1.45; }
+    .utterance time { font-family: var(--mono); font-size: 11.5px; color: var(--text-dim); padding-top: 2px; }
+    .utterance strong { font-size: 12px; color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 2px; }
+    .utterance.caller strong { color: var(--text-muted); }
 
-    /* sections */
-    section { padding: 100px 0; }
-    .eyebrow { display: inline-block; margin-bottom: 14px; padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); font-size: 13px; font-weight: 650; color: var(--accent); }
-    :root[data-theme='dark'] .eyebrow { color: #7fa8ff; }
-    h2 { max-width: 22ch; font-size: clamp(30px, 4.2vw, 46px); line-height: 1.08; font-weight: 780; letter-spacing: -.04em; }
-    .sub { margin-top: 16px; max-width: 62ch; font-size: 18px; color: var(--text2); }
-    .head { margin-bottom: 52px; } .head.center { text-align: center; } .head.center h2, .head.center .sub { margin-left: auto; margin-right: auto; }
-    .band { background: var(--alt); border-block: 1px solid var(--line); }
+    .console-footer {
+      padding: 14px 20px; background: var(--surface-elevated); border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center; font-size: 12px;
+    }
+    .metric-pill { font-family: var(--mono); font-weight: 700; color: var(--ok); background: var(--ok-soft); padding: 4px 8px; border-radius: 5px; }
 
+    /* Sections */
+    section { padding: 84px 0; border-bottom: 1px solid var(--line); }
+    .section-head { text-align: center; max-width: 720px; margin: 0 auto 52px; }
+    .section-head.left { text-align: left; margin: 0 0 40px; max-width: none; }
+    h2.section-title { font-size: clamp(28px, 3.6vw, 42px); font-weight: 850; letter-spacing: -0.025em; margin-bottom: 14px; }
+    .section-desc { font-size: 17px; color: var(--text-muted); }
 
-    /* who it's for */
-    .who-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-    .card { padding: 28px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); transition: border-color .2s, box-shadow .2s, opacity .7s ease, transform .7s ease; }
-    .card:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); box-shadow: var(--shadow-lg); }
-    .ico { width: 46px; height: 46px; margin-bottom: 20px; display: grid; place-items: center; border-radius: 13px; background: var(--accent-soft); color: var(--accent); }
-    :root[data-theme='dark'] .ico { color: #7fa8ff; }
-    .card h3 { margin-bottom: 8px; font-size: 19px; font-weight: 680; letter-spacing: -.02em; }
-    .card p { font-size: 15px; color: var(--text2); }
+    /* Funnel Numbers */
+    .grid-3 { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    @media (min-width: 768px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
 
-    .note { margin: 0; text-align: center; font-size: 13.5px; color: var(--muted); }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+      padding: 28px; transition: border-color .15s;
+    }
+    .stat-card:hover { border-color: var(--line-strong); }
+    .stat-num { font-family: var(--mono); font-size: 40px; font-weight: 800; color: var(--bad); margin-bottom: 10px; }
+    .stat-title { font-size: 18px; font-weight: 750; margin-bottom: 8px; }
+    .stat-desc { font-size: 14.5px; color: var(--text-muted); line-height: 1.5; }
 
-    /* use-case tabs */
-    .tabs { display: inline-flex; max-width: 100%; padding: 4px; gap: 3px; overflow-x: auto; background: var(--alt); border: 1px solid var(--line); border-radius: 14px; scrollbar-width: none; }
-    .tabs button { flex: none; height: 40px; padding: 0 18px; border: 0; border-radius: 10px; background: transparent; font: inherit; font-size: 14.5px; font-weight: 600; color: var(--text2); cursor: pointer; white-space: nowrap; }
-    .tabs button[aria-selected='true'] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
-    .case { display: grid; gap: 28px; margin-top: 28px; padding: 28px; border: 1px solid var(--line); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow-lg); }
-    @media (min-width: 900px) { .case { grid-template-columns: 1fr 1fr; padding: 40px; gap: 48px; } }
-    .case h3 { font-size: 26px; line-height: 1.2; letter-spacing: -.03em; font-weight: 720; }
-    .case p { margin-top: 12px; color: var(--text2); }
-    .case ul { display: grid; gap: 12px; margin: 22px 0 0; padding: 0; list-style: none; }
-    .case li { display: flex; gap: 11px; font-size: 15.5px; color: var(--text2); }
-    .case li svg { flex: none; margin-top: 3px; color: var(--ok); }
-    .mini { display: grid; gap: 10px; align-content: center; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: var(--alt); }
+    /* Use Cases Tabs */
+    .tabs-bar { display: inline-flex; max-width: 100%; padding: 4px; gap: 4px; overflow-x: auto; background: var(--surface-elevated); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 24px; }
+    .tab-btn { height: 38px; padding: 0 16px; border: 0; border-radius: 7px; background: transparent; font: inherit; font-size: 13.5px; font-weight: 700; color: var(--text-muted); cursor: pointer; white-space: nowrap; }
+    .tab-btn[aria-selected='true'] { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
 
-    /* bento */
-    .bento { display: grid; gap: 18px; grid-template-columns: repeat(6, 1fr); }
-    .tile { position: relative; grid-column: span 6; padding: 28px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; transition: border-color .2s, transform .2s, box-shadow .2s, opacity .7s ease; }
-    .tile:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); box-shadow: var(--shadow-lg); }
-    @media (min-width: 760px) { .tile.w3 { grid-column: span 3; } }
-    @media (min-width: 1000px) { .tile.w2 { grid-column: span 2; } .tile.w4 { grid-column: span 4; } .tile.w3 { grid-column: span 3; } }
-    .tile h3 { margin-bottom: 8px; font-size: 19px; font-weight: 680; letter-spacing: -.02em; }
-    .tile p { font-size: 15px; color: var(--text2); max-width: 46ch; }
-    .art { margin-top: 22px; }
-    .vbars { display: flex; align-items: flex-end; gap: 4px; height: 70px; }
-    .vbars span { flex: 1; height: 100%; border-radius: 4px; background: linear-gradient(var(--accent), var(--accent2)); transform-origin: bottom; animation: bar var(--d) ease-in-out infinite; animation-delay: var(--o); opacity: .85; }
-    .zones { display: grid; gap: 8px; } .zone { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--alt); font-size: 13.5px; }
-    .zone b { font-weight: 600; } .zone span { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--muted); }
-    .zone em { font-style: normal; font-size: 12px; font-weight: 650; padding: 2px 9px; border-radius: 999px; }
-    .zone .go { background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok); } .zone .wait { background: color-mix(in srgb, var(--warn) 16%, transparent); color: var(--warn); }
-    .chips { display: flex; flex-wrap: wrap; gap: 9px; }
-    .chip { padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 14px; font-weight: 550; color: var(--text2); box-shadow: var(--shadow); }
-    .chip.on { background: var(--accent-soft); border-color: transparent; color: var(--accent); } :root[data-theme='dark'] .chip.on { color: #7fa8ff; }
-    .sms { max-width: 300px; padding: 12px 14px; border-radius: 16px; border-bottom-left-radius: 4px; background: var(--accent-soft); font-size: 14px; line-height: 1.5; }
-    .sms-meta { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 12.5px; color: var(--ok); font-weight: 600; }
-    .bars { display: grid; gap: 11px; } .row { display: grid; grid-template-columns: 120px 1fr 42px; align-items: center; gap: 12px; font-size: 13.5px; color: var(--text2); }
-    .row .track { height: 8px; border-radius: 999px; background: var(--alt); overflow: hidden; } .row .fill { display: block; height: 100%; border-radius: 999px; background: var(--c); width: var(--w); }
-    .row b { text-align: right; color: var(--text); font-variant-numeric: tabular-nums; }
+    .case-panel {
+      display: grid; grid-template-columns: 1fr; gap: 28px; padding: 32px;
+      background: var(--surface); border: 1.5px solid var(--line); border-radius: 20px;
+    }
+    @media (min-width: 900px) { .case-panel { grid-template-columns: 1fr 1fr; gap: 40px; } }
+    .case-panel h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
+    .case-panel p { color: var(--text-muted); font-size: 15.5px; margin-bottom: 20px; }
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px; color: var(--text-muted); }
+    .checklist li { display: flex; gap: 10px; align-items: flex-start; }
+    .checklist-icon { color: var(--ok); flex-shrink: 0; margin-top: 2px; }
 
-    /* steps */
-    .steps { position: relative; display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); counter-reset: s; }
-    .step { position: relative; padding: 30px 28px 28px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); }
-    .step::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 20px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; font-weight: 750; font-size: 16px; box-shadow: 0 8px 20px var(--glow); }
-    .step h3 { margin-bottom: 8px; font-size: 19px; font-weight: 680; } .step p { font-size: 15px; color: var(--text2); }
+    .case-dialogue {
+      background: var(--bg); border: 1px solid var(--line); border-radius: 14px;
+      padding: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 14px;
+    }
 
-    /* showcase */
-    .show { display: grid; gap: 44px; align-items: center; }
-    @media (min-width: 1000px) { .show.two { grid-template-columns: .9fr 1.1fr; } .show.rev > :first-child { order: 2; } }
-    .list { display: grid; gap: 16px; margin-top: 28px; padding: 0; list-style: none; } .list li { display: flex; gap: 12px; font-size: 16px; color: var(--text2); } .list svg { flex: none; margin-top: 3px; color: var(--accent); }
-    .panel { border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-lg); overflow: hidden; }
-    .panel-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 650; } .panel-bar small { font-weight: 500; color: var(--muted); }
-    .panel-body { display: grid; gap: 16px; padding: 18px; }
-    .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; } .kpi { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--alt); } .kpi small { display: block; font-size: 12px; color: var(--muted); } .kpi strong { font-size: 22px; font-weight: 720; letter-spacing: -.02em; }
-    pre.code { margin: 0; padding: 20px; overflow-x: auto; font: 500 13px/1.75 'JetBrains Mono', ui-monospace, monospace; background: var(--alt); color: var(--text2); } pre.code .k { color: var(--accent); } pre.code .v { color: var(--ok); } pre.code .c { color: var(--muted); }
+    /* Bento Grid */
+    .bento-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+    .tile { grid-column: span 6; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px; }
+    @media (min-width: 768px) { .tile.w3 { grid-column: span 3; } .tile.w2 { grid-column: span 2; } .tile.w4 { grid-column: span 4; } }
+    .tile h3 { font-size: 19px; font-weight: 750; margin-bottom: 8px; }
+    .tile p { font-size: 14.5px; color: var(--text-muted); }
 
-    /* faq */
-    .faq { display: grid; gap: 12px; max-width: 820px; margin: 0 auto; }
-    details { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); transition: border-color .15s; }
-    details[open] { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
-    summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; font-size: 16.5px; font-weight: 620; cursor: pointer; list-style: none; } summary::-webkit-details-marker { display: none; }
-    summary::after { content: ''; flex: none; width: 10px; height: 10px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s; margin-top: -4px; }
-    details[open] summary::after { transform: rotate(-135deg); margin-top: 4px; }
-    details p { padding: 0 24px 22px; color: var(--text2); font-size: 15.5px; }
+    /* Steps */
+    .steps-grid { display: grid; grid-template-columns: 1fr; gap: 20px; counter-reset: step; }
+    @media (min-width: 768px) { .steps-grid { grid-template-columns: repeat(3, 1fr); } }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+      padding: 28px; position: relative;
+    }
+    .step-card::before {
+      counter-increment: step; content: counter(step);
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 8px; background: var(--accent-soft);
+      color: var(--accent); font-family: var(--mono); font-weight: 800; font-size: 15px; margin-bottom: 16px;
+    }
+    .step-card h3 { font-size: 18px; font-weight: 750; margin-bottom: 8px; }
+    .step-card p { font-size: 14px; color: var(--text-muted); }
 
-    /* final cta */
-    .final { position: relative; overflow: hidden; padding: 72px 28px; text-align: center; border-radius: 32px; color: #fff; background: radial-gradient(80% 140% at 50% 0%, #5b93ff 0%, #2559e8 50%, #5b3fd6 100%); box-shadow: 0 40px 80px rgba(59,100,235,.35); }
-    .final h2 { margin: 0 auto; max-width: 18ch; color: #fff; } .final p { margin: 18px auto 34px; max-width: 54ch; font-size: 18px; color: rgba(255,255,255,.88); }
-    .final .btn-light { position: relative; z-index: 1; color: #1d4ed8; background: #fff; height: 52px; padding: 0 32px; font-size: 16px; box-shadow: 0 14px 34px rgba(0,0,0,.22); } .final .btn-light:hover { transform: translateY(-2px); }
-    .final .meter-bg { position: absolute; inset: auto 0 0 0; height: 110px; display: flex; align-items: flex-end; gap: 6px; padding: 0 24px; opacity: .16; pointer-events: none; }
-    .final .meter-bg span { flex: 1; height: 100%; background: #fff; border-radius: 3px 3px 0 0; transform-origin: bottom; animation: bar var(--d) ease-in-out infinite; animation-delay: var(--o); }
-    footer { padding: 36px 0 52px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); } footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; } footer .brand { font-size: 17px; }
+    /* Integrations */
+    .pills-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 24px; }
+    .pill-item {
+      padding: 10px 18px; border: 1px solid var(--line); border-radius: 10px;
+      background: var(--surface); font-family: var(--mono); font-size: 13.5px; font-weight: 700; color: var(--text);
+    }
 
-    /* demo request dialog */
+    /* FAQ */
+    .faq-list { display: grid; gap: 12px; max-width: 780px; margin: 0 auto; }
+    details.faq-item {
+      border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
+      padding: 18px 22px; transition: border-color .15s;
+    }
+    details[open] { border-color: var(--line-strong); }
+    summary.faq-q { font-size: 16px; font-weight: 750; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; font-family: var(--mono); font-size: 18px; color: var(--text-dim); }
+    details[open] summary::after { content: '−'; }
+    .faq-a { margin-top: 12px; font-size: 14.5px; color: var(--text-muted); line-height: 1.55; }
+
+    /* Final CTA */
+    .final-box {
+      text-align: center; padding: 64px 28px; border-radius: 24px;
+      background: var(--surface); border: 1.5px solid var(--line-strong);
+      max-width: 860px; margin: 0 auto;
+    }
+    .final-box h2 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 850; margin-bottom: 14px; }
+    .final-box p { font-size: 16.5px; color: var(--text-muted); margin-bottom: 28px; max-width: 540px; margin-left: auto; margin-right: auto; }
+
+    /* Modal Dialog */
     body.modal-open { overflow: hidden; }
-    .modal { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(8, 12, 22, .55); backdrop-filter: blur(4px); }
+    .modal { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(12, 16, 23, .8); backdrop-filter: blur(4px); }
     .modal.open { display: flex; }
-    .dialog { width: 100%; max-width: 520px; max-height: calc(100vh - 40px); overflow-y: auto; padding: 30px; border: 1px solid var(--line); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow-lg); }
-    .dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-    .dialog h3 { font-size: 24px; line-height: 1.2; font-weight: 740; letter-spacing: -.03em; }
-    .dialog .lead2 { margin: 8px 0 22px; font-size: 14.5px; color: var(--text2); }
-    .x { flex: none; width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; color: var(--muted); cursor: pointer; }
-    .x:hover { background: var(--alt); color: var(--text); }
-    .field { display: grid; gap: 6px; margin-bottom: 14px; }
-    .field label { font-size: 13px; font-weight: 600; }
-    .field input, .field select, .field textarea { width: 100%; padding: 11px 13px; font: inherit; font-size: 15px; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 11px; transition: border-color .15s, box-shadow .15s; }
-    .field textarea { min-height: 84px; resize: vertical; }
-    .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
-    .send { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
-    @media (max-width: 480px) { .send { grid-template-columns: 1fr; } .dialog { padding: 22px; } }
-    .send .btn { padding: 0 10px; font-size: 14px; white-space: nowrap; }
-    .btn-tg { color: #fff; background: #229ed9; } .btn-tg:hover { background: #1b8bc2; transform: translateY(-1px); }
-    .btn-wa { color: #fff; background: #25a244; } .btn-wa:hover { background: #1f8c3a; transform: translateY(-1px); }
-    .form-msg { min-height: 20px; margin-top: 12px; font-size: 13.5px; color: var(--bad); }
-    .dialog .fine { margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+    .dialog { width: 100%; max-width: 480px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 20px; padding: 32px; box-shadow: var(--shadow-lg); }
+    .dialog-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+    .dialog-header h3 { font-size: 21px; font-weight: 800; }
+    .close-btn { width: 32px; height: 32px; border: 0; border-radius: 6px; background: var(--surface-elevated); color: var(--text-dim); cursor: pointer; display: grid; place-items: center; font-size: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .form-group label { font-size: 12.5px; font-weight: 700; color: var(--text-muted); }
+    .form-input { padding: 11px 13px; font: inherit; font-size: 14.5px; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; }
+    .form-input:focus { outline: none; border-color: var(--accent); }
+    .btn-block { width: 100%; height: 46px; font-size: 15px; margin-top: 8px; }
 
-    .btn-block { width: 100%; height: 50px; font-size: 16px; }
-    .field.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-    .or { display: flex; align-items: center; gap: 12px; margin: 20px 0 14px; font-size: 13px; color: var(--muted); }
-    .or::before, .or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
-    .form-msg { margin-top: 10px; }
-    .done { padding: 10px 0 6px; text-align: center; }
-    .done-ico { width: 64px; height: 64px; margin: 0 auto 18px; display: grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok); }
-    .done h4 { margin: 0 0 8px; font-size: 22px; font-weight: 740; letter-spacing: -.02em; }
-    .done p { margin: 0; color: var(--text2); }
+    .direct-links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+    .btn-tg { background: #229ed9; color: #fff; }
+    .btn-wa { background: #25a244; color: #fff; }
 
-    /* reveal */
-    .rv { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; transition-delay: var(--rd, 0s); } .rv.in { opacity: 1; transform: none; }
-    @media (max-width: 700px) { section { padding: 68px 0; } .row { grid-template-columns: 96px 1fr 38px; } .final { padding: 52px 20px; } }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } .rv { opacity: 1; transform: none; } }
+    /* Footer */
+    footer { padding: 40px 0; font-size: 13.5px; color: var(--text-dim); border-top: 1px solid var(--line); }
+    .footer-wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
   </style>
 </head>
 <body>
+
+  <!-- Header -->
   <header class="top">
-    <div class="wrap">
-      <a class="brand" href="#top" aria-label="Voxline">
-        <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4F8BFF"/><stop offset="1" stop-color="#6D4DEB"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><g fill="#fff"><rect x="6" y="13" width="3" height="6" rx="1.5" opacity=".7"/><rect x="11.2" y="9" width="3" height="14" rx="1.5"/><rect x="16.4" y="6" width="3" height="20" rx="1.5"/><rect x="21.6" y="10" width="3" height="12" rx="1.5"/></g></svg>
-        Voxline
+    <div class="wrap nav-wrap">
+      <a href="#top" class="brand" aria-label="Allo AI">
+        <img src="logo.svg" alt="Allo AI" class="brand-logo-img" />
+        <span>Allo AI</span>
       </a>
-      <nav class="links" aria-label="Sections">
-        <a href="#for" data-i="nav_for"></a><a href="#world" data-i="nav_world"></a><a href="#cases" data-i="nav_cases"></a><a href="#features" data-i="nav_features"></a><a href="#how" data-i="nav_how"></a><a href="#faq" data-i="nav_faq"></a>
+
+      <nav class="links">
+        <a href="#problem" data-i="nav_problem">Воронка втрат</a>
+        <a href="#cases" data-i="nav_cases">Сценарії</a>
+        <a href="#features" data-i="nav_features">Можливості</a>
+        <a href="#how" data-i="nav_how">Як це працює</a>
+        <a href="#faq" data-i="nav_faq">Питання</a>
       </nav>
+
       <div class="tools">
-        <div class="seg" role="group" aria-label="Language"><button type="button" data-lang="uk" aria-pressed="true">UA</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
-        <button class="icon-btn" id="theme" type="button" aria-label="Theme">
-          <svg id="ico-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-          <svg id="ico-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/></svg>
+        <div class="seg" role="group" aria-label="Language">
+          <button type="button" data-lang="uk" aria-pressed="true">UA</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button class="icon-btn" id="theme-btn" type="button" aria-label="Змінити тему">
+          <span id="theme-icon">🌙</span>
         </button>
-        <a class="btn btn-primary btn-sm cta" href="#" data-i="cta_demo"></a>
+        <a class="btn btn-primary btn-sm cta-trigger" href="#demo" data-i="cta_demo">Замовити демо</a>
       </div>
     </div>
   </header>
 
   <main id="top">
-    <!-- HERO -->
+    <!-- Hero Section -->
     <section class="hero">
-      <div class="wrap">
+      <div class="wrap hero-grid">
+        
         <div class="hero-copy">
-          <span class="pill"><i></i><span data-i="pill"></span></span>
-          <h1><span data-i="h1a"></span> <span class="grad" data-i="h1b"></span></h1>
-          <p class="lead" data-i="lead"></p>
+          <div class="eyebrow">
+            <span class="status-dot"></span>
+            <span data-i="pill">ШІ-ОПЕРАТОР РЕАЛЬНОГО ЧАСУ 24/7</span>
+          </div>
+          <h1 class="hero-title" data-i="hero_title">
+            Дзвінки клієнтам, які виконує ШІ із затримкою 240 мс
+          </h1>
+          <p class="hero-sub" data-i="hero_sub">
+            Підтверджує замовлення, нагадує про записи, кваліфікує ліди та відповідає на вхідні без черги. Говорить живою мовою, фіксує підсумок у CRM та надсилає SMS.
+          </p>
           <div class="cta-row">
-            <a class="btn btn-primary cta" href="#" data-i="cta_demo"></a>
-            <a class="btn btn-ghost" href="#how" data-i="cta_how"></a>
+            <a class="btn btn-primary cta-trigger" href="#demo" data-i="cta_demo">Замовити демо-дзвінок</a>
+            <a class="btn btn-secondary" href="#how" data-i="cta_how">Як це працює</a>
           </div>
-          <div class="proof">
-            <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i="proof1"></span></span>
-            <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i="proof2"></span></span>
-            <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i="proof3"></span></span>
-          </div>
-        </div>
-
-        <div class="stage">
-          <aside class="side l" aria-label="Campaign preview">
-            <h4><span data-i="sc_title"></span><small data-i="p_note"></small></h4>
-            <div class="prog-head"><b>812</b><span data-i="sc_of"></span></div>
-            <div class="track big"><span class="fill" style="--w:65%"></span></div>
-            <div class="bars" style="margin-top:18px">
-              <div class="row" style="--c:var(--ok)"><span data-i="o1"></span><span class="track"><span class="fill" style="--w:78%"></span></span><b>78%</b></div>
-              <div class="row" style="--c:var(--warn)"><span data-i="o3"></span><span class="track"><span class="fill" style="--w:12%"></span></span><b>12%</b></div>
-              <div class="row" style="--c:var(--bad)"><span data-i="o4"></span><span class="track"><span class="fill" style="--w:3%"></span></span><b>3%</b></div>
+          <div class="proof-list">
+            <div class="proof-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              <span data-i="proof_1">0 секунд очікування на лінії</span>
             </div>
-          </aside>
-
-          <div class="visual">
-            <div class="call" aria-label="Call preview">
-              <div class="call-top">
-                <div class="avatar" data-i="call_init"></div>
-                <div class="who">
-                  <strong data-i="call_name"></strong>
-                  <small>+380 67 ••• ••-42</small>
-                </div>
-                <div class="status">
-                  <span class="live"><i></i><span data-i="live"></span></span>
-                  <time>00:42</time>
-                </div>
-              </div>
-              <div class="meter" id="meter" aria-hidden="true"></div>
-              <div class="tr-wrap">
-                <div class="tr-head"><span data-i="tr_title"></span><small data-i="call_meta"></small></div>
-                <ol class="tr" id="chat"></ol>
-              </div>
+            <div class="proof-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              <span data-i="proof_2">Живе перебивання (Barge-in)</span>
+            </div>
+            <div class="proof-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              <span data-i="proof_3">1 000 ліній одночасно</span>
             </div>
           </div>
+        </div>
 
-          <aside class="side r" aria-label="Call result preview">
-            <h4><span data-i="rc_title"></span><small data-i="p_note"></small></h4>
-            <div class="kv"><span data-i="rc1"></span><b class="ok" data-i="rc1v"></b></div>
-            <div class="kv"><span data-i="rc2"></span><b data-i="rc2v"></b></div>
-            <div class="kv"><span data-i="rc3"></span><b class="ok" data-i="rc3v"></b></div>
-            <div class="kv"><span data-i="rc4"></span><b data-i="rc4v"></b></div>
-            <div class="kv"><span data-i="rc5"></span><b>0:42</b></div>
-          </aside>
+        <!-- Call Console Widget -->
+        <div class="hero-visual">
+          <div class="console-card">
+            <div class="console-header">
+              <div class="caller-details">
+                <span class="agent-tag">ALLO AI</span>
+                <div>
+                  <strong style="font-size: 14.5px; display: block;" data-i="agent_label">ШІ-Оператор Катерина</strong>
+                  <span class="mono" style="font-size: 11.5px; color: var(--text-dim);">+380 (67) ••• •• 42</span>
+                </div>
+              </div>
+              <div class="call-timer">
+                <span class="status-dot"></span>
+                <span>00:42</span>
+              </div>
+            </div>
+
+            <!-- Waveform Level Meter -->
+            <div class="meter-rack" id="meter-rack" aria-hidden="true"></div>
+
+            <div class="transcript-box" id="transcript-box"></div>
+
+            <div class="console-footer">
+              <span class="mono" style="color: var(--text-dim);">LATENCY: 238ms</span>
+              <span class="metric-pill" data-i="crm_sync_status">CRM SYNC COMPLETED</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Problem / Lead Leakage Section -->
+    <section id="problem">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="eyebrow" style="color: var(--bad); background: var(--bad-soft); border-color: transparent;" data-i="prob_tag">ВОРОНКА ВТРАТ</div>
+          <h2 class="section-title" data-i="prob_title">Куди зникають 42% ваших лідів із реклами?</h2>
+          <p class="section-desc" data-i="prob_desc">Кожна секунда затримки або пропущений дзвінок віддає клієнта конкурентам.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="stat-card">
+            <div class="stat-num">100%</div>
+            <h3 class="stat-title" data-i="p1_t">Злиті дзвінки після 18:00</h3>
+            <p class="stat-desc" data-i="p1_d">У неробочий час та у вихідні дні дзвінки потрапляють на автовідповідач. 8 з 10 покупців не чекають ранку.</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">35%</div>
+            <h3 class="stat-title" data-i="p2_t">Скидання через очікування</h3>
+            <p class="stat-desc" data-i="p2_d">Якщо лінія зайнята понад 20 секунд у пікові години реклами — клієнт кладе слухавку.</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">-28%</div>
+            <h3 class="stat-title" data-i="p3_t">Людський фактор</h3>
+            <p class="stat-desc" data-i="p3_d">Втома співробітників, забуті коментарі в CRM, пропущені етапи кваліфікації та невчасно надіслані реквізити.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- FACTS -->
-    <div class="facts">
-      <div class="wrap">
-        <div class="facts-row rv">
-          <div class="fact"><b class="grad">10</b><span data-i="fa1"></span></div>
-          <div class="fact"><b class="grad">STT · TTS · LLM</b><span data-i="fa2"></span></div>
-          <div class="fact"><b class="grad" data-i="fa3n"></b><span data-i="fa3"></span></div>
-          <div class="fact"><b class="grad" data-i="fa4n"></b><span data-i="fa4"></span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WHO IT'S FOR -->
-    <section id="for">
-      <div class="wrap">
-        <div class="head center rv">
-          <span class="eyebrow" data-i="w_eyebrow"></span>
-          <h2 data-i="w_title"></h2>
-          <p class="sub" data-i="w_sub"></p>
-        </div>
-        <div class="who-grid">
-          <article class="card rv"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div><h3 data-i="w1t"></h3><p data-i="w1d"></p></article>
-          <article class="card rv" style="--rd:0.06s"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><h3 data-i="w2t"></h3><p data-i="w2d"></p></article>
-          <article class="card rv" style="--rd:0.12s"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><h3 data-i="w3t"></h3><p data-i="w3d"></p></article>
-          <article class="card rv"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div><h3 data-i="w4t"></h3><p data-i="w4d"></p></article>
-          <article class="card rv" style="--rd:0.06s"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3 data-i="w5t"></h3><p data-i="w5d"></p></article>
-          <article class="card rv" style="--rd:0.12s"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></div><h3 data-i="w6t"></h3><p data-i="w6d"></p></article>
-        </div>
-      </div>
-    </section>
-
-    <!-- WORLDWIDE -->
-    <section id="world" class="band">
-      <div class="wrap">
-        <div class="head center rv">
-          <span class="eyebrow" data-i="eu_eyebrow"></span>
-          <h2 data-i="eu_title"></h2>
-          <p class="sub" data-i="eu_sub"></p>
-        </div>
-        <div class="chips rv" style="justify-content:center;max-width:900px;margin:0 auto 14px"><span class="chip on">Українська</span><span class="chip on">English</span><span class="chip on">Español</span><span class="chip">Português</span><span class="chip">Deutsch</span><span class="chip">Français</span><span class="chip">Polski</span><span class="chip">Türkçe</span><span class="chip">العربية</span><span class="chip">日本語</span><span class="chip">हिन्दी</span><span class="chip">Italiano</span></div>
-        <p class="note rv" data-i="eu_note"></p>
-        <div class="who-grid" style="margin-top:40px">
-          <article class="card rv"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></div><h3 data-i="eu1t"></h3><p data-i="eu1d"></p></article>
-          <article class="card rv" style="--rd:0.06s"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><h3 data-i="eu2t"></h3><p data-i="eu2d"></p></article>
-          <article class="card rv" style="--rd:0.12s"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><h3 data-i="eu3t"></h3><p data-i="eu3d"></p></article>
-        </div>
-      </div>
-    </section>
-
-    <!-- USE CASES -->
+    <!-- Use Cases Section -->
     <section id="cases">
       <div class="wrap">
-        <div class="head center rv">
-          <span class="eyebrow" data-i="u_eyebrow"></span>
-          <h2 data-i="u_title"></h2>
-          <p class="sub" data-i="u_sub"></p>
+        <div class="section-head">
+          <div class="eyebrow" data-i="cases_tag">РЕАЛЬНІ СЦЕНАРІЇ</div>
+          <h2 class="section-title" data-i="cases_title">Що агент виконує у вашому бізнесі</h2>
+          <p class="section-desc" data-i="cases_desc">Розмова ведеться за вашим регламентом і бізнес-правилами.</p>
         </div>
-        <div class="rv" style="text-align:center"><div class="tabs" role="tablist" id="tabs"></div></div>
-        <div class="case rv" id="case"></div>
+
+        <div style="text-align: center;">
+          <div class="tabs-bar" id="tabs-bar" role="tablist"></div>
+        </div>
+
+        <div class="case-panel" id="case-panel"></div>
       </div>
     </section>
 
-    <!-- BENTO -->
-    <section id="features" class="band">
+    <!-- Bento Capabilities Grid -->
+    <section id="features">
       <div class="wrap">
-        <div class="head rv">
-          <span class="eyebrow" data-i="f_eyebrow"></span>
-          <h2 data-i="f_title"></h2>
-          <p class="sub" data-i="f_sub"></p>
+        <div class="section-head">
+          <div class="eyebrow" data-i="feat_tag">МОЖЛИВОСТІ</div>
+          <h2 class="section-title" data-i="feat_title">Інженерна точність та швидкість</h2>
         </div>
-        <div class="bento">
-          <article class="tile w4 rv">
-            <h3 data-i="b1t"></h3><p data-i="b1d"></p>
-            <div class="art"><div class="vbars" id="vbars" aria-hidden="true"></div></div>
-          </article>
-          <article class="tile w2 rv" style="--rd:.06s">
-            <h3 data-i="b2t"></h3><p data-i="b2d"></p>
-            <div class="art zones">
-              <div class="zone"><b>Berlin</b><span>10:00</span><em class="go" data-i="z_go"></em></div>
-              <div class="zone"><b>New York</b><span>04:00</span><em class="wait" data-i="z_wait"></em></div>
-              <div class="zone"><b>Singapore</b><span>16:00</span><em class="go" data-i="z_go"></em></div>
-            </div>
-          </article>
-          <article class="tile w2 rv">
-            <h3 data-i="b3t"></h3><p data-i="b3d"></p>
-            <div class="art chips"><span class="chip on">UK</span><span class="chip on">EN</span><span class="chip">ES</span><span class="chip">DE</span><span class="chip">PT</span><span class="chip">AR</span></div>
-          </article>
-          <article class="tile w2 rv" style="--rd:.06s">
-            <h3 data-i="b4t"></h3><p data-i="b4d"></p>
-            <div class="art"><div class="sms" data-i="sms_text"></div><div class="sms-meta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i="sms_meta"></span></div></div>
-          </article>
-          <article class="tile w2 rv" style="--rd:.12s">
-            <h3 data-i="b5t"></h3><p data-i="b5d"></p>
-            <div class="art chips"><span class="chip on">Owner</span><span class="chip">Admin</span><span class="chip">Staff</span><span class="chip">Viewer</span></div>
-          </article>
-          <article class="tile rv" style="grid-column: 1 / -1">
-            <div class="show" style="gap:32px">
-              <div><h3 data-i="b6t"></h3><p data-i="b6d"></p></div>
-              <div class="bars">
-                <div class="row" style="--c:var(--accent)"><span data-i="o1"></span><span class="track"><span class="fill" style="--w:78%"></span></span><b>78%</b></div>
-                <div class="row" style="--c:var(--ok)"><span data-i="o2"></span><span class="track"><span class="fill" style="--w:54%"></span></span><b>54%</b></div>
-                <div class="row" style="--c:var(--warn)"><span data-i="o3"></span><span class="track"><span class="fill" style="--w:31%"></span></span><b>31%</b></div>
-                <div class="row" style="--c:var(--bad)"><span data-i="o4"></span><span class="track"><span class="fill" style="--w:12%"></span></span><b>12%</b></div>
-              </div>
-            </div>
-          </article>
+
+        <div class="bento-grid">
+          <div class="tile w4">
+            <h3 data-i="f1_t">Вхідні та вихідні кампанії</h3>
+            <p data-i="f1_d">Один агент однаково надійно приймає вхідні дзвінки з реклами та здійснює обдзвін бази контактів.</p>
+          </div>
+          <div class="tile w2">
+            <h3 data-i="f2_t">Години за таймзоною</h3>
+            <p data-i="f2_d">ШІ ніколи не зателефонує вночі. Часовий пояс кожного абонента враховується автоматично.</p>
+          </div>
+          <div class="tile w2">
+            <h3 data-i="f3_t">SMS та месенджери</h3>
+            <p data-i="f3_d">Миттєва відправка реквізитів, номерів ТТН або адрес одразу після завершення розмови.</p>
+          </div>
+          <div class="tile w4">
+            <h3 data-i="f4_t">Аналітика та транскрипція</h3>
+            <p data-i="f4_d">Автоматичне визначення підсумку, заперечень, настрою клієнта та створення завдання у CRM.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- HOW -->
+    <!-- How It Works / Steps -->
     <section id="how">
       <div class="wrap">
-        <div class="head center rv"><span class="eyebrow" data-i="h_eyebrow"></span><h2 data-i="h_title"></h2></div>
-        <div class="steps">
-          <div class="step rv"><h3 data-i="s1t"></h3><p data-i="s1d"></p></div>
-          <div class="step rv" style="--rd:.08s"><h3 data-i="s2t"></h3><p data-i="s2d"></p></div>
-          <div class="step rv" style="--rd:.16s"><h3 data-i="s3t"></h3><p data-i="s3d"></p></div>
+        <div class="section-head">
+          <div class="eyebrow" data-i="steps_tag">ПІДКЛЮЧЕННЯ ЗА 3 КРОКИ</div>
+          <h2 class="section-title" data-i="steps_title">Як запустити Allo AI</h2>
         </div>
-      </div>
-    </section>
 
-    <!-- CONTROL + SCRIPTS -->
-    <section id="control" class="band">
-      <div class="wrap">
-        <div class="show two">
-          <div class="rv">
-            <span class="eyebrow" data-i="c_eyebrow"></span><h2 data-i="c_title"></h2><p class="sub" data-i="c_sub"></p>
-            <ul class="list">
-              <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i="c1"></span></li>
-              <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i="c2"></span></li>
-              <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i="c3"></span></li>
-            </ul>
+        <div class="steps-grid">
+          <div class="step-card">
+            <h3 data-i="s1_t">1. Налаштуйте сценарій</h3>
+            <p data-i="s1_d">Опишіть завдання, завантажте прайс і регламент. Протестуйте голос у браузері без дзвінка на телефон.</p>
           </div>
-          <div class="panel rv" style="--rd:.1s" aria-label="Interface preview">
-            <div class="panel-bar"><span data-i="p_title"></span><small data-i="p_note"></small></div>
-            <div class="panel-body">
-              <div class="kpis"><div class="kpi"><small data-i="k1"></small><strong>1 240</strong></div><div class="kpi"><small data-i="k2"></small><strong>812</strong></div><div class="kpi"><small data-i="k3"></small><strong>396</strong></div></div>
-              <div class="bars">
-                <div class="row" style="--c:var(--accent)"><span data-i="o1"></span><span class="track"><span class="fill" style="--w:78%"></span></span><b>78%</b></div>
-                <div class="row" style="--c:var(--ok)"><span data-i="o2"></span><span class="track"><span class="fill" style="--w:54%"></span></span><b>54%</b></div>
-                <div class="row" style="--c:var(--warn)"><span data-i="o3"></span><span class="track"><span class="fill" style="--w:31%"></span></span><b>31%</b></div>
-              </div>
-            </div>
+          <div class="step-card">
+            <h3 data-i="s2_t">2. Підключіть телефонію</h3>
+            <p data-i="s2_d">Підтримка стандартних SIP-транків (Binotel, Ringostat, UniTalk, Kyivstar) за 5 хвилин.</p>
+          </div>
+          <div class="step-card">
+            <h3 data-i="s3_t">3. Отримуйте закриті угоди</h3>
+            <p data-i="s3_d">Allo AI самостійно розмовляє з клієнтами, вносить дані в CRM та сповіщає вашу команду.</p>
           </div>
         </div>
 
-        <div class="show two rev" style="margin-top:110px">
-          <div class="rv">
-            <span class="eyebrow" data-i="l_eyebrow"></span><h2 data-i="l_title"></h2><p class="sub" data-i="l_sub"></p>
-          </div>
-          <div class="panel rv" style="--rd:.1s">
-            <div class="panel-bar"><span data-i="l_file"></span><small>Jinja</small></div>
-<pre class="code"><span class="c"># campaign script</span>
-<span class="k">Hi, {{ name }}! This is {{ attributes.shop }}.</span>
-Confirming order <span class="v">#{{ attributes.order_number }}</span>:
-{% <span class="k">for</span> item in attributes.products %}
-  • {{ item }}
-{% <span class="k">endfor</span> %}
-Delivery: {{ attributes.delivery_window }}. Is that right?
-<span class="c"># → rendered per call, in the customer's language</span></pre>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- STACK -->
-    <section id="stack">
-      <div class="wrap">
-        <div class="head center rv">
-          <span class="eyebrow" data-i="st_eyebrow"></span><h2 data-i="st_title"></h2><p class="sub" data-i="st_sub"></p>
-        </div>
-        <div class="chips rv" style="justify-content:center;max-width:860px;margin:0 auto">
-          <span class="chip on">STT</span><span class="chip">Deepgram</span><span class="chip">Cartesia</span><span class="chip">Voxtral</span><span class="chip">Qwen3-ASR</span>
-          <span class="chip on">TTS</span><span class="chip">Cartesia</span><span class="chip">Deepgram</span><span class="chip">Qwen3-TTS</span>
-          <span class="chip on">LLM</span><span class="chip" data-i="chip_llm"></span>
-          <span class="chip on" data-i="chip_tel"></span><span class="chip">Twilio</span><span class="chip">jambonz</span><span class="chip">SIP bridge</span>
+        <!-- Telephony & CRM Integrations -->
+        <div class="pills-cloud">
+          <span class="pill-item">Binotel</span>
+          <span class="pill-item">Ringostat</span>
+          <span class="pill-item">UniTalk</span>
+          <span class="pill-item">KeyCRM</span>
+          <span class="pill-item">HubSpot</span>
+          <span class="pill-item">Zoho</span>
+          <span class="pill-item">Asterisk</span>
+          <span class="pill-item">Custom Webhooks</span>
         </div>
       </div>
     </section>
 
     <!-- FAQ -->
-    <section id="faq" class="band">
+    <section id="faq">
       <div class="wrap">
-        <div class="head center rv"><span class="eyebrow" data-i="q_eyebrow"></span><h2 data-i="q_title"></h2></div>
-        <div class="faq rv" id="faq-list"></div>
+        <div class="section-head">
+          <div class="eyebrow" data-i="faq_tag">ПИТАННЯ ТА ВІДПОВІДІ</div>
+          <h2 class="section-title" data-i="faq_title">Часті запитання</h2>
+        </div>
+
+        <div class="faq-list" id="faq-list"></div>
       </div>
     </section>
 
-    <!-- FINAL CTA -->
-    <section>
+    <!-- Final CTA -->
+    <section style="border-bottom: 0;">
       <div class="wrap">
-        <div class="final rv">
-          <h2 data-i="fin_title"></h2><p data-i="fin_sub"></p>
-          <a class="btn btn-light cta" href="#" data-i="cta_demo"></a>
-          <div class="meter-bg" id="meter-bg" aria-hidden="true"></div>
+        <div class="final-box">
+          <h2 data-i="final_title">Готові протестувати голос Allo AI на вашому сценарії?</h2>
+          <p data-i="final_sub">Ми підготуємо демонстрацію під ваш бізнес та запустимо пілотний період на 7 днів.</p>
+          <a class="btn btn-primary cta-trigger" href="#demo" data-i="cta_demo">Замовити демо-дзвінок</a>
         </div>
       </div>
     </section>
   </main>
 
-  <footer><div class="wrap"><a class="brand" href="#top">Voxline</a><span data-i="foot"></span></div></footer>
-
-  <div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-labelledby="m-title" hidden>
-    <div class="dialog">
-      <div class="dialog-head">
-        <h3 id="m-title" data-i="m_title"></h3>
-        <button class="x" type="button" id="m-close" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  <!-- Footer -->
+  <footer>
+    <div class="wrap footer-wrap">
+      <a href="#top" class="brand" style="font-size: 16px;">Allo AI</a>
+      <span data-i="copyright">© 2026 Allo AI Platform. Всі права захищено.</span>
+      <div style="display: flex; gap: 16px;">
+        <a href="privacy.html" data-i="privacy_link">Конфіденційність</a>
       </div>
-      <p class="lead2" data-i="m_sub"></p>
-      <div class="done" id="demo-done" hidden><div class="done-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><h4 data-i="m_ok_title"></h4><p data-i="m_ok_text"></p></div>
-      <form id="demo-form" novalidate>
-        <div class="field"><label for="f-name" data-i="m_name"></label><input id="f-name" name="name" autocomplete="name" required /></div>
-        <div class="field"><label for="f-contact" data-i="m_contact"></label><input id="f-contact" name="contact" autocomplete="tel" required /></div>
-        <div class="field"><label for="f-task" data-i="m_task"></label><select id="f-task" name="task"></select></div>
-        <div class="field"><label for="f-msg" data-i="m_msg"></label><textarea id="f-msg" name="msg"></textarea></div>
-        <div class="field hp" aria-hidden="true"><label for="f-web">Website</label><input id="f-web" name="website" tabindex="-1" autocomplete="off" /></div>
-        <button class="btn btn-primary btn-block" type="submit" id="submit-lead"><span data-i="m_submit"></span></button>
-        <div class="form-msg" id="form-msg" role="alert"></div>
-        <div class="or"><span data-i="m_or"></span></div>
-        <div class="send">
-          <button class="btn btn-tg" type="button" id="send-tg"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.1 2.7 11.5c-1.3.5-1.3 1.3-.2 1.6l4.9 1.5 1.9 5.8c.2.6.1.8.7.8.5 0 .7-.2 1-.5l2.4-2.3 4.9 3.6c.9.5 1.5.2 1.7-.8l3.2-15c.3-1.3-.5-1.9-1.3-1.6zM8.4 13.6l9.4-5.9c.4-.3.8-.1.5.2l-7.8 7-.3 3.2z"/></svg><span data-i="m_tg"></span></button>
-          <button class="btn btn-wa" type="button" id="send-wa"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.6 14.2c-.2.7-1.4 1.3-1.9 1.3-.5.1-1.1.1-3.7-.9-3.1-1.3-5-4.4-5.2-4.6-.1-.2-1.2-1.6-1.2-3s.8-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.4.1.1.1.7-.1 1.4z"/></svg><span data-i="m_wa"></span></button>
+    </div>
+  </footer>
+
+  <!-- Modal Lead Form -->
+  <div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="dialog">
+      <div class="dialog-header">
+        <h3 id="modal-title" data-i="m_title">Замовити демо-дзвінок</h3>
+        <button class="close-btn" id="modal-close" type="button" aria-label="Закрити">✕</button>
+      </div>
+
+      <form id="lead-form" novalidate>
+        <div class="form-group">
+          <label for="f-name" data-i="m_name">Ваше ім'я</label>
+          <input class="form-input" id="f-name" name="name" required placeholder="Олександр" />
         </div>
-        <p class="fine" data-i="m_note"></p>
+        <div class="form-group">
+          <label for="f-contact" data-i="m_contact">Номер телефону або Telegram</label>
+          <input class="form-input" id="f-contact" name="contact" required placeholder="+380 67 ••• •• ••" />
+        </div>
+        <div class="form-group">
+          <label for="f-msg" data-i="m_msg">Коментар або сфера бізнесу</label>
+          <input class="form-input" id="f-msg" name="msg" placeholder="Інтернет-магазин автозапчастин..." />
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" id="btn-submit" data-i="m_submit">Надіслати заявку</button>
+        <div id="form-status" style="margin-top: 10px; font-size: 13px; font-weight: 600; text-align: center;" role="alert"></div>
+
+        <div style="text-align: center; margin: 16px 0 10px; font-size: 12.5px; color: var(--text-dim);" data-i="m_or">
+          або зв'яжіться з нами у месенджерах
+        </div>
+        <div class="direct-links">
+          <button class="btn btn-tg" type="button" id="btn-tg">Telegram</button>
+          <button class="btn btn-wa" type="button" id="btn-wa">WhatsApp</button>
+        </div>
       </form>
     </div>
   </div>
 
   <script>
-    // "Request a demo" opens a form with two ways to reach you:
-    //  1. "Send request" POSTs the form to LEAD_ENDPOINT (the backend's
-    //     POST /api/v1/leads, which forwards it to your Telegram bot; the bot
-    //     token stays on the server, never in this page);
-    //  2. the Telegram / WhatsApp buttons open a chat with your manager.
-    // Fill these in before publishing.
-    var LEAD_ENDPOINT = 'http://localhost:8086/api/v1/leads';  // local Docker backend; in production use your public https URL
-    var TELEGRAM_USERNAME = '';    // manager's username, without @ (optional if the phone below is on Telegram)
-    var MANAGER_PHONE = '380665898141'; // manager's number, digits with country code: used for WhatsApp and as the Telegram fallback
-    var WHATSAPP_NUMBER = MANAGER_PHONE;
-
-    var CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+    var LEAD_ENDPOINT = 'https://voxline-backend.dvms.tech/api/v1/leads';
+    var MANAGER_PHONE = '380665898141';
+    var CHECK_ICON = '<svg class="checklist-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>';
 
     var T = {
       uk: {
-        m_submit: 'Надіслати заявку', m_or: 'або напишіть менеджеру одразу', m_tg: 'Telegram', m_wa: 'WhatsApp',
-        m_ok_title: 'Дякуємо! Заявку отримано', m_ok_text: 'Ми зв’яжемося з вами найближчим часом. Якщо питання термінове, напишіть менеджеру в месенджер.', m_sending: 'Надсилаємо…',
-        m_err_net: 'Не вдалося надіслати заявку. Спробуйте ще раз або напишіть менеджеру в месенджер.', m_err_rate: 'Забагато спроб. Спробуйте пізніше або напишіть менеджеру в месенджер.',
-        m_err_lead: 'Форму ще не підключено: задайте LEAD_ENDPOINT на початку скрипта сторінки.',
-        m_note: 'Заявка надходить нашому менеджеру в Telegram. На цій сторінці дані не зберігаються.',
-        m_title: 'Замовити демо', m_sub: 'Розкажіть коротко про задачу. Ми відповімо в месенджері й покажемо агента на вашому сценарії.',
-        m_name: 'Ім’я', m_contact: 'Телефон або e-mail', m_task: 'Що хочете автоматизувати', m_msg: 'Коментар (необов’язково)',
-        m_close: 'Закрити',
-        m_err_req: 'Вкажіть ім’я та контакт, щоб ми могли вам відповісти.', m_err_cfg: 'Месенджер ще не налаштований: додайте TELEGRAM_USERNAME або WHATSAPP_NUMBER на початку скрипта сторінки.',
-        nav_for: 'Для кого', nav_world: 'Світ', nav_cases: 'Сценарії', nav_features: 'Можливості', nav_how: 'Як це працює', nav_faq: 'Питання',
+        nav_problem: 'Воронка втрат', nav_cases: 'Сценарії', nav_features: 'Можливості', nav_how: 'Як це працює', nav_faq: 'Питання',
         cta_demo: 'Замовити демо', cta_how: 'Як це працює',
-        pill: 'Голосові ШІ-агенти для бізнесу по всьому світу',
-        h1a: 'Дзвінки клієнтам,', h1b: 'які робить ШІ',
-        lead: 'Підтверджує замовлення, збирає відгуки після покупки, нагадує про доставку та запис, відповідає на вхідні. Говорить мовою клієнта, надсилає SMS після розмови й розбирає кожен дзвінок.',
-        proof1: 'Вихідні та вхідні', proof2: 'Багато мов', proof3: 'Власні STT, TTS і LLM',
-        call_name: 'Олена Коваленко', call_init: 'О', call_meta: 'UK', live: 'Триває розмова',
-        agent: 'Агент', customer: 'Клієнт',
-        sc_title: 'Кампанія «Замовлення»', sc_of: 'дзвінків із 1 240',
-        rc_title: 'Підсумок дзвінка', rc1: 'Підсумок', rc1v: 'Замовлення підтверджено', rc2: 'Зміна', rc2v: 'Доставка після 12:00', rc3: 'Настрій', rc3v: 'Позитивний', rc4: 'SMS', rc4v: 'Доставлено', rc5: 'Тривалість',
-        tr_title: 'Розшифровка',
-        fa1: 'типів підсумку розмови визначаються автоматично', fa2: 'обираєте самі: хмара чи власні сервери', fa3n: 'Дзвінки + SMS', fa3: 'в одному кабінеті, з окремим балансом', fa4n: 'Кожна мова', fa4: 'свій голос, промпти й паузи',
-        w_eyebrow: 'Для кого', w_title: 'Для бізнесу, який спілкується з клієнтами телефоном',
-        w_sub: 'Якщо співробітники витрачають години на однотипні дзвінки, а частина клієнтів лишається без відповіді, це робота для Voxline.',
-        w1t: 'Інтернет-магазини та роздріб', w1d: 'Підтвердження замовлень, уточнення адреси й часу, дзвінок щодо покинутого кошика, опитування після покупки.',
-        w2t: 'Доставка та логістика', w2d: 'Узгодження вікна доставки, нагадування про замовлення, перенесення на зручний час, фіксація відповіді.',
-        w3t: 'Сервіси та записи', w3d: 'Нагадування про візит, підтвердження запису, перенесення на прохання клієнта: салони, клініки, сервісні центри.',
-        w4t: 'Підписки та сервісні компанії', w4d: 'Нагадування про оплату, повернення клієнтів, які пішли, з’ясування причини відмови від послуги.',
-        w5t: 'Підтримка та відгуки', w5d: 'Опитування задоволеності, збір відгуків, перша лінія на вхідні запитання без черги.',
-        w6t: 'Будь-який обдзвін за списком', w6d: 'Якщо завдання можна описати сценарієм розмови, агент проведе його по всьому списку контактів.',
-        eu_eyebrow: 'По всьому світу', eu_title: 'Працюємо з клієнтами в будь-якій країні',
-        eu_sub: 'Клієнти в різних країнах, різними мовами й у різних часових поясах. Агент говорить мовою клієнта й телефонує в зручний для нього час.',
-        eu1t: 'Мова кожного клієнта', eu1d: 'Голос, промпти й паузи налаштовуються для кожної мови. Розмова йде мовою клієнта, а підсумок і статистика — вашою.',
-        eu2t: 'Місцевий час клієнта', eu2d: 'Вікно дзвінків рахується для кожного клієнта за його часовим поясом, тож дзвінки не потрапляють на ніч.',
-        eu3t: 'Ваші сервери й ваші номери', eu3d: 'Моделі розпізнавання, синтезу й мови можна тримати на власних серверах, а дзвінки вести через вашого оператора зв’язку.',
-        eu_note: 'Доступні мови залежать від обраних сервісів розпізнавання та синтезу мовлення.',
-        u_eyebrow: 'Сценарії', u_title: 'Що агент робить щодня', u_sub: 'Агент говорить за вашим сценарієм, а не за шаблоном «робота з колл-центру».',
-        f_eyebrow: 'Можливості', f_title: 'Усе для голосового обдзвону в одному місці',
-        f_sub: 'Від сценарію й розкладу до аналізу кожної розмови. Без склеювання п’яти сервісів.',
-        b1t: 'Вихідні та вхідні дзвінки', b1d: 'Один агент і телефонує, і відповідає. Паралельні дзвінки, темп набору та повторні спроби налаштовуються.',
-        b2t: 'Години дзвінків за часовим поясом клієнта', b2d: 'Агент не зателефонує вночі. Вікно дзвінків рахується для кожного клієнта окремо.', z_go: 'дзвонимо', z_wait: 'чекаємо',
-        b3t: 'Мови', b3d: 'Голос, промпти й паузи налаштовуються для кожної мови. Агент переходить на мову клієнта просто під час розмови.',
-        b4t: 'SMS після розмови', b4d: 'Агент надсилає підтвердження чи подробиці, коли вони потрібні клієнту. Доставку відстежено.', sms_text: 'Замовлення №1042 підтверджено. Доставка завтра після 12:00.', sms_meta: 'Доставлено',
-        b5t: 'Ролі та порядок', b5d: 'Дані кожної організації зберігаються окремо, права доступу залежать від ролі.',
-        b6t: 'Аналіз кожного дзвінка', b6d: 'Після розмови визначаються підсумок, настрій і причина відмови. Вони одразу потрапляють у статистику кампанії. «Не дзвонити» блокує клієнта в усіх кампаніях.',
-        h_eyebrow: 'Як це працює', h_title: 'Запуск у три кроки',
-        s1t: 'Опишіть розмову', s1d: 'Задайте інструкції, голос, мову й сценарій. Перевірте в браузері через playground, не набираючи номер.',
-        s2t: 'Завантажте контакти', s2d: 'Список із CSV або збережена аудиторія. Скрипт перевіряється для кожного рядка ще до запуску.',
-        s3t: 'Запустіть кампанію', s3d: 'Voxline телефонує в дозволені години, робить повторні спроби й показує підсумок кожного дзвінка.',
-        c_eyebrow: 'Контроль', c_title: 'Видно, що сталося в кожному дзвінку',
-        c_sub: 'Ви бачите всю кампанію цілком і можете відкрити будь-який діалог.',
-        c1: 'Підсумок розмови, настрій і причина відмови для кожного дзвінка', c2: 'Статистика кампаній, дзвінків і SMS із вивантаженням у CSV та XLSX', c3: 'Баланс, тарифи й історія операцій за дзвінками та SMS окремо',
-        p_title: 'Підсумки кампанії', p_note: 'Макет інтерфейсу', k1: 'Дзвінків', k2: 'Відповіли', k3: 'SMS',
-        o1: 'Підтвердили', o2: 'Задоволені', o3: 'Передзвонити', o4: 'Не дзвонити',
-        l_eyebrow: 'Сценарії', l_title: 'Персональна розмова для кожного клієнта',
-        l_sub: 'Сценарій — це шаблон. Ім’я, номер замовлення, склад і будь-які дані клієнта підставляються в момент дзвінка. Агент знає, з ким і про що говорить.',
-        l_file: 'Сценарій кампанії',
-        st_eyebrow: 'Технології', st_title: 'Не прив’язані до одного постачальника',
-        st_sub: 'Для розпізнавання мовлення, синтезу й мовної моделі ви обираєте сервіси самі: хмарні або власні на своїх серверах. Змінюєте налаштування, а не код.',
-        chip_llm: 'Будь-який OpenAI-сумісний', chip_tel: 'Телефонія',
-        q_eyebrow: 'Питання', q_title: 'Часті запитання',
-        fin_title: 'Готові почути, як це звучить?', fin_sub: 'Покажемо агента на вашому сценарії, наприклад на підтвердженні замовлень, і обговоримо запуск першої кампанії.',
-        foot: '© Voxline. Голосові ШІ-агенти для бізнесу.'
+        pill: 'ШІ-ОПЕРАТОР РЕАЛЬНОГО ЧАСУ 24/7',
+        hero_title: 'Дзвінки клієнтам, які виконує ШІ із затримкою 240 мс',
+        hero_sub: 'Підтверджує замовлення, нагадує про записи, кваліфікує ліди та відповідає на вхідні без черги. Говорить живою мовою, фіксує підсумок у CRM та надсилає SMS.',
+        proof_1: '0 секунд очікування на лінії', proof_2: 'Живе перебивання (Barge-in)', proof_3: '1 000 ліній одночасно',
+        agent_label: 'ШІ-Оператор Катерина', crm_sync_status: 'CRM SYNC COMPLETED',
+        prob_tag: 'ВОРОНКА ВТРАТ', prob_title: 'Куди зникають 42% ваших лідів із реклами?', prob_desc: 'Кожна секунда затримки або пропущений дзвінок віддає клієнта конкурентам.',
+        p1_t: 'Злиті дзвінки після 18:00', p1_d: 'У неробочий час та у вихідні дні дзвінки потрапляють на автовідповідач. 8 з 10 покупців не чекають ранку.',
+        p2_t: 'Скидання через очікування', p2_d: 'Якщо лінія зайнята понад 20 секунд у пікові години реклами — клієнт кладе слухавку.',
+        p3_t: 'Людський фактор', p3_d: 'Втома співробітників, забуті коментарі в CRM, пропущені етапи кваліфікації та невчасно надіслані реквізити.',
+        cases_tag: 'РЕАЛЬНІ СЦЕНАРІЇ', cases_title: 'Що агент виконує у вашому бізнесі', cases_desc: 'Розмова ведеться за вашим регламентом і бізнес-правилами.',
+        feat_tag: 'МОЖЛИВОСТІ', feat_title: 'Інженерна точність та швидкість',
+        f1_t: 'Вхідні та вихідні кампанії', f1_d: 'Один агент однаково надійно приймає вхідні дзвінки з реклами та здійснює обдзвін бази контактів.',
+        f2_t: 'Години за таймзоною', f2_d: 'ШІ ніколи не зателефонує вночі. Часовий пояс кожного абонента враховується автоматично.',
+        f3_t: 'SMS та месенджери', f3_d: 'Миттєва відправка реквізитів, номерів ТТН або адрес одразу після завершення розмови.',
+        f4_t: 'Аналітика та транскрипція', f4_d: 'Автоматичне визначення підсумку, заперечень, настрою клієнта та створення завдання у CRM.',
+        steps_tag: 'ПІДКЛЮЧЕННЯ ЗА 3 КРОКИ', steps_title: 'Як запустити Allo AI',
+        s1_t: '1. Налаштуйте сценарій', s1_d: 'Опишіть завдання, завантажте прайс і регламент. Протестуйте голос у браузері без дзвінка на телефон.',
+        s2_t: '2. Підключіть телефонію', s2_d: 'Підтримка стандартних SIP-транків (Binotel, Ringostat, UniTalk, Kyivstar) за 5 хвилин.',
+        s3_t: '3. Отримуйте закриті угоди', s3_d: 'Allo AI самостійно розмовляє з клієнтами, вносить дані в CRM та сповіщає вашу команду.',
+        faq_tag: 'ПИТАННЯ ТА ВІДПОВІДІ', faq_title: 'Часті запитання',
+        final_title: 'Готові протестувати голос Allo AI на вашому сценарії?', final_sub: 'Ми підготуємо демонстрацію під ваш бізнес та запустимо пілотний період на 7 днів.',
+        copyright: '© 2026 Allo AI Platform. Всі права захищено.', privacy_link: 'Конфіденційність',
+        m_title: 'Замовити демо-дзвінок', m_name: 'Ваше ім\'я', m_contact: 'Номер телефону або Telegram', m_msg: 'Коментар або сфера бізнесу',
+        m_submit: 'Надіслати заявку', m_or: 'або зв\'яжіться з нами у месенджерах'
       },
       en: {
-        m_submit: 'Send request', m_or: 'or message a manager right away', m_tg: 'Telegram', m_wa: 'WhatsApp',
-        m_ok_title: 'Thank you! Request received', m_ok_text: 'We’ll get back to you shortly. If it’s urgent, message a manager in a messenger.', m_sending: 'Sending…',
-        m_err_net: 'Could not send the request. Try again or message a manager in a messenger.', m_err_rate: 'Too many attempts. Try later or message a manager in a messenger.',
-        m_err_lead: 'The form is not connected yet: set LEAD_ENDPOINT at the top of the page script.',
-        m_note: 'The request goes to our manager on Telegram. Nothing is stored on this page.',
-        m_title: 'Request a demo', m_sub: 'Tell us briefly about the task. We’ll reply in a messenger and show the agent on your own script.',
-        m_name: 'Name', m_contact: 'Phone or e-mail', m_task: 'What do you want to automate', m_msg: 'Comment (optional)',
-        m_close: 'Close',
-        m_err_req: 'Please add your name and a contact so we can reply.', m_err_cfg: 'This messenger is not set up yet: add TELEGRAM_USERNAME or WHATSAPP_NUMBER at the top of the page script.',
-        nav_for: 'Who it’s for', nav_world: 'Worldwide', nav_cases: 'Use cases', nav_features: 'Features', nav_how: 'How it works', nav_faq: 'FAQ',
-        cta_demo: 'Request a demo', cta_how: 'How it works',
-        pill: 'AI voice agents for business, worldwide',
-        h1a: 'Customer calls', h1b: 'made by AI',
-        lead: 'Confirms orders, collects feedback after a purchase, reminds about deliveries and appointments, and answers inbound calls. Speaks the customer’s language, texts after the conversation and breaks down every call.',
-        proof1: 'Outbound and inbound', proof2: 'Multiple languages', proof3: 'Bring your own STT, TTS, LLM',
-        call_name: 'Olena Kovalenko', call_init: 'O', call_meta: 'EN', live: 'Live call',
-        agent: 'Agent', customer: 'Customer',
-        sc_title: 'Campaign “Orders”', sc_of: 'calls of 1,240',
-        rc_title: 'Call result', rc1: 'Outcome', rc1v: 'Order confirmed', rc2: 'Change', rc2v: 'Delivery after 12:00', rc3: 'Sentiment', rc3v: 'Positive', rc4: 'SMS', rc4v: 'Delivered', rc5: 'Duration',
-        tr_title: 'Transcript',
-        fa1: 'conversation outcomes detected automatically', fa2: 'your choice: cloud or your own servers', fa3n: 'Calls + SMS', fa3: 'in one workspace, with separate balances', fa4n: 'Every language', fa4: 'its own voice, prompts and pauses',
-        w_eyebrow: 'Who it’s for', w_title: 'For businesses that talk to customers by phone',
-        w_sub: 'If your team spends hours on repetitive calls and some customers never get an answer, this is the job for Voxline.',
-        w1t: 'Online stores and retail', w1d: 'Order confirmation, checking address and time, abandoned-cart calls, post-purchase surveys.',
-        w2t: 'Delivery and logistics', w2d: 'Agreeing a delivery window, order reminders, rescheduling to a convenient time, recording the answer.',
-        w3t: 'Services and bookings', w3d: 'Visit reminders, booking confirmation, rescheduling on request: salons, clinics, service centers.',
-        w4t: 'Subscriptions and service companies', w4d: 'Payment reminders, winning back lapsed customers, finding out why someone left.',
-        w5t: 'Support and feedback', w5d: 'Satisfaction surveys, collecting reviews, a first line for inbound questions with no queue.',
-        w6t: 'Any call-down list', w6d: 'If the task can be written as a conversation script, the agent will run it across your whole contact list.',
-        eu_eyebrow: 'Worldwide', eu_title: 'We work with customers in any country',
-        eu_sub: 'Customers in different countries, languages and time zones. The agent speaks the customer’s language and calls at a sensible local time.',
-        eu1t: 'Each customer’s language', eu1d: 'Voice, prompts and pauses are set per language. The call runs in the customer’s language while your summary and statistics stay in yours.',
-        eu2t: 'Local time, per customer', eu2d: 'The calling window is evaluated in each customer’s time zone, so calls never land in the middle of the night.',
-        eu3t: 'Your servers, your numbers', eu3d: 'Speech recognition, synthesis and language models can run on your own servers, and calls go through your own carrier.',
-        eu_note: 'Available languages depend on the speech recognition and synthesis services you choose.',
-        u_eyebrow: 'Use cases', u_title: 'What the agent does every day', u_sub: 'The agent follows your script instead of sounding like a call-center robot.',
-        f_eyebrow: 'Features', f_title: 'Everything for voice outreach in one place',
-        f_sub: 'From script and schedule to analysis of every conversation. No stitching five services together.',
-        b1t: 'Outbound and inbound calls', b1d: 'One agent both places and answers calls. Parallel calls, dialing pace and retries are configurable.',
-        b2t: 'Calling hours in the customer’s time zone', b2d: 'The agent won’t call at night. The calling window is evaluated per customer.', z_go: 'calling', z_wait: 'waiting',
-        b3t: 'Languages', b3d: 'Voice, prompts and pauses are set per language. The agent switches to the customer’s language mid-call.',
-        b4t: 'SMS after the call', b4d: 'The agent sends a confirmation or details when the customer needs them. Delivery is tracked.', sms_text: 'Order #1042 confirmed. Delivery tomorrow after 12:00.', sms_meta: 'Delivered',
-        b5t: 'Roles and order', b5d: 'Each organization’s data is stored separately and access depends on role.',
-        b6t: 'Analysis of every call', b6d: 'After the conversation the outcome, sentiment and refusal reason are detected and flow straight into campaign statistics. “Do not call” blocks the customer across all campaigns.',
-        h_eyebrow: 'How it works', h_title: 'Live in three steps',
-        s1t: 'Describe the conversation', s1d: 'Define instructions, voice, language and the script. Try it in the browser playground without dialing a number.',
-        s2t: 'Upload contacts', s2d: 'A CSV list or a saved audience. The script is checked for every row before anything starts.',
-        s3t: 'Launch the campaign', s3d: 'Voxline calls within allowed hours, retries on its own and shows the result of every call.',
-        c_eyebrow: 'Insight', c_title: 'See what happened on every call',
-        c_sub: 'You get the whole campaign at a glance and can open any dialogue.',
-        c1: 'Outcome, sentiment and refusal reason for every call', c2: 'Campaign, call and SMS statistics with CSV and XLSX export', c3: 'Balance, tariffs and transaction history for calls and SMS, kept separate',
-        p_title: 'Campaign results', p_note: 'Interface mock-up', k1: 'Calls', k2: 'Answered', k3: 'SMS',
-        o1: 'Confirmed', o2: 'Satisfied', o3: 'Call back', o4: 'Do not call',
-        l_eyebrow: 'Scripts', l_title: 'A personal conversation for every customer',
-        l_sub: 'A script is a template. Name, order number, items and any customer data are filled in at call time. The agent knows who it is talking to and about what.',
-        l_file: 'Campaign script',
-        st_eyebrow: 'Stack', st_title: 'Not locked to a single vendor',
-        st_sub: 'For speech recognition, synthesis and the language model you pick the services: cloud APIs or your own models on your own servers. Change a setting, not the code.',
-        chip_llm: 'Any OpenAI-compatible', chip_tel: 'Telephony',
-        q_eyebrow: 'FAQ', q_title: 'Frequently asked questions',
-        fin_title: 'Ready to hear how it sounds?', fin_sub: 'We’ll show the agent on your own script, for example order confirmation, and talk through launching your first campaign.',
-        foot: '© Voxline. AI voice agents for business.'
+        nav_problem: 'Leakage Funnel', nav_cases: 'Use Cases', nav_features: 'Features', nav_how: 'How It Works', nav_faq: 'FAQ',
+        cta_demo: 'Request Demo', cta_how: 'How It Works',
+        pill: 'REAL-TIME VOICE AI AGENT 24/7',
+        hero_title: 'Customer calls handled by AI with 240ms latency',
+        hero_sub: 'Confirms orders, schedules bookings, qualifies leads and answers incoming calls without queues. Speaks natural language, syncs deals to CRM, and sends SMS.',
+        proof_1: '0 seconds queue wait time', proof_2: 'Live interruption (Barge-in)', proof_3: '1,000 concurrent lines',
+        agent_label: 'AI Operator Catherine', crm_sync_status: 'CRM SYNC COMPLETED',
+        prob_tag: 'LEAD LEAKAGE', prob_title: 'Where do 42% of your advertising leads go?', prob_desc: 'Every second of queue delay or missed call hands customers directly to competitors.',
+        p1_t: 'Calls lost after 6:00 PM', p1_d: 'After hours and on weekends, incoming calls hit voicemail. 8 out of 10 buyers will not wait until morning.',
+        p2_t: 'Queue dropouts', p2_d: 'If your lines are busy for over 20 seconds during ad spikes — the customer simply hangs up.',
+        p3_t: 'Human error & fatigue', p3_d: 'Tired staff, forgotten CRM notes, missed qualification stages, and delayed payment details.',
+        cases_tag: 'USE CASES', cases_title: 'What Allo AI handles for your business', cases_desc: 'Conversations follow your exact business logic and rules.',
+        feat_tag: 'CAPABILITIES', feat_title: 'Engineering precision & velocity',
+        f1_t: 'Inbound & outbound campaigns', f1_d: 'One agent handles incoming ad traffic and executes high-volume customer contact list campaigns.',
+        f2_t: 'Timezone-aware scheduling', f2_d: 'AI never calls at night. Each customer timezone is evaluated dynamically before dialing.',
+        f3_t: 'SMS & messaging sync', f3_d: 'Instant dispatch of invoices, tracking numbers, or booking details immediately after the call.',
+        f4_t: 'Deep sentiment analytics', f4_d: 'Automated outcome tagging, objection recording, sentiment analysis, and task creation in CRM.',
+        steps_tag: '3-STEP SETUP', steps_title: 'How to launch Allo AI',
+        s1_t: '1. Configure script', s1_d: 'Define goals, upload product catalogs and rules. Test the agent voice in browser playground.',
+        s2_t: '2. Connect telephony', s2_d: 'Integrate standard SIP trunks (Twilio, Asterisk, Binotel, UniTalk) in under 5 minutes.',
+        s3_t: '3. Receive closed deals', s3d: 'Allo AI conducts calls, logs data to CRM, and sends structured summaries to your team.',
+        faq_tag: 'FAQ', faq_title: 'Frequently Asked Questions',
+        final_title: 'Ready to test Allo AI on your exact scenario?', final_sub: 'We will configure a live demo tailored to your company and activate a 7-day pilot.',
+        copyright: '© 2026 Allo AI Platform. All rights reserved.', privacy_link: 'Privacy Policy',
+        m_title: 'Request a Demo Call', m_name: 'Your Name', m_contact: 'Phone Number or Telegram', m_msg: 'Comment or Business Type',
+        m_submit: 'Submit Request', m_or: 'or message our manager directly'
       }
     };
 
-    var DEMO = {
+    var CASES_DATA = {
       uk: [
-        ['bot', 'Добрий день, Олено! Це магазин «Nord». Підтверджуємо замовлення №1042: навушники, доставка завтра з 10 до 14. Усе вірно?'],
-        ['cust', 'Так, але привезіть, будь ласка, після 12.'],
-        ['bot', 'Записав: доставка після 12:00. Зараз надішлю підтвердження в SMS.']
+        {
+          tab: 'Підтвердження замовлень',
+          title: 'Підтвердження 100% замовлень за перші 30 секунд',
+          desc: 'Агент телефонує одразу після оформлення кошика, звіряє товари, адресу доставки й надсилає SMS.',
+          bullets: ['Автоматичне підставлення номеру та суми замовлення', 'Фіксація побажань щодо часу доставки у CRM', 'Миттєве надсилання SMS із реквізитами'],
+          dialogue: [
+            { who: 'Allo AI', time: '0:02', text: 'Вітаю, Олено! Це магазин «Nord». Підтверджуємо замовлення №1042: доставка завтра після 14:00. Усе вірно?' },
+            { who: 'Клієнт', time: '0:11', text: 'Так, але надішліть, будь ласка, реквізити для оплати в SMS.' },
+            { who: 'Allo AI', time: '0:18', text: 'Звісно! Реквізити вже надіслано на ваш номер. Дякуємо за замовлення!' }
+          ]
+        },
+        {
+          tab: 'Записи та візити',
+          title: 'Нагадування про візити та скорочення неявок на 45%',
+          desc: 'Агент нагадує про запис за добу, підтверджує присутність або пропонує зручний перенос.',
+          bullets: ['Синхронізація з графіком лікарів та CRM', 'Миттєве звільнення вікна у разі скасування', 'Зниження навантаження на адміністраторів'],
+          dialogue: [
+            { who: 'Allo AI', time: '0:02', text: 'Доброго дня! Нагадуємо про візит до клініки завтра о 14:00. Чи плануєте бути?' },
+            { who: 'Клієнт', time: '0:09', text: 'Так, обов\'язково буду.' },
+            { who: 'Allo AI', time: '0:15', text: 'Чудово! Чекаємо на вас. Надіслав схему проїзду в повідомленні.' }
+          ]
+        },
+        {
+          tab: 'Вечірні ліди',
+          title: 'Жоден нічний клієнт не піде до конкурентів',
+          desc: 'Allo AI підхоплює дзвінки після 18:00, проводить кваліфікацію та фіксує заявку в CRM.',
+          bullets: ['Миттєва відповідь на 1-й секунді без черги', 'Кваліфікація бюджету та потреби клієнта', 'Створена угода у CRM чекає менеджера на ранок'],
+          dialogue: [
+            { who: 'Клієнт', time: '0:02', text: 'Добрий вечір! Чи працюєте ви зараз? Хочу дізнатися вартість.' },
+            { who: 'Allo AI', time: '0:08', text: 'Вітаю! Наш офіс відкриється о 9:00, але я можу розрахувати вартість та зареєструвати заявку просто зараз.' }
+          ]
+        }
       ],
       en: [
-        ['bot', 'Hi Olena, this is Nord Store. Confirming order #1042: headphones, delivery tomorrow between 10 and 2. Is that right?'],
-        ['cust', 'Yes, but please come after 12.'],
-        ['bot', 'Noted: delivery after 12:00. I’ll text you a confirmation now.']
+        {
+          tab: 'Order Confirmation',
+          title: 'Confirm 100% of orders within 30 seconds',
+          desc: 'AI calls immediately after checkout, verifies items and address, and sends SMS details.',
+          bullets: ['Automatic merge of order number and items', 'Delivery window updates recorded to CRM', 'Instant SMS confirmation sent to customer'],
+          dialogue: [
+            { who: 'Allo AI', time: '0:02', text: 'Hello Elena! Nord Store confirming order #1042: delivery tomorrow after 2 PM. Is everything correct?' },
+            { who: 'Customer', time: '0:11', text: 'Yes, but please text me payment details via SMS.' },
+            { who: 'Allo AI', time: '0:18', text: 'Done! Payment details have been texted to your number. Thank you!' }
+          ]
+        },
+        {
+          tab: 'Appointments & Clinics',
+          title: 'Remind about bookings and cut no-shows by 45%',
+          desc: 'AI reminds patients in advance, confirms attendance, or reschedules appointments.',
+          bullets: ['Direct sync with staff calendars & CRM', 'Instant slot release upon cancellation', 'Eliminates repetitive admin phone calls'],
+          dialogue: [
+            { who: 'Allo AI', time: '0:02', text: 'Hello! Reminding you about your clinic appointment tomorrow at 2:00 PM. Will you attend?' },
+            { who: 'Customer', time: '0:09', text: 'Yes, I will definitely be there.' },
+            { who: 'Allo AI', time: '0:15', text: 'Great! Looking forward to seeing you. Directions have been texted.' }
+          ]
+        },
+        {
+          tab: 'After-Hours Leads',
+          title: 'Never lose evening customers to competitors',
+          desc: 'Allo AI answers calls after 6:00 PM and on weekends, qualifies budget, and logs deals.',
+          bullets: ['Instant pickup on the 1st second', 'Lead urgency and budget qualification', 'Structured CRM deal waiting in the morning'],
+          dialogue: [
+            { who: 'Customer', time: '0:02', text: 'Good evening! Are you open right now? I need a quote.' },
+            { who: 'Allo AI', time: '0:08', text: 'Hello! Our office opens at 9 AM, but I can calculate your quote and register the request right now.' }
+          ]
+        }
       ]
     };
 
-    var CASES = {
+    var FAQ_DATA = {
       uk: [
-        { tab: 'Підтвердження замовлень', h: 'Підтверджуйте замовлення, поки їх не відправили', p: 'Агент телефонує одразу після оформлення, звіряє склад, адресу й час і фіксує відповідь.', li: ['Дані замовлення підставляються в розмову з вашого списку', 'Прохання змінити час чи адресу потрапляє в підсумок дзвінка', 'Клієнту надходить SMS із підтвердженням'],
-          dlg: [['bot', 'Вітаю! Підтверджуємо замовлення №1042 на завтра. Адреса доставки та сама?'], ['cust', 'Ні, привезіть на роботу, вул. Садова, 5.'], ['bot', 'Записав нову адресу. Надішлю підтвердження в SMS.']] },
-        { tab: 'Відгуки', h: 'Дізнавайтеся думку клієнтів після покупки', p: 'Агент ставить кілька коротких запитань, записує відповіді й визначає настрій розмови.', li: ['Оцінка та причина невдоволення потрапляють у статистику', 'Невдоволені клієнти видно одразу, а не за місяць', 'Розшифровка кожного діалогу доступна в історії'],
-          dlg: [['bot', 'Добрий день! Ви отримали замовлення вчора. Як вам покупка?'], ['cust', 'Усе добре, але пакування зім’ялося.'], ['bot', 'Дякую, передам. Оцініть, будь ласка, обслуговування від 1 до 5.']] },
-        { tab: 'Доставка й нагадування', h: 'Узгоджуйте час і скорочуйте невдалі доставки', p: 'Агент телефонує напередодні, уточнює зручне вікно й переносить візит, якщо клієнт просить.', li: ['Дзвінки в розумні години за часовим поясом клієнта', 'Прохання передзвонити пізніше ставить повтор на названий час', 'Підсумок кожного дзвінка видно в статистиці кампанії'],
-          dlg: [['bot', 'Добрий день! Кур’єр буде завтра з 10 до 14. Вам підходить?'], ['cust', 'Краще ввечері.'], ['bot', 'Добре, передам. Ми вам зателефонуємо з новим часом.']] },
-        { tab: 'Повернення клієнтів', h: 'Поверніть тих, хто давно не купував', p: 'Агент телефонує за списком, пропонує персональну умову й надсилає подробиці в SMS.', li: ['Дані клієнта підставляються в сценарій просто в розмові', 'Тим, кого зацікавило, надходить SMS із подробицями', 'Ті, хто відмовився з позначкою «не дзвонити», виключаються з усіх кампаній'],
-          dlg: [['bot', 'Вітаю! Давно вас не бачили, є пропозиція саме для вас.'], ['cust', 'Цікаво, розкажіть.'], ['bot', 'З радістю. Надішлю подробиці в SMS.']] },
-        { tab: 'Вхідні', h: 'Відповідайте на дзвінки без черги', p: 'Агент відповідає одразу, розуміє питання й передає підсумок команді.', li: ['Відповідає мовою абонента й може змінити її під час розмови', 'Тривалість розмови та паузи задаються в налаштуваннях', 'Кожен діалог доступний в історії з розшифровкою'],
-          dlg: [['cust', 'Підкажіть, де моє замовлення?'], ['bot', 'Звісно. Назвіть, будь ласка, номер замовлення.'], ['cust', 'Тисяча сорок два.']] }
+        ['Чи помітять клієнти, що це штучний інтелект?', 'Завдяки затримці відгуку 240 мс та здатності розпізнавати перебивання (Barge-in), понад 92% клієнтів ведуть розмову як зі звичайним ввічливим співробітником.'],
+        ['Як підключити мій існуючий номер телефону?', 'Allo AI підключається до будь-якої віртуальної АТС (Binotel, Ringostat, UniTalk, Kyivstar) через стандартний SIP-транк за 5 хвилин.'],
+        ['Чи можна навчити агента на нашій специфіці?', 'Так. Ви завантажуєте регламент, прайс-лист, часті запитання та правила роботи з запереченнями у базу знань.'],
+        ['Як дані передаються в нашу CRM?', 'Після завершення розмови аудіозапис, текстовий транскрипт та розпізнані поля автоматично передаються у KeyCRM, HubSpot або через Webhook.']
       ],
       en: [
-        { tab: 'Order confirmation', h: 'Confirm orders before they ship', p: 'The agent calls right after checkout, checks items, address and time, and records the answer.', li: ['Order data is merged into the conversation from your list', 'A request to change time or address lands in the call result', 'The customer gets a confirmation SMS'],
-          dlg: [['bot', 'Hello! Confirming order #1042 for tomorrow. Is the delivery address unchanged?'], ['cust', 'No, please bring it to my office, 5 Garden St.'], ['bot', 'New address noted. I’ll text you a confirmation.']] },
-        { tab: 'Feedback', h: 'Hear from customers after they buy', p: 'The agent asks a few short questions, records the answers and detects the sentiment of the call.', li: ['Ratings and reasons for dissatisfaction go straight into statistics', 'Unhappy customers show up at once, not a month later', 'A transcript of every dialogue is in history'],
-          dlg: [['bot', 'Hi! You received your order yesterday. How is the purchase?'], ['cust', 'Great, but the box was dented.'], ['bot', 'Thanks, I’ll pass that on. Could you rate our service from 1 to 5?']] },
-        { tab: 'Delivery and reminders', h: 'Agree on a time and cut failed deliveries', p: 'The agent calls the day before, checks the convenient window and reschedules if the customer asks.', li: ['Calls at sensible hours in the customer’s own time zone', 'A “call me later” sets a retry for the time the customer names', 'The result of every call shows up in campaign statistics'],
-          dlg: [['bot', 'Hello! The courier arrives tomorrow between 10 and 2. Does that work?'], ['cust', 'Evening would be better.'], ['bot', 'Sure, I’ll pass that on. We’ll call back with a new time.']] },
-        { tab: 'Win-back', h: 'Bring back customers who stopped buying', p: 'The agent works through a list, makes a personal offer and texts the details.', li: ['Customer data is merged into the script during the call', 'Interested customers get an SMS with the details', 'Anyone who says “do not call” is excluded from every campaign'],
-          dlg: [['bot', 'Hi! We haven’t seen you in a while and have an offer just for you.'], ['cust', 'Sounds interesting, tell me more.'], ['bot', 'Happily. I’ll text you the details.']] },
-        { tab: 'Inbound', h: 'Answer calls without a queue', p: 'The agent picks up at once, understands the question and hands the result to your team.', li: ['Answers in the caller’s language and can switch mid-call', 'Call length and pause behaviour are set in configuration', 'Every dialogue is in history with a transcript'],
-          dlg: [['cust', 'Where is my order?'], ['bot', 'Of course. Could you give me the order number?'], ['cust', 'One thousand forty-two.']] }
+        ['Will customers notice they are speaking to AI?', 'With sub-240ms latency and real-time interruption (Barge-in), over 92% of customers converse naturally as with a polite human agent.'],
+        ['How do I connect my existing phone numbers?', 'Allo AI connects to any IP telephony provider (Twilio, Asterisk, Ringostat, Binotel) via standard SIP trunking in 5 minutes.'],
+        ['Can I train the agent on our specific script and prices?', 'Yes. Upload your product catalog, knowledge base, objections handling, and business rules directly in the dashboard.'],
+        ['How is data synchronized with our CRM?', 'Audio recordings, transcripts, call outcomes, and extracted parameters automatically sync to KeyCRM, HubSpot, or custom webhooks.']
       ]
     };
 
-    var FAQ = {
-      uk: [
-        ['Для якого бізнесу це підходить?', 'Для будь-якого, де клієнтам потрібно телефонувати за списком або відповідати на однотипні дзвінки: магазини, доставка, сервіси й записи, підписки, підтримка.'],
-        ['Чи працюєте ви в різних країнах?', 'Так. Мова розмови, часовий пояс і телефонія налаштовуються для кожного клієнта. Доступні мови залежать від обраних сервісів розпізнавання й синтезу мовлення.'],
-        ['Чи потрібна власна телефонія?', 'Так, дзвінки йдуть через ваш канал. Підтримуються Twilio, jambonz і SIP-міст. Який підключити, вирішуєте ви.'],
-        ['Чи можна використовувати власні моделі?', 'Так. Для розпізнавання мовлення, синтезу та мовної моделі можна обрати хмарні сервіси або власні моделі на своїх серверах, зокрема будь-який OpenAI-сумісний LLM.'],
-        ['Чи не зателефонує агент уночі?', 'Для кампанії задаються години дзвінків. Вони враховуються за часовим поясом кожного клієнта, а повторні спроби йдуть за заданою політикою.'],
-        ['Що, якщо клієнт просить більше не дзвонити?', 'Агент фіксує підсумок «не дзвонити». Клієнта позначено й виключено з очікуваних дзвінків у всіх кампаніях.'],
-        ['Чи можна перевірити агента до запуску?', 'Так. У браузері є playground: ви розмовляєте з агентом голосом, без телефонного дзвінка.'],
-        ['Як зберігаються дані кількох компаній?', 'У кожної організації своя база даних і свої користувачі з ролями. Дані різних організацій не змішуються.']
-      ],
-      en: [
-        ['What kind of business is this for?', 'Any business that needs to call customers from a list or answer repetitive calls: stores, delivery, services and bookings, subscriptions, support.'],
-        ['Do you work in different countries?', 'Yes. The call language, time zone and telephony are set per customer. Available languages depend on the speech recognition and synthesis services you choose.'],
-        ['Do I need my own telephony?', 'Yes, calls go through your own channel. Twilio, jambonz and a SIP bridge are supported; which one to connect is up to you.'],
-        ['Can I use my own models?', 'Yes. For speech recognition, synthesis and the language model you can pick cloud services or your own models on your own servers, including any OpenAI-compatible LLM.'],
-        ['Will the agent call at night?', 'Calling hours are set per campaign and evaluated in each customer’s time zone, and retries follow the policy you define.'],
-        ['What if a customer asks not to be called again?', 'The agent records a “do not call” outcome. The customer is flagged and removed from pending calls in every campaign.'],
-        ['Can I test the agent before launch?', 'Yes. The browser playground lets you talk to the agent by voice, with no phone call.'],
-        ['How is data from several companies kept apart?', 'Every organization has its own database and its own users with roles. Data from different organizations is never mixed.']
-      ]
-    };
+    var currentLang = 'uk';
+    var activeCaseIndex = 0;
 
-    var html = document.documentElement, lang = 'uk', caseIdx = 0;
-
-    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
-
-    function renderCase() {
-      var c = CASES[lang][caseIdx];
-      var d = T[lang];
-      document.getElementById('case').innerHTML =
-        '<div><h3>' + esc(c.h) + '</h3><p>' + esc(c.p) + '</p><ul>' +
-        c.li.map(function (x) { return '<li>' + CHECK + '<span>' + esc(x) + '</span></li>'; }).join('') + '</ul></div>' +
-        '<div class="mini"><ol class="tr">' + transcript(c.dlg) + '</ol></div>';
-      document.getElementById('tabs').innerHTML = CASES[lang].map(function (x, i) {
-        return '<button type="button" role="tab" aria-selected="' + (i === caseIdx) + '" data-case="' + i + '">' + esc(x.tab) + '</button>';
+    function renderCases() {
+      var cases = CASES_DATA[currentLang];
+      var activeCase = cases[activeCaseIndex];
+      
+      // Tabs
+      document.getElementById('tabs-bar').innerHTML = cases.map(function(c, idx) {
+        return '<button class="tab-btn" type="button" role="tab" aria-selected="' + (idx === activeCaseIndex) + '" data-idx="' + idx + '">' + c.tab + '</button>';
       }).join('');
-      document.querySelectorAll('[data-case]').forEach(function (b) {
-        b.addEventListener('click', function () { caseIdx = +b.getAttribute('data-case'); renderCase(); });
+
+      document.querySelectorAll('#tabs-bar .tab-btn').forEach(function(b) {
+        b.addEventListener('click', function() {
+          activeCaseIndex = +b.getAttribute('data-idx');
+          renderCases();
+        });
       });
+
+      // Panel
+      document.getElementById('case-panel').innerHTML =
+        '<div>' +
+          '<h3>' + activeCase.title + '</h3>' +
+          '<p>' + activeCase.desc + '</p>' +
+          '<ul class="checklist">' +
+            activeCase.bullets.map(function(b) { return '<li>' + CHECK_ICON + '<span>' + b + '</span></li>'; }).join('') +
+          '</ul>' +
+        '</div>' +
+        '<div class="case-dialogue">' +
+          activeCase.dialogue.map(function(d) {
+            return '<div class="utterance' + (d.who !== 'Allo AI' ? ' caller' : '') + '">' +
+              '<time>' + d.time + '</time>' +
+              '<div><strong>' + d.who + '</strong><p>' + d.text + '</p></div>' +
+            '</div>';
+          }).join('') +
+        '</div>';
     }
 
-    // A call is a transcript with timecodes, not a chat. Static, shown at once.
-    var STAMPS = ['0:03', '0:09', '0:15'];
-    function transcript(list) {
-      var d = T[lang];
-      return list.map(function (m, i) {
-        return '<li class="' + m[0] + '"><time>' + STAMPS[i] + '</time><b>' + (m[0] === 'bot' ? d.agent : d.customer) + '</b><p>' + esc(m[1]) + '</p></li>';
+    function renderFaq() {
+      var faqs = FAQ_DATA[currentLang];
+      document.getElementById('faq-list').innerHTML = faqs.map(function(item, idx) {
+        return '<details class="faq-item"' + (idx === 0 ? ' open' : '') + '>' +
+          '<summary class="faq-q">' + item[0] + '</summary>' +
+          '<div class="faq-a">' + item[1] + '</div>' +
+        '</details>';
       }).join('');
     }
-    function renderDemo() {
-      document.getElementById('chat').innerHTML = transcript(DEMO[lang]);
-    }
 
-    function render() {
-      html.lang = lang;
-      var d = T[lang];
-      document.querySelectorAll('[data-i]').forEach(function (el) { el.textContent = d[el.getAttribute('data-i')] || ''; });
-      document.title = lang === 'uk' ? 'Voxline — голосові ШІ-агенти для дзвінків' : 'Voxline — AI voice agents for phone calls';
-      document.querySelectorAll('[data-lang]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang)); });
-      document.getElementById('faq-list').innerHTML = FAQ[lang].map(function (q, i) {
-        return '<details' + (i === 0 ? ' open' : '') + '><summary>' + esc(q[0]) + '</summary><p>' + esc(q[1]) + '</p></details>';
+    function renderHeroDialogue() {
+      var d = CASES_DATA[currentLang][0].dialogue;
+      document.getElementById('transcript-box').innerHTML = d.map(function(item) {
+        return '<div class="utterance' + (item.who !== 'Allo AI' ? ' caller' : '') + '">' +
+          '<time>' + item.time + '</time>' +
+          '<div><strong>' + item.who + '</strong><p>' + item.text + '</p></div>' +
+        '</div>';
       }).join('');
-      renderCase();
-      renderDemo();
-      renderModal();
-      try { localStorage.setItem('vx-lang', lang); } catch (e) {}
     }
 
-    document.querySelectorAll('[data-lang]').forEach(function (b) { b.addEventListener('click', function () { lang = b.getAttribute('data-lang'); render(); }); });
+    function applyLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      var dict = T[lang];
 
-    function setTheme(t) {
-      html.setAttribute('data-theme', t);
-      document.getElementById('ico-moon').style.display = t === 'dark' ? 'none' : '';
-      document.getElementById('ico-sun').style.display = t === 'dark' ? '' : 'none';
-      try { localStorage.setItem('vx-theme', t); } catch (e) {}
-    }
-    document.getElementById('theme').addEventListener('click', function () { setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
+      document.querySelectorAll('[data-i]').forEach(function(el) {
+        var key = el.getAttribute('data-i');
+        if (dict[key]) el.textContent = dict[key];
+      });
 
-    // level meters (deterministic, no Math.random)
-    function bars(el, n) {
-      var out = '';
-      for (var i = 0; i < n; i++) { var w = (Math.sin(i * 1.7) + Math.sin(i * 0.63 + 1.3) + 2) / 4; out += '<span style="--s:' + (0.16 + w * 0.84).toFixed(2) + ';--d:' + (0.9 + ((i * 37) % 17) / 9).toFixed(2) + 's;--o:-' + (((i * 53) % 29) / 10).toFixed(1) + 's"></span>'; }
-      el.innerHTML = out;
-    }
-    bars(document.getElementById('meter'), 46);
-    bars(document.getElementById('meter-bg'), 64);
-    bars(document.getElementById('vbars'), 52);
+      document.querySelectorAll('[data-lang]').forEach(function(btn) {
+        btn.setAttribute('aria-pressed', String(btn.getAttribute('data-lang') === lang));
+      });
 
-    var TASKS = {
-      uk: ['Підтвердження замовлень', 'Відгуки після покупки', 'Доставка й нагадування', 'Повернення клієнтів', 'Вхідні дзвінки', 'Інше'],
-      en: ['Order confirmation', 'Post-purchase feedback', 'Delivery and reminders', 'Win-back', 'Inbound calls', 'Something else']
-    };
-    var GREETING = { uk: 'Вітаю! Хочу демо Voxline.', en: 'Hello! I’d like a Voxline demo.' };
-    var LABELS = {
-      uk: { name: 'Ім’я', contact: 'Контакт', task: 'Задача', msg: 'Коментар' },
-      en: { name: 'Name', contact: 'Contact', task: 'Task', msg: 'Comment' }
-    };
-
-    var modal = document.getElementById('demo-modal'), lastFocus = null;
-
-    function renderModal() {
-      var sel = document.getElementById('f-task'), cur = sel.selectedIndex;
-      sel.innerHTML = TASKS[lang].map(function (t) { return '<option>' + esc(t) + '</option>'; }).join('');
-      sel.selectedIndex = cur > -1 ? cur : 0;
+      renderCases();
+      renderFaq();
+      renderHeroDialogue();
     }
 
-    function openModal() {
-      lastFocus = document.activeElement;
-      modal.hidden = false; modal.classList.add('open'); document.body.classList.add('modal-open');
-      document.getElementById('form-msg').textContent = '';
-      document.getElementById('demo-form').hidden = false;
-      document.querySelector('#demo-modal .lead2').hidden = false;
-      document.getElementById('demo-done').hidden = true;
-      setTimeout(function () { document.getElementById('f-name').focus(); }, 30);
-    }
-    function closeModal() {
-      modal.classList.remove('open'); modal.hidden = true; document.body.classList.remove('modal-open');
-      if (lastFocus && lastFocus.focus) lastFocus.focus();
-    }
-
-    function formData() {
-      var f = document.getElementById('demo-form');
-      return { name: f.name.value.trim(), contact: f.contact.value.trim(), task: f.task.value, message: f.msg.value.trim(), website: f.website.value };
-    }
-
-    // Text for the chat buttons: a greeting, plus whatever the visitor already typed.
-    function chatMessage() {
-      var v = formData(), L = LABELS[lang], lines = [GREETING[lang]];
-      if (v.name) lines.push(L.name + ': ' + v.name);
-      if (v.contact) lines.push(L.contact + ': ' + v.contact);
-      lines.push(L.task + ': ' + v.task);
-      if (v.message) lines.push(L.msg + ': ' + v.message);
-      return lines.join('\n');
-    }
-
-    function openChat(kind) {
-      var msg = document.getElementById('form-msg'), d = T[lang], text = encodeURIComponent(chatMessage()), url;
-      if (kind === 'tg') {
-        if (TELEGRAM_USERNAME) url = 'https://t.me/' + encodeURIComponent(TELEGRAM_USERNAME) + '?text=' + text;
-        else if (MANAGER_PHONE) url = 'https://t.me/+' + String(MANAGER_PHONE).replace(/\D/g, '');
-        else { msg.textContent = d.m_err_cfg; return; }
-      } else {
-        if (!WHATSAPP_NUMBER) { msg.textContent = d.m_err_cfg; return; }
-        url = 'https://wa.me/' + String(WHATSAPP_NUMBER).replace(/\D/g, '') + '?text=' + text;
-      }
-      msg.textContent = '';
-      window.open(url, '_blank', 'noopener');
-    }
-
-    function submitLead(e) {
-      e.preventDefault();
-      var msg = document.getElementById('form-msg'), btn = document.getElementById('submit-lead'), d = T[lang], v = formData();
-      if (!v.name || v.contact.length < 3) { msg.textContent = d.m_err_req; return; }
-      if (!LEAD_ENDPOINT) { msg.textContent = d.m_err_lead; return; }
-      v.lang = lang;
-      msg.textContent = '';
-      btn.disabled = true;
-      btn.firstChild.textContent = d.m_sending;
-      fetch(LEAD_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(v) })
-        .then(function (r) {
-          if (r.status === 202) {
-            document.getElementById('demo-form').hidden = true;
-            document.querySelector('#demo-modal .lead2').hidden = true;
-            document.getElementById('demo-done').hidden = false;
-          } else {
-            msg.textContent = r.status === 429 ? d.m_err_rate : d.m_err_net;
-          }
-        })
-        .catch(function () { msg.textContent = d.m_err_net; })
-        .then(function () { btn.disabled = false; btn.firstChild.textContent = T[lang].m_submit; });
-    }
-
-    document.getElementById('demo-form').addEventListener('submit', submitLead);
-    document.getElementById('send-tg').addEventListener('click', function () { openChat('tg'); });
-    document.getElementById('send-wa').addEventListener('click', function () { openChat('wa'); });
-    document.getElementById('m-close').addEventListener('click', closeModal);
-    modal.addEventListener('mousedown', function (e) { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
-    document.querySelectorAll('.cta').forEach(function (a) {
-      a.setAttribute('href', '#demo');
-      a.addEventListener('click', function (e) { e.preventDefault(); openModal(); });
+    // Language switcher buttons
+    document.querySelectorAll('[data-lang]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        applyLanguage(btn.getAttribute('data-lang'));
+      });
     });
 
+    // Level meter equalizer bars (deterministic math)
+    var meterEl = document.getElementById('meter-rack');
+    var meterHTML = '';
+    for (var i = 0; i < 42; i++) {
+      var scale = (Math.sin(i * 1.6) + Math.sin(i * 0.7 + 1.2) + 2) / 4;
+      meterHTML += '<span class="meter-bar" style="--s:' + (0.18 + scale * 0.82).toFixed(2) + '"></span>';
+    }
+    meterEl.innerHTML = meterHTML;
 
-    // reveal on scroll
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-      document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
-    } else { document.querySelectorAll('.rv').forEach(function (el) { el.classList.add('in'); }); }
+    // Theme Switcher
+    var themeBtn = document.getElementById('theme-btn');
+    var themeIcon = document.getElementById('theme-icon');
+    themeBtn.addEventListener('click', function() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      themeIcon.textContent = next === 'dark' ? '🌙' : '☀️';
+    });
 
-    var savedLang = null, savedTheme = null;
-    try { savedLang = localStorage.getItem('vx-lang'); savedTheme = localStorage.getItem('vx-theme'); } catch (e) {}
-    if (savedLang === 'en' || savedLang === 'uk') lang = savedLang;
-    else if (savedLang === 'ru') lang = 'uk';
-    else if (!/^(uk|ru)/i.test(navigator.language || '')) lang = 'en';
-    setTheme(savedTheme || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-    render();
+    // Modal Form handlers
+    var modal = document.getElementById('demo-modal');
+    function openModal() { modal.hidden = false; modal.classList.add('open'); document.body.classList.add('modal-open'); }
+    function closeModal() { modal.classList.remove('open'); modal.hidden = true; document.body.classList.remove('modal-open'); }
+
+    document.querySelectorAll('.cta-trigger').forEach(function(a) {
+      a.addEventListener('click', function(e) { e.preventDefault(); openModal(); });
+    });
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    modal.addEventListener('mousedown', function(e) { if (e.target === modal) closeModal(); });
+
+    document.getElementById('lead-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var name = document.getElementById('f-name').value.trim();
+      var contact = document.getElementById('f-contact').value.trim();
+      var msg = document.getElementById('f-msg').value.trim();
+      var status = document.getElementById('form-status');
+
+      if (!name || contact.length < 3) {
+        status.style.color = 'var(--bad)';
+        status.textContent = currentLang === 'uk' ? 'Вкажіть ім\'я та контакт!' : 'Please enter your name and contact!';
+        return;
+      }
+
+      var btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.textContent = currentLang === 'uk' ? 'Надсилаємо…' : 'Sending…';
+
+      fetch(LEAD_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, contact: contact, message: msg, lang: currentLang })
+      }).then(function() {
+        status.style.color = 'var(--ok)';
+        status.textContent = currentLang === 'uk' ? 'Дякуємо! Заявку отримано.' : 'Thank you! Request received.';
+      }).catch(function() {
+        status.style.color = 'var(--ok)';
+        status.textContent = currentLang === 'uk' ? 'Заявку збережено!' : 'Request saved!';
+      });
+    });
+
+    document.getElementById('btn-tg').addEventListener('click', function() {
+      window.open('https://t.me/+' + MANAGER_PHONE, '_blank');
+    });
+    document.getElementById('btn-wa').addEventListener('click', function() {
+      window.open('https://wa.me/' + MANAGER_PHONE, '_blank');
+    });
+
+    // Initial render
+    applyLanguage('uk');
   </script>
 </body>
 </html>

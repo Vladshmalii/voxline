@@ -1,0 +1,98 @@
+# Reusable: copy deploy/docker-compose.yml to the server and roll the given
+# services onto the freshly pushed :latest images.
+#
+# Repository secrets:
+#   SSH_HOST, SSH_USER, SSH_PRIVATE_KEY   required
+#   SSH_PORT                              optional, default 22
+#   SSH_KNOWN_HOSTS                       optional, `ssh-keyscan <host>` output;
+#                                         without it the host key is trusted on
+#                                         first use
+# Repository variables:
+#   DEPLOY_PATH                           optional, default /opt/voxline
+name: deploy
+
+on:
+  workflow_call:
+    inputs:
+      services:
+        description: Space-separated compose services to pull and recreate
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    # One rollout at a time across backend/frontend/landing.
+    concurrency:
+      group: voxline-deploy
+      cancel-in-progress: false
+    timeout-minutes: 20
+    env:
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH || '/opt/voxline' }}
+      SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+      TARGET: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: deploy
+
+      - name: Set up SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          if [ -n "$SSH_KNOWN_HOSTS" ]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" > ~/.ssh/known_hosts
+          fi
+          cat > ~/.ssh/config <<EOF
+          Host *
+            IdentityFile ~/.ssh/id_deploy
+            Port $SSH_PORT
+            ServerAliveInterval 30
+          EOF
+
+      - name: Upload compose file
+        run: |
+          ssh "$TARGET" "mkdir -p '$DEPLOY_PATH'"
+          scp deploy/docker-compose.yml "$TARGET:$DEPLOY_PATH/docker-compose.yml"
+
+      # The job token dies with the job, so the server is logged in only for
+      # the pull. The token goes over stdin, never onto a command line.
+      - name: Log the server in to GHCR
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s' "$GHCR_TOKEN" \
+            | ssh "$TARGET" "docker login ghcr.io -u $(printf '%q' "$GITHUB_ACTOR") --password-stdin"
+
+      - name: Pull and restart ${{ inputs.services }}
+        env:
+          SERVICES: ${{ inputs.services }}
+        run: |
+          # ssh joins its arguments into one remote command line: quote them.
+          ssh "$TARGET" "bash -s -- $(printf '%q ' "$DEPLOY_PATH" "$SERVICES")" <<'REMOTE'
+          set -euo pipefail
+          cd "$1"
+          test -f .env || { echo "::error::$1/.env is missing (see deploy/.env.example)"; exit 1; }
+          docker compose pull $2
+          # migrate (when listed) runs to completion first: the backend
+          # services depend on it with service_completed_successfully.
+          docker compose up -d --remove-orphans $2
+          docker image prune -f >/dev/null
+          docker compose ps
+          REMOTE
+
+      - name: Log the server out of GHCR
+        if: always()
+        run: ssh "$TARGET" "docker logout ghcr.io >/dev/null" || true

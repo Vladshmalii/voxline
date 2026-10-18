@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Allo AI (Алло.ai) — Viral TikTok/Reels Video</title>
+  <meta name="viewport" content="width=1080, height=1920, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@600;700;800&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #050711;
+      --surface: #0a0f26;
+      --card: #10163a;
+      --accent-cyan: #00f2fe;
+      --accent-violet: #7928ca;
+      --accent-magenta: #ff0080;
+      --cyan-glow: rgba(0, 242, 254, 0.45);
+      --violet-glow: rgba(121, 40, 202, 0.45);
+      --red: #ef4444;
+      --green: #10b981;
+      --text: #ffffff;
+      --text-muted: #94a3b8;
+      --head: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --mono: 'IBM Plex Mono', Consolas, monospace;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    #root {
+      width: 1080px;
+      height: 1920px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--head);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Ambient Sonic Neon Background */
+    .bg-lights {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at 50% 20%, rgba(121, 40, 202, 0.3) 0%, transparent 60%),
+        radial-gradient(circle at 50% 80%, rgba(0, 242, 254, 0.22) 0%, transparent 60%),
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 45px 45px, 45px 45px;
+      z-index: 1;
+    }
+
+    /* Top Brand Floating Header */
+    .top-pill {
+      position: absolute;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10, 15, 38, 0.9);
+      border: 1.5px solid rgba(0, 242, 254, 0.4);
+      backdrop-filter: blur(12px);
+      padding: 12px 28px;
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      z-index: 100;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+    .pill-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-cyan); box-shadow: 0 0 14px var(--accent-cyan); }
+
+    /* Scene Containers */
+    .scene {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      z-index: 10;
+      opacity: 0;
+    }
+
+    /* ─── SCENE 1: VIRAL HOOK ─── */
+    .hook-badge {
+      background: #b91c1c;
+      color: #ffffff;
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 14px 30px;
+      border-radius: 14px;
+      margin-bottom: 40px;
+      box-shadow: 0 0 40px rgba(239, 68, 68, 0.5);
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .hook-headline {
+      font-size: 80px;
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+      text-align: center;
+      max-width: 960px;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .hook-highlight {
+      background: linear-gradient(135deg, #00f2fe 0%, #ff0080 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 30px rgba(0, 242, 254, 0.5));
+    }
+
+    .hook-sub {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 840px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* ─── SCENE 2: THE PROBLEM (DROPPED CALLS) ─── */
+    .problem-box {
+      width: 100%;
+      max-width: 960px;
+      background: var(--surface);
+      border: 2px solid rgba(239, 68, 68, 0.4);
+      border-radius: 32px;
+      padding: 44px;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9);
+      position: relative;
+    }
+
+    .call-drop-banner {
+      background: rgba(239, 68, 68, 0.15);
+      border: 2px solid var(--red);
+      border-radius: 20px;
+      padding: 28px;
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #ff8a80;
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .bot-fail-quote {
+      background: rgba(255, 255, 255, 0.05);
+      border-left: 4px solid var(--red);
+      padding: 20px 24px;
+      border-radius: 0 16px 16px 0;
+      font-size: 22px;
+      color: #cbd5e1;
+      font-style: italic;
+      margin-top: 20px;
+    }
+
+    /* ─── SCENE 3: ALLO AI ENGINE ─── */
+    .allo-card {
+      background: var(--surface);
+      border: 2px solid var(--accent-cyan);
+      border-radius: 36px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 960px;
+      box-shadow: 0 0 90px var(--cyan-glow);
+      position: relative;
+    }
+
+    /* Animated Dynamic Sonic Equalizer */
+    .equalizer-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 12px;
+      height: 100px;
+      margin: 28px 0;
+      background: rgba(16, 22, 58, 0.6);
+      border-radius: 20px;
+      padding: 16px;
+      border: 1px solid rgba(0, 242, 254, 0.3);
+    }
+
+    .eq-bar {
+      width: 14px;
+      background: linear-gradient(to top, #7928ca, #00f2fe);
+      border-radius: 8px;
+      height: 20px;
+      box-shadow: 0 0 16px var(--cyan-glow);
+    }
+
+    .allo-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 20px;
+      font-weight: 700;
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+
+    .stat-badge-cyan {
+      background: rgba(0, 242, 254, 0.15);
+      border: 1px solid var(--accent-cyan);
+      color: #00f2fe;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    /* ─── SCENE 4: CTA OUTRO ─── */
+    .outro-box {
+      text-align: center;
+      max-width: 960px;
+    }
+
+    .stamp-slam {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      background: linear-gradient(135deg, #7928ca, #00f2fe);
+      color: #ffffff;
+      font-family: var(--mono);
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 24px 52px;
+      border-radius: 22px;
+      box-shadow: 0 20px 80px var(--cyan-glow);
+      margin-bottom: 44px;
+      transform: scale(0.5) rotate(-4deg);
+      opacity: 0;
+    }
+
+    .outro-headline {
+      font-size: 82px;
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .outro-sub {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 44px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .outro-cta-button {
+      background: var(--surface);
+      border: 2px solid var(--accent-cyan);
+      padding: 24px 48px;
+      border-radius: 24px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .cta-free-tag {
+      background: #e9d5ff;
+      color: #581c87;
+      font-family: var(--mono);
+      font-size: 16px;
+      font-weight: 900;
+      padding: 8px 20px;
+      border-radius: 8px;
+      text-transform: uppercase;
+    }
+
+    .cta-url-text {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Root Hyperframes Video Container (1080x1920, 16.0s) -->
+  <div id="root" data-composition-id="allo-ai-tiktok-viral" data-width="1080" data-height="1920" data-duration="16.0" data-fps="60">
+
+    <!-- Sound Effects & Music Layer -->
+    <audio id="bg-music" src="assets/music/track.mp3" data-start="0" data-duration="16.0" data-volume="0.85"></audio>
+    <audio id="sfx-impact" src="assets/sfx/impactPlate_heavy_000.ogg" data-start="0.1" data-duration="0.49" data-volume="0.95"></audio>
+    <audio id="sfx-glitch" src="assets/sfx/glitch_002.ogg" data-start="3.4" data-duration="0.03" data-volume="0.85"></audio>
+    <audio id="sfx-alarm" src="assets/sfx/error_006.ogg" data-start="4.8" data-duration="0.50" data-volume="0.9"></audio>
+    <audio id="sfx-scan" src="assets/sfx/select_008.ogg" data-start="7.6" data-duration="0.05" data-volume="0.7"></audio>
+    <audio id="sfx-pop1" src="assets/sfx/switch38.ogg" data-start="8.4" data-duration="0.2" data-volume="0.8"></audio>
+    <audio id="sfx-pop2" src="assets/sfx/switch38.ogg" data-start="9.2" data-duration="0.2" data-volume="0.8"></audio>
+    <audio id="sfx-pop3" src="assets/sfx/switch38.ogg" data-start="10.0" data-duration="0.2" data-volume="0.8"></audio>
+    <audio id="sfx-stamp" src="assets/sfx/impactPlate_heavy_000.ogg" data-start="12.3" data-duration="0.49" data-volume="1.0"></audio>
+
+    <div class="bg-lights"></div>
+
+    <!-- Fixed Header -->
+    <div class="top-pill">
+      <span class="pill-dot"></span> ALLO.AI // ГОЛОСОВИЙ ШІ 24/7
+    </div>
+
+    <!-- ─── SCENE 1 (0.0s – 3.2s): VIRAL SUSPENSE HOOK ─── -->
+    <div class="scene" id="scene-1">
+      <div class="hook-badge" id="s1-badge">
+        <span>📞</span> АЛЛО? ХТО НА ЛІНІЇ?
+      </div>
+      <h1 class="hook-headline" id="s1-headline">
+        Ваші менеджери зливають <span class="hook-highlight">42% дзвінків</span> щовечора?
+      </h1>
+      <p class="hook-sub" id="s1-sub">
+        Клієнт дзвонить о 19:30. У відповідь — довгі гудки або автовідповідач.
+      </p>
+    </div>
+
+    <!-- ─── SCENE 2 (3.2s – 7.5s): THE PROBLEM (OLD ROBOTS VS CLIENTS) ─── -->
+    <div class="scene" id="scene-2">
+      <div class="problem-box" id="s2-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 18px;">
+          <h3 style="font-size: 30px;">Традиційна телефонія</h3>
+          <span style="font-family: var(--mono); color: #ff8a80; font-weight: 700;">ВТРАТА КЛІЄНТА</span>
+        </div>
+
+        <div class="bot-fail-quote">
+          «Натисніть 1... Очікуйте на лінії 7 хвилин...»
+        </div>
+
+        <div class="call-drop-banner" id="s2-drop-banner">
+          <span>📵 КЛІЄНТ ПОКЛАВ СЛУХАВКУ</span>
+          <span>- 4 500 ₴</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SCENE 3 (7.5s – 12.0s): ALLO AI AUTONOMOUS AGENT ─── -->
+    <div class="scene" id="scene-3">
+      <div class="allo-card" id="s3-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 18px;">
+          <div>
+            <h2 style="font-size: 34px; font-weight: 900;">Allo AI Voice Agent</h2>
+            <span style="color: var(--text-muted); font-size: 17px;">Миттєва людська розмова без пауз</span>
+          </div>
+          <span style="font-family: var(--mono); color: var(--accent-cyan); font-weight: 800; font-size: 18px;">24/7 ONLINE</span>
+        </div>
+
+        <!-- Dynamic Equalizer Bars -->
+        <div class="equalizer-wrap" id="s3-equalizer">
+          <div class="eq-bar" id="eq-1"></div>
+          <div class="eq-bar" id="eq-2"></div>
+          <div class="eq-bar" id="eq-3"></div>
+          <div class="eq-bar" id="eq-4"></div>
+          <div class="eq-bar" id="eq-5"></div>
+          <div class="eq-bar" id="eq-6"></div>
+          <div class="eq-bar" id="eq-7"></div>
+          <div class="eq-bar" id="eq-8"></div>
+        </div>
+
+        <div class="allo-stat-row" id="s3-row-1">
+          <span>01 / Затримка відповіді</span>
+          <span class="stat-badge-cyan">240 мс (Людська швидкість) ✓</span>
+        </div>
+        <div class="allo-stat-row" id="s3-row-2">
+          <span>02 / Перебивання на льоту (Barge-in)</span>
+          <span class="stat-badge-cyan">Без пауз і робот-гудків ✓</span>
+        </div>
+        <div class="allo-stat-row" id="s3-row-3">
+          <span>03 / Одночасні дзвінки</span>
+          <span class="stat-badge-cyan">1 000 ліній без черги ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SCENE 4 (12.0s – 16.0s): VIRAL CTA OUTRO ─── -->
+    <div class="scene" id="scene-4">
+      <div class="outro-box">
+        <div class="stamp-slam" id="s4-stamp">
+          <span>📞</span> АЛЛО.AI — ПІДКЛЮЧЕНО
+        </div>
+        <h1 class="outro-headline" id="s4-headline">
+          Жоден клієнт не піде<br><span style="color: var(--accent-cyan);">до конкурента.</span>
+        </h1>
+        <p class="outro-sub" id="s4-sub">
+          Підключіть голосового ШІ-агента до своєї телефонії.
+        </p>
+
+        <div class="outro-cta-button" id="s4-cta">
+          <span class="cta-free-tag">ТЕСТОВИЙ ДЗВІНОК</span>
+          <span class="cta-url-text">allo.ai</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GSAP Animation Core -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    // ─── SCENE 1 (0.0s – 3.2s): VIRAL HOOK ───
+    tl.to("#scene-1", { opacity: 1, duration: 0.1 }, 0.0);
+    tl.to("#s1-badge", { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 0.1);
+    tl.to("#s1-headline", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.4);
+    tl.to("#s1-sub", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.2);
+    tl.to("#scene-1", { opacity: 0, scale: 0.9, duration: 0.35, ease: "power2.in" }, 2.9);
+
+    // ─── SCENE 2 (3.2s – 7.5s): CALL DROP & FRUSTRATION ───
+    tl.to("#scene-2", { opacity: 1, duration: 0.1 }, 3.2);
+    tl.fromTo("#s2-box", 
+      { opacity: 0, y: 50, scale: 0.92 }, 
+      { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }, 3.3);
+    
+    tl.to("#s2-drop-banner", { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, 4.6);
+    tl.to("#s2-box", {
+      x: -8,
+      duration: 0.05,
+      repeat: 7,
+      yoyo: true,
+      ease: "power1.inOut"
+    }, 4.8);
+    tl.to("#scene-2", { opacity: 0, y: -40, duration: 0.35, ease: "power2.in" }, 7.2);
+
+    // ─── SCENE 3 (7.5s – 12.0s): ALLO AI ENGINE & EQUALIZER ───
+    tl.to("#scene-3", { opacity: 1, duration: 0.1 }, 7.5);
+    tl.fromTo("#s3-card",
+      { opacity: 0, scale: 0.9, y: 40 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: "back.out(1.2)" }, 7.6);
+    
+    // Equalizer Pulsing (Transforms)
+    const eqBars = ["#eq-1", "#eq-2", "#eq-3", "#eq-4", "#eq-5", "#eq-6", "#eq-7", "#eq-8"];
+    const heights = [40, 75, 95, 60, 85, 100, 70, 45];
+    eqBars.forEach((bar, idx) => {
+      tl.fromTo(bar, { height: "20px" }, { height: `${heights[idx]}px`, duration: 0.6, repeat: 5, yoyo: true, ease: "power1.inOut" }, 7.8);
+    });
+
+    // Pop stat rows
+    tl.to("#s3-row-1", { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, 8.4);
+    tl.to("#s3-row-2", { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, 9.2);
+    tl.to("#s3-row-3", { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, 10.0);
+    
+    tl.to("#scene-3", { opacity: 0, scale: 0.92, duration: 0.35, ease: "power2.in" }, 11.7);
+
+    // ─── SCENE 4 (12.0s – 16.0s): OUTRO SLAM ───
+    tl.to("#scene-4", { opacity: 1, duration: 0.1 }, 12.0);
+    tl.to("#s4-stamp", { opacity: 1, scale: 1, rotation: -2, duration: 0.4, ease: "back.out(2.2)" }, 12.3);
+    tl.to("#s4-headline", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 12.8);
+    tl.to("#s4-sub", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 13.3);
+    tl.to("#s4-cta", { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.5)" }, 13.7);
+
+    // Total Duration: 16.0s
+    tl.duration(16.0);
+
+    // Hyperframes Hook
+    window.__timelines = window.__timelines || {};
+    window.__timelines["allo-ai-tiktok-viral"] = tl;
+  </script>
+</body>
+</html>
