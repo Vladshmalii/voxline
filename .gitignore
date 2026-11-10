@@ -1,2 +1,12 @@
 uvsync.log
 deploy/.env
+
+# local artifacts
+*.zip
+.hyperframes/
+promo-video/phone/brag.mp4
+node_modules/
+dist/
+__pycache__/
+*.pyc
+.env
