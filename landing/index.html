@@ -4,864 +4,986 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Allo AI (Алло.ai) — Голосові ШІ-агенти реального часу для бізнесу</title>
-  <meta name="description" content="Автономний голосовий ШІ-оператор Allo AI. Прийом та здійснення дзвінків із затримкою 240 мс, інтеграція з SIP-телефонією та CRM, відправка SMS за результатами розмови." />
-  <meta name="theme-color" content="#0c1017" />
+  <meta name="description" content="Автономний голосовий ШІ-оператор Allo AI: приймає та здійснює дзвінки із затримкою 240 мс, кваліфікує ліди, пише в CRM і надсилає SMS. 24/7, без черг." />
+  <meta name="theme-color" content="#050711" />
+  <meta property="og:title" content="Allo AI — голосовий ШІ, який не спить і не зливає ліди" />
+  <meta property="og:description" content="Відповідь за 240 мс, живе перебивання, CRM і SMS після розмови. Замовте демо-дзвінок." />
+  <meta property="og:type" content="website" />
   <link rel="icon" type="image/svg+xml" href="logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="pages.css" />
+  <script>try{var t=localStorage.getItem("allo-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --surface-elevated: #f1f5f9;
-      --line: #e2e8f0;
-      --line-strong: #cbd5e1;
-      --text: #0f172a;
-      --text-muted: #475569;
-      --text-dim: #64748b;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --accent-soft: #eff6ff;
-      --ok: #16a34a;
-      --ok-soft: #f0fdf4;
-      --warn: #d97706;
-      --bad: #dc2626;
-      --bad-soft: #fef2f2;
-      --max: 1200px;
-      --mono: 'IBM Plex Mono', monospace;
-      --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --bg: #f6f7fb; --bg-2: #eceef6; --surface: #ffffff; --surface-2: #f1f3f9;
+      --line: #dfe3ee; --text: #0b1020; --muted: #4b5470; --dim: #6b7390;
+      --violet: #7928ca; --violet-2: #9b4dff; --cyan: #0891b2; --cyan-neon: #00b8d9;
+      --ok: #059669; --bad: #dc2626; --amber: #d97706;
+      --glass: rgba(255,255,255,.72); --glow: rgba(121,40,202,.18);
+      --grad: linear-gradient(120deg, #7928ca 0%, #3b82f6 55%, #00b8d9 100%);
+      --max: 1180px; --r: 18px;
+      --sans: 'Plus Jakarta Sans', system-ui, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
     }
-
     :root[data-theme='dark'] {
-      --bg: #0c1017;
-      --surface: #141a24;
-      --surface-elevated: #1b2230;
-      --line: #242c3d;
-      --line-strong: #333e54;
-      --text: #f0f4fc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
-      --accent: #3b82f6;
-      --accent-hover: #60a5fa;
-      --accent-soft: rgba(59, 130, 246, 0.14);
-      --ok: #10b981;
-      --ok-soft: rgba(16, 185, 129, 0.12);
-      --warn: #f59e0b;
-      --bad: #ef4444;
-      --bad-soft: rgba(239, 68, 68, 0.12);
+      --bg: #050711; --bg-2: #090d1f; --surface: #0b1129; --surface-2: #10173a;
+      --line: #1c2552; --text: #f5f7ff; --muted: #a3adc9; --dim: #7681a6;
+      --violet: #8b3dff; --violet-2: #a76bff; --cyan: #00f2fe; --cyan-neon: #00f2fe;
+      --ok: #10b981; --bad: #ff5470; --amber: #f59e0b;
+      --glass: rgba(11,17,41,.7); --glow: rgba(139,61,255,.35);
+      --grad: linear-gradient(120deg, #a76bff 0%, #5b8cff 50%, #00f2fe 100%);
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 88px; }
     body { font-family: var(--sans); font-size: 16px; line-height: 1.6; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    body.modal-open { overflow: hidden; }
     a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--cyan-neon); outline-offset: 3px; border-radius: 6px; }
     .wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 24px; }
     .mono { font-family: var(--mono); }
+    .grad-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
-    /* Header */
-    header.top {
-      position: sticky; top: 0; z-index: 100;
-      backdrop-filter: blur(12px);
-      background: color-mix(in srgb, var(--bg) 85%, transparent);
-      border-bottom: 1px solid var(--line);
-    }
-    .nav-wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
-    .brand { display: inline-flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
-    .brand-logo-img { width: 34px; height: 34px; }
+    /* ambient background */
+    .aurora { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+    .aurora i { position: absolute; border-radius: 50%; filter: blur(120px); opacity: .32; }
+    .aurora i:nth-child(1) { width: 560px; height: 560px; left: -140px; top: -120px; background: var(--violet); animation: drift 22s ease-in-out infinite alternate; }
+    .aurora i:nth-child(2) { width: 480px; height: 480px; right: -120px; top: 12vh; background: #00a7c4; opacity: .2; animation: drift 28s ease-in-out infinite alternate-reverse; }
+    :root:not([data-theme='dark']) .aurora i { opacity: .16; }
+    .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 56px 56px; opacity: .35; mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, #000 30%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, #000 30%, transparent 75%); }
+    @keyframes drift { to { transform: translate(90px, 70px) scale(1.15); } }
 
-    nav.links { display: none; gap: 6px; }
-    nav.links a { padding: 8px 14px; font-size: 14.5px; font-weight: 600; color: var(--text-muted); border-radius: 8px; transition: color .15s, background .15s; }
-    nav.links a:hover { color: var(--text); background: var(--surface-elevated); }
-    @media (min-width: 960px) { nav.links { display: flex; } }
-
+    /* header */
+    header.top { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4); background: color-mix(in srgb, var(--bg) 72%, transparent); border-bottom: 1px solid transparent; transition: border-color .25s; }
+    header.top.scrolled { border-bottom-color: var(--line); }
+    .nav { height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px; letter-spacing: -.02em; }
+    .brand img { width: 30px; height: 30px; }
+    .links { display: flex; gap: 26px; font-size: 14px; font-weight: 600; color: var(--muted); }
+    .links a { transition: color .2s; } .links a:hover { color: var(--text); }
     .tools { display: flex; align-items: center; gap: 10px; }
-    .seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--surface-elevated); border: 1px solid var(--line); border-radius: 8px; }
-    .seg button { height: 28px; min-width: 32px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--text-dim); cursor: pointer; }
-    .seg button[aria-pressed='true'] { background: var(--surface); color: var(--text); border: 1px solid var(--line-strong); }
-    
-    .icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--text-muted); display: grid; place-items: center; cursor: pointer; transition: all .15s; }
-    .icon-btn:hover { color: var(--text); border-color: var(--line-strong); }
+    .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; padding: 3px; background: var(--surface); }
+    .seg button { border: 0; background: none; padding: 5px 10px; border-radius: 7px; font-size: 12px; font-weight: 700; color: var(--dim); }
+    .seg button[aria-pressed='true'] { background: var(--violet); color: #fff; }
+    .icon-btn { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+    .icon-btn svg { width: 18px; height: 18px; }
 
-    /* Buttons */
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      height: 46px; padding: 0 22px; border-radius: 10px; font-family: var(--sans);
-      font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all .15s ease;
-      border: 1px solid transparent; text-decoration: none;
+    /* buttons */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 12px; padding: 14px 24px; font-weight: 700; font-size: 15px; transition: transform .2s, box-shadow .2s, background .2s; white-space: nowrap; }
+    .btn-sm { padding: 9px 16px; font-size: 13.5px; border-radius: 10px; }
+    .btn-primary { background: linear-gradient(120deg, #7928ca, #4f6bff); color: #fff; box-shadow: 0 8px 28px -8px var(--glow), inset 0 1px 0 rgba(255,255,255,.25); position: relative; overflow: hidden; }
+    .btn-primary::after { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%); transform: translateX(-120%); transition: transform .7s; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 34px -8px var(--glow); }
+    .btn-primary:hover::after { transform: translateX(120%); }
+    .btn-ghost { background: var(--surface); border-color: var(--line); }
+    .btn-ghost:hover { border-color: var(--violet-2); transform: translateY(-2px); }
+    .btn-block { width: 100%; }
+    .btn[disabled] { opacity: .65; cursor: progress; transform: none; }
+
+    /* hero */
+    .hero { padding: 72px 0 40px; position: relative; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--glass); font: 600 11.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 var(--ok); animation: ping 1.8s infinite; }
+    @keyframes ping { 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+    h1.hero-title { font-size: clamp(36px, 5.6vw, 66px); line-height: 1.04; letter-spacing: -.035em; font-weight: 800; margin: 22px 0 20px; }
+    .hero-sub { font-size: 18px; color: var(--muted); max-width: 540px; }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 30px 0 26px; }
+    .proof { display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 13.5px; color: var(--muted); font-weight: 600; }
+    .proof span { display: inline-flex; align-items: center; gap: 7px; }
+    .proof svg { color: var(--ok); }
+
+    /* call console */
+    .console { position: relative; border-radius: 24px; padding: 1px; background: linear-gradient(150deg, var(--violet), transparent 40%, var(--cyan-neon)); box-shadow: 0 40px 90px -30px var(--glow); }
+    .console-in { background: var(--surface); border-radius: 23px; padding: 20px; position: relative; overflow: hidden; }
+    .c-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .who { display: flex; gap: 14px; align-items: center; min-width: 0; }
+    .who strong { display: block; font-size: 15px; line-height: 1.25; }
+    .who small { color: var(--dim); font: 11.5px var(--mono); }
+    .avatar { position: relative; width: 46px; height: 46px; border-radius: 15px; background: var(--grad); display: grid; place-items: center; color: #050711; flex: none; }
+    .avatar svg { width: 21px; height: 21px; }
+    .avatar .ring { position: absolute; inset: -5px; border-radius: 19px; border: 1.5px solid var(--cyan-neon); opacity: 0; animation: ring 2.2s ease-out infinite; }
+    @keyframes ring { 0% { opacity: .7; transform: scale(.88); } 100% { opacity: 0; transform: scale(1.22); } }
+    .live { display: inline-flex; align-items: center; gap: 8px; font: 600 12px var(--mono); padding: 6px 12px; border-radius: 999px; background: color-mix(in srgb, var(--bad) 13%, transparent); color: var(--bad); flex: none; }
+    .live .dot { background: var(--bad); box-shadow: 0 0 0 0 var(--bad); }
+    .live #timer { color: var(--text); }
+    .stage { margin-top: 18px; padding: 14px 14px 10px; border-radius: 16px; background: var(--bg-2); border: 1px solid var(--line); }
+    .speaker { display: inline-flex; align-items: center; gap: 8px; font: 600 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); transition: color .25s; }
+    .speaker i { width: 7px; height: 7px; border-radius: 50%; background: var(--dim); transition: background .25s; }
+    .speaker.agent { color: var(--violet-2); } .speaker.agent i { background: var(--violet-2); }
+    .speaker.caller { color: var(--amber); } .speaker.caller i { background: var(--amber); }
+    .meter { display: flex; align-items: center; gap: 3px; height: 58px; margin-top: 8px; }
+    .meter span { flex: 1; min-width: 2px; height: 6%; border-radius: 3px; background: var(--line); transition: background .3s; }
+    .meter.agent span { background: linear-gradient(to top, var(--violet), var(--cyan-neon)); }
+    .meter.caller span { background: linear-gradient(to top, var(--amber), #ffd37a); }
+    .tr { height: 196px; display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; overflow: hidden; margin-top: 16px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 26%); mask-image: linear-gradient(to bottom, transparent 0, #000 26%); }
+    .ln { padding-left: 14px; border-left: 2px solid var(--violet-2); transition: opacity .4s; animation: rise .35s ease both; }
+    .ln.cl { border-left-color: var(--amber); }
+    .ln.old { opacity: .45; }
+    .ln b { display: block; font: 600 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin-bottom: 2px; }
+    .ln p { font-size: 14px; line-height: 1.5; }
+    .ln .w { opacity: 0; transition: opacity .25s; }
+    .ln .w.on { opacity: 1; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+    .events { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; }
+    .ev { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); font-size: 11.5px; font-weight: 600; line-height: 1.25; color: var(--dim); transition: color .4s, border-color .4s, background .4s; }
+    .ev svg { width: 18px; height: 18px; flex: none; padding: 3px; border-radius: 50%; background: var(--surface-2); color: transparent; transition: background .4s, color .4s; }
+    .ev.done { color: var(--text); border-color: color-mix(in srgb, var(--ok) 50%, var(--line)); background: color-mix(in srgb, var(--ok) 9%, transparent); }
+    .ev.done svg { background: var(--ok); color: #fff; }
+    .c-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); font: 12px var(--mono); color: var(--dim); gap: 8px; }
+    .lat b { color: var(--cyan-neon); font-weight: 600; }
+    @keyframes float { 50% { transform: translateY(-9px); } }
+
+    /* sections */
+    section { padding: 92px 0; position: relative; }
+    .head { max-width: 720px; margin: 0 auto 52px; text-align: center; }
+    .head h2 { font-size: clamp(28px, 4vw, 46px); line-height: 1.1; letter-spacing: -.03em; font-weight: 800; margin: 16px 0 14px; }
+    .head p { color: var(--muted); font-size: 17px; }
+
+    /* metrics band */
+    .band { padding: 34px 0; border-block: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 60%, transparent); }
+    .band-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center; }
+    .band-num { font: 800 clamp(30px, 4vw, 48px)/1 var(--sans); letter-spacing: -.03em; }
+    .band-lbl { color: var(--muted); font-size: 13.5px; margin-top: 8px; }
+
+    /* cards */
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 28px; position: relative; overflow: hidden; transition: transform .3s, border-color .3s; }
+    .card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), var(--glow), transparent 55%); opacity: 0; transition: opacity .3s; pointer-events: none; }
+    .card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--violet) 55%, var(--line)); }
+    .card:hover::before { opacity: .55; }
+    .card > * { position: relative; }
+    .stat-num { font: 800 54px/1 var(--sans); letter-spacing: -.04em; color: var(--bad); margin-bottom: 14px; }
+    .card h3 { font-size: 19px; letter-spacing: -.01em; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 15px; }
+
+    /* tabs */
+    .tabs { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); margin-bottom: 28px; }
+    .tab { border: 0; background: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; font-size: 14px; color: var(--muted); transition: .2s; }
+    .tab[aria-selected='true'] { background: var(--violet); color: #fff; box-shadow: 0 8px 20px -8px var(--glow); }
+    .case { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: 40px; animation: rise .4s ease both; }
+    .case h3 { font-size: 26px; letter-spacing: -.02em; line-height: 1.2; margin-bottom: 12px; }
+    .case > div > p { color: var(--muted); margin-bottom: 20px; }
+    .checks { list-style: none; display: grid; gap: 12px; }
+    .checks li { display: flex; gap: 10px; font-size: 15px; font-weight: 500; }
+    .checks svg { color: var(--ok); flex: none; margin-top: 4px; }
+    .dialog-box { display: flex; flex-direction: column; gap: 10px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+
+    /* bento */
+    .bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+    .tile { grid-column: span 2; display: flex; flex-direction: column; gap: 6px; min-height: 230px; }
+    .tile.w4 { grid-column: span 4; }
+    .tile .vis { margin-top: auto; padding-top: 18px; }
+    .bars { display: flex; align-items: flex-end; gap: 6px; height: 64px; }
+    .bars i { flex: 1; height: 100%; border-radius: 4px 4px 0 0; background: var(--grad); opacity: .85; animation: eq 1.6s ease-in-out infinite alternate; transform-origin: bottom; }
+    @keyframes eq { from { transform: scaleY(.25); } to { transform: scaleY(1); } }
+    .tz { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tz span { font: 600 12px var(--mono); padding: 6px 10px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--line); }
+    .tz .on { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 50%, transparent); }
+    .tz .off { color: var(--dim); text-decoration: line-through; }
+    .sms { align-self: flex-start; padding: 10px 14px; border-radius: 16px 16px 16px 4px; background: var(--surface-2); border: 1px solid var(--line); font-size: 12.5px; max-width: 250px; }
+    .sentiment { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag { font: 600 11.5px var(--mono); padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); }
+    .tag.g { color: var(--ok); } .tag.y { color: var(--amber); } .tag.v { color: var(--violet-2); }
+
+    /* ROI */
+    .roi { display: grid; grid-template-columns: 1.1fr .9fr; gap: 28px; background: var(--surface); border: 1px solid var(--line); border-radius: 26px; padding: 40px; }
+    .field { margin-bottom: 26px; }
+    .field label { display: flex; justify-content: space-between; font-weight: 700; font-size: 14.5px; margin-bottom: 12px; }
+    .field output { font-family: var(--mono); color: var(--violet-2); }
+    input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 6px; background: linear-gradient(to right, var(--violet) var(--p, 30%), var(--line) var(--p, 30%)); outline-offset: 6px; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: #fff; border: 4px solid var(--violet); cursor: pointer; }
+    input[type=range]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 4px solid var(--violet); cursor: pointer; }
+    .roi-out { border-radius: 20px; padding: 30px; background: linear-gradient(160deg, color-mix(in srgb, var(--violet) 26%, var(--surface)), var(--surface-2)); border: 1px solid color-mix(in srgb, var(--violet) 45%, var(--line)); display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+    .roi-big { font: 800 clamp(36px, 5vw, 56px)/1.05 var(--sans); letter-spacing: -.04em; }
+    .roi-note { font-size: 12.5px; color: var(--dim); }
+    .roi-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); padding-top: 10px; border-top: 1px dashed var(--line); }
+    .roi-row b { color: var(--text); font-family: var(--mono); }
+
+    /* steps */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: s; position: relative; }
+    .step { counter-increment: s; }
+    .msg { max-width: 88%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; animation: rise .35s ease both; }
+    .msg b { display: block; font: 600 10.5px var(--mono); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 3px; opacity: .7; }
+    .msg.ai { background: color-mix(in srgb, var(--violet) 16%, var(--surface)); border: 1px solid color-mix(in srgb, var(--violet) 40%, transparent); border-bottom-left-radius: 4px; align-self: flex-start; }
+    .msg.cl { background: var(--surface-2); border: 1px solid var(--line); border-bottom-right-radius: 4px; align-self: flex-end; }
+    .step::before { content: '0' counter(s); position: static; inset: auto; opacity: 1 !important; display: block; font: 800 44px/1 var(--mono); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 16px; }
+
+    /* marquee */
+    .marquee { margin-top: 56px; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+    .track { display: flex; gap: 14px; width: max-content; animation: scroll 36s linear infinite; }
+    .marquee:hover .track { animation-play-state: paused; }
+    .chip { padding: 12px 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); font: 600 14px var(--mono); color: var(--muted); }
+    @keyframes scroll { to { transform: translateX(-50%); } }
+
+    /* compare */
+    .tbl { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; font-size: 15px; }
+    .tbl th, .tbl td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--line); }
+    .tbl tr:last-child td { border-bottom: 0; }
+    .tbl th { font-size: 13px; color: var(--dim); font-weight: 700; background: var(--surface-2); }
+    .tbl .mk { vertical-align: -2px; margin-right: 6px; }
+    .tbl th.us, .tbl td.us { background: color-mix(in srgb, var(--violet) 12%, var(--surface)); font-weight: 700; }
+    .tbl .mk { vertical-align: -2px; margin-right: 6px; }
+    .tbl th.us { color: var(--violet-2); }
+    .y { color: var(--ok); } .n { color: var(--bad); } .p { color: var(--amber); }
+
+    /* faq */
+    .faq { max-width: 800px; margin: 0 auto; display: grid; gap: 12px; }
+    .faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; transition: border-color .2s; }
+    .faq details[open] { border-color: color-mix(in srgb, var(--violet) 55%, var(--line)); }
+    .faq summary { list-style: none; cursor: pointer; padding: 20px 24px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: '+'; font: 400 26px/1 var(--mono); color: var(--violet-2); transition: transform .25s; }
+    .faq details[open] summary::after { transform: rotate(45deg); }
+    .faq .a { padding: 0 24px 22px; color: var(--muted); }
+
+    /* final */
+    .final { text-align: center; padding: 72px 28px; border-radius: 30px; border: 1px solid color-mix(in srgb, var(--violet) 50%, var(--line)); background: radial-gradient(600px 300px at 50% 0%, var(--glow), transparent 70%), var(--surface); position: relative; overflow: hidden; }
+    .final h2 { font-size: clamp(28px, 4.2vw, 48px); line-height: 1.1; letter-spacing: -.03em; max-width: 760px; margin: 0 auto 14px; }
+    .final p { color: var(--muted); max-width: 560px; margin: 0 auto 30px; font-size: 17px; }
+
+    footer { border-top: 1px solid var(--line); padding: 32px 0; color: var(--dim); font-size: 14px; }
+    .foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+    /* modal */
+    .modal { position: fixed; inset: 0; z-index: 100; display: none; place-items: center; padding: 20px; background: rgba(3,5,14,.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .modal.open { display: grid; }
+    .dialog { width: 100%; max-width: 440px; max-height: 92vh; overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 28px; animation: rise .3s ease both; }
+    .dialog-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .dialog-head h3 { font-size: 21px; letter-spacing: -.02em; }
+    .group { margin-bottom: 16px; }
+    .group label { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+    .input { width: 100%; padding: 13px 14px; border-radius: 11px; border: 1px solid var(--line); background: var(--bg-2); color: var(--text); font: inherit; font-size: 15px; transition: border-color .2s, box-shadow .2s; }
+    .input:focus { outline: none; border-color: var(--violet-2); box-shadow: 0 0 0 3px color-mix(in srgb, var(--violet) 30%, transparent); }
+    .status { margin-top: 12px; font-size: 13.5px; font-weight: 600; text-align: center; min-height: 20px; }
+    .or { text-align: center; margin: 18px 0 12px; font-size: 12.5px; color: var(--dim); }
+    .direct { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn-tg { background: #229ed9; color: #fff; } .btn-wa { background: #25a244; color: #fff; }
+
+    /* mobile sticky cta */
+    .sticky-cta { position: fixed; left: 50%; bottom: 16px; z-index: 40; display: none; width: auto; max-width: calc(100% - 32px); transform: translate(-50%, 160%); transition: transform .35s; }
+    .sticky-cta.show { transform: translate(-50%, 0); }
+
+    /* reveal */
+    .rv { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; transition-delay: var(--d, 0s); }
+    .rv.in { opacity: 1; transform: none; }
+    .no-js .rv { opacity: 1; transform: none; }
+
+    @media (max-width: 980px) {
+      .hero-grid, .case, .roi { grid-template-columns: 1fr; }
+      .grid-3, .steps { grid-template-columns: 1fr; }
+      .band-grid { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+      .bento { grid-template-columns: 1fr; } .tile, .tile.w4 { grid-column: auto; }
+      .links { display: none; }
+      .case, .roi { padding: 26px; }
+      .sticky-cta { display: inline-flex; }
+      body { padding-bottom: 76px; }
     }
-    .btn-primary { background: var(--accent); color: #ffffff; }
-    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-    .btn-secondary { background: var(--surface); border-color: var(--line); color: var(--text); }
-    .btn-secondary:hover { border-color: var(--line-strong); transform: translateY(-1px); }
-    .btn-sm { height: 36px; padding: 0 14px; font-size: 13.5px; border-radius: 8px; }
-
-    /* Hero */
-    .hero { padding: 68px 0 54px; position: relative; }
-    .hero-grid { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
-    @media (min-width: 1000px) { .hero-grid { grid-template-columns: 1.15fr 0.85fr; } }
-
-    .eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 5px 12px; border-radius: 6px; font-family: var(--mono);
-      font-size: 12.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft);
-      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); margin-bottom: 20px;
+    @media (max-width: 560px) {
+      .hero { padding-top: 40px; } section { padding: 64px 0; }
+      .tbl th, .tbl td { padding: 12px 10px; font-size: 13px; }
+      .events { grid-template-columns: 1fr; }
+      .who small { white-space: nowrap; }
+      .live span[data-i] { display: none; }
+      .tr { height: 230px; }
+      .tools .btn { display: none; }
+      .tabs { display: flex; }
     }
-    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
-
-    h1.hero-title {
-      font-size: clamp(34px, 4.8vw, 56px); font-weight: 850; line-height: 1.12;
-      letter-spacing: -0.03em; color: var(--text); margin-bottom: 22px;
-    }
-    .hero-sub {
-      font-size: clamp(16.5px, 1.6vw, 19px); color: var(--text-muted); line-height: 1.55;
-      margin-bottom: 32px; max-width: 580px;
-    }
-    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; }
-    .proof-list { display: flex; flex-wrap: wrap; gap: 18px; font-size: 13.5px; color: var(--text-dim); }
-    .proof-item { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
-
-    /* Phone / Audio Console Visual on Hero */
-    .console-card {
-      background: var(--surface); border: 1.5px solid var(--line); border-radius: 20px;
-      box-shadow: var(--shadow-lg); overflow: hidden;
-    }
-    .console-header {
-      padding: 16px 20px; background: var(--surface-elevated); border-bottom: 1px solid var(--line);
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .caller-details { display: flex; align-items: center; gap: 12px; }
-    .agent-tag {
-      padding: 4px 8px; border-radius: 6px; background: var(--accent-soft);
-      color: var(--accent); font-family: var(--mono); font-size: 12px; font-weight: 700;
-    }
-    .call-timer {
-      font-family: var(--mono); font-size: 16px; font-weight: 700; color: var(--ok);
-      display: flex; align-items: center; gap: 6px;
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+      .rv { opacity: 1; transform: none; }
     }
 
-    /* Waveform Level Meter */
-    .meter-rack {
-      display: flex; align-items: center; gap: 3px; height: 50px; padding: 0 20px;
-      background: var(--bg); border-bottom: 1px solid var(--line);
+    /* ---------- mobile ---------- */
+    @media (max-width: 700px) {
+      .wrap { padding: 0 20px; }
+      section { padding: 52px 0; }
+      .band { padding: 26px 0; }
+      .head { margin-bottom: 28px; }
+      .head h2 { font-size: 27px; margin: 12px 0 10px; }
+      .head p { font-size: 15.5px; }
+      .aurora i:nth-child(1) { width: 340px; height: 340px; }
+      .aurora i:nth-child(2) { width: 300px; height: 300px; }
+
+      /* header */
+      .nav { height: 64px; }
+      .icon-btn { width: 42px; height: 42px; }
+      .drawer { inset: 64px 0 0 0; }
+      .drawer a.dl { padding: 18px 2px; font-size: 21px; }
+
+      /* hero */
+      .hero { padding: 26px 0 36px !important; }
+      .hero-grid { gap: 34px; }
+      h1.hero-title { font-size: 35px; line-height: 1.07; margin: 18px 0 14px; }
+      .hero-sub { font-size: 16.5px; }
+      .cta-row { flex-direction: column; gap: 10px; margin: 24px 0 22px; }
+      .cta-row .btn { width: 100%; padding: 16px 20px; }
+      .proof { flex-direction: column; gap: 8px; font-size: 14px; }
+      .console-in { padding: 16px; }
+      .who strong { font-size: 14px; }
+      .stage { margin-top: 14px; padding: 12px 12px 8px; }
+      .meter { height: 48px; }
+      .ln p { font-size: 13.5px; }
+      .ev { padding: 10px 12px; font-size: 12.5px; }
+
+      /* metrics */
+      .band-grid { gap: 22px 12px; }
+      .band-num { font-size: 34px; }
+      .band-lbl { font-size: 12.5px; }
+
+      /* swipe rows for problem cards and steps */
+      .grid-3, .steps { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px; padding: 4px 20px 14px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+      .grid-3::-webkit-scrollbar, .steps::-webkit-scrollbar { display: none; }
+      .grid-3 > .card, .steps > .card { flex: 0 0 82%; scroll-snap-align: center; padding: 22px; }
+      .grid-3 > .card:hover, .steps > .card:hover { transform: none; }
+      .stat-num { font-size: 42px; margin-bottom: 10px; }
+      .card h3 { font-size: 18px; }
+      .step::before { font-size: 36px; margin-bottom: 12px; }
+
+      /* cases */
+      #cases .rv[style*='text-align'] { text-align: left !important; margin: 0 -20px; padding: 0 20px; }
+      .tabs { display: flex; flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; width: auto; max-width: 100%; margin-bottom: 18px; scrollbar-width: none; }
+      .tabs::-webkit-scrollbar { display: none; }
+      .tab { white-space: nowrap; padding: 11px 16px; flex: none; }
+      .case { padding: 22px; gap: 22px; border-radius: 20px; }
+      .case h3 { font-size: 21px; }
+      .dialog-box { padding: 14px; border-radius: 14px; }
+      .msg { max-width: 94%; }
+
+      /* bento */
+      .bento { gap: 12px; }
+      .tile { min-height: 0; padding: 22px; }
+      .tile .vis { padding-top: 14px; }
+      .bars { height: 52px; }
+
+      /* calculator */
+      .roi { padding: 20px; gap: 20px; border-radius: 20px; }
+      .field { margin-bottom: 22px; }
+      .roi-out { padding: 22px; border-radius: 16px; }
+      .roi-big { font-size: 42px; }
+      input[type=range] { height: 8px; }
+      input[type=range]::-webkit-slider-thumb { width: 26px; height: 26px; }
+
+      /* comparison as stacked cards */
+      #compare .rv { overflow: visible !important; }
+      .tbl { display: block; background: none; border: 0; border-radius: 0; }
+      .tbl thead { display: none; }
+      .tbl tbody { display: grid; gap: 12px; }
+      .tbl tr { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+      .tbl td { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 11px 16px; border-bottom: 1px solid var(--line); font-size: 14px; }
+      .tbl td:first-child { display: block; font-weight: 800; font-size: 15.5px; background: var(--surface-2); }
+      .tbl td::before { content: attr(data-label); color: var(--dim); font-size: 12px; font-weight: 600; flex: none; }
+      .tbl td:first-child::before { content: none; }
+      .tbl td:last-child { border-bottom: 0; }
+      .tbl td > span { text-align: right; }
+      .tbl td .mk { margin: 0 -8px 0 auto; }
+
+      /* faq, final, footer */
+      .faq summary { padding: 17px 18px; font-size: 15.5px; }
+      .faq .a { padding: 0 18px 18px; font-size: 15px; }
+      .final { padding: 44px 20px; border-radius: 22px; }
+      .final .btn { width: 100%; }
+      footer.site { padding: 40px 0 24px; }
+      .foot-bottom { flex-direction: column; gap: 6px; margin-top: 30px; }
+
+      /* sticky cta */
+      .sticky-cta { bottom: calc(16px + env(safe-area-inset-bottom)); padding: 12px 24px; font-size: 14px; border-radius: 999px; box-shadow: 0 14px 36px -10px rgba(0,0,0,.6), 0 8px 28px -8px var(--glow); }
+      body { padding-bottom: 0; }
+      footer.site { padding-bottom: 96px; }
+
+      /* demo form as bottom sheet */
+      .modal { place-items: end center; padding: 0; }
+      .dialog { max-width: none; border-radius: 22px 22px 0 0; padding: 22px 20px calc(22px + env(safe-area-inset-bottom)); max-height: 94vh; border-bottom: 0; }
+      .input { font-size: 16px; padding: 14px; }
+      .direct .btn { padding: 13px; }
     }
-    .meter-bar {
-      flex: 1; max-width: 5px; height: 100%; border-radius: 2px;
-      background: var(--accent); transform: scaleY(var(--s)); opacity: 0.85;
-    }
-
-    .transcript-box { padding: 20px; display: flex; flex-direction: column; gap: 14px; max-height: 220px; overflow-y: auto; }
-    .utterance { display: grid; grid-template-columns: 42px 1fr; gap: 8px; font-size: 14px; line-height: 1.45; }
-    .utterance time { font-family: var(--mono); font-size: 11.5px; color: var(--text-dim); padding-top: 2px; }
-    .utterance strong { font-size: 12px; color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 2px; }
-    .utterance.caller strong { color: var(--text-muted); }
-
-    .console-footer {
-      padding: 14px 20px; background: var(--surface-elevated); border-top: 1px solid var(--line);
-      display: flex; justify-content: space-between; align-items: center; font-size: 12px;
-    }
-    .metric-pill { font-family: var(--mono); font-weight: 700; color: var(--ok); background: var(--ok-soft); padding: 4px 8px; border-radius: 5px; }
-
-    /* Sections */
-    section { padding: 84px 0; border-bottom: 1px solid var(--line); }
-    .section-head { text-align: center; max-width: 720px; margin: 0 auto 52px; }
-    .section-head.left { text-align: left; margin: 0 0 40px; max-width: none; }
-    h2.section-title { font-size: clamp(28px, 3.6vw, 42px); font-weight: 850; letter-spacing: -0.025em; margin-bottom: 14px; }
-    .section-desc { font-size: 17px; color: var(--text-muted); }
-
-    /* Funnel Numbers */
-    .grid-3 { display: grid; grid-template-columns: 1fr; gap: 20px; }
-    @media (min-width: 768px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
-
-    .stat-card {
-      background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
-      padding: 28px; transition: border-color .15s;
-    }
-    .stat-card:hover { border-color: var(--line-strong); }
-    .stat-num { font-family: var(--mono); font-size: 40px; font-weight: 800; color: var(--bad); margin-bottom: 10px; }
-    .stat-title { font-size: 18px; font-weight: 750; margin-bottom: 8px; }
-    .stat-desc { font-size: 14.5px; color: var(--text-muted); line-height: 1.5; }
-
-    /* Use Cases Tabs */
-    .tabs-bar { display: inline-flex; max-width: 100%; padding: 4px; gap: 4px; overflow-x: auto; background: var(--surface-elevated); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 24px; }
-    .tab-btn { height: 38px; padding: 0 16px; border: 0; border-radius: 7px; background: transparent; font: inherit; font-size: 13.5px; font-weight: 700; color: var(--text-muted); cursor: pointer; white-space: nowrap; }
-    .tab-btn[aria-selected='true'] { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
-
-    .case-panel {
-      display: grid; grid-template-columns: 1fr; gap: 28px; padding: 32px;
-      background: var(--surface); border: 1.5px solid var(--line); border-radius: 20px;
-    }
-    @media (min-width: 900px) { .case-panel { grid-template-columns: 1fr 1fr; gap: 40px; } }
-    .case-panel h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
-    .case-panel p { color: var(--text-muted); font-size: 15.5px; margin-bottom: 20px; }
-    .checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px; color: var(--text-muted); }
-    .checklist li { display: flex; gap: 10px; align-items: flex-start; }
-    .checklist-icon { color: var(--ok); flex-shrink: 0; margin-top: 2px; }
-
-    .case-dialogue {
-      background: var(--bg); border: 1px solid var(--line); border-radius: 14px;
-      padding: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 14px;
-    }
-
-    /* Bento Grid */
-    .bento-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
-    .tile { grid-column: span 6; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px; }
-    @media (min-width: 768px) { .tile.w3 { grid-column: span 3; } .tile.w2 { grid-column: span 2; } .tile.w4 { grid-column: span 4; } }
-    .tile h3 { font-size: 19px; font-weight: 750; margin-bottom: 8px; }
-    .tile p { font-size: 14.5px; color: var(--text-muted); }
-
-    /* Steps */
-    .steps-grid { display: grid; grid-template-columns: 1fr; gap: 20px; counter-reset: step; }
-    @media (min-width: 768px) { .steps-grid { grid-template-columns: repeat(3, 1fr); } }
-    .step-card {
-      background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
-      padding: 28px; position: relative;
-    }
-    .step-card::before {
-      counter-increment: step; content: counter(step);
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 36px; height: 36px; border-radius: 8px; background: var(--accent-soft);
-      color: var(--accent); font-family: var(--mono); font-weight: 800; font-size: 15px; margin-bottom: 16px;
-    }
-    .step-card h3 { font-size: 18px; font-weight: 750; margin-bottom: 8px; }
-    .step-card p { font-size: 14px; color: var(--text-muted); }
-
-    /* Integrations */
-    .pills-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 24px; }
-    .pill-item {
-      padding: 10px 18px; border: 1px solid var(--line); border-radius: 10px;
-      background: var(--surface); font-family: var(--mono); font-size: 13.5px; font-weight: 700; color: var(--text);
-    }
-
-    /* FAQ */
-    .faq-list { display: grid; gap: 12px; max-width: 780px; margin: 0 auto; }
-    details.faq-item {
-      border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
-      padding: 18px 22px; transition: border-color .15s;
-    }
-    details[open] { border-color: var(--line-strong); }
-    summary.faq-q { font-size: 16px; font-weight: 750; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
-    summary::-webkit-details-marker { display: none; }
-    summary::after { content: '+'; font-family: var(--mono); font-size: 18px; color: var(--text-dim); }
-    details[open] summary::after { content: '−'; }
-    .faq-a { margin-top: 12px; font-size: 14.5px; color: var(--text-muted); line-height: 1.55; }
-
-    /* Final CTA */
-    .final-box {
-      text-align: center; padding: 64px 28px; border-radius: 24px;
-      background: var(--surface); border: 1.5px solid var(--line-strong);
-      max-width: 860px; margin: 0 auto;
-    }
-    .final-box h2 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 850; margin-bottom: 14px; }
-    .final-box p { font-size: 16.5px; color: var(--text-muted); margin-bottom: 28px; max-width: 540px; margin-left: auto; margin-right: auto; }
-
-    /* Modal Dialog */
-    body.modal-open { overflow: hidden; }
-    .modal { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(12, 16, 23, .8); backdrop-filter: blur(4px); }
-    .modal.open { display: flex; }
-    .dialog { width: 100%; max-width: 480px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 20px; padding: 32px; box-shadow: var(--shadow-lg); }
-    .dialog-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
-    .dialog-header h3 { font-size: 21px; font-weight: 800; }
-    .close-btn { width: 32px; height: 32px; border: 0; border-radius: 6px; background: var(--surface-elevated); color: var(--text-dim); cursor: pointer; display: grid; place-items: center; font-size: 16px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-    .form-group label { font-size: 12.5px; font-weight: 700; color: var(--text-muted); }
-    .form-input { padding: 11px 13px; font: inherit; font-size: 14.5px; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; }
-    .form-input:focus { outline: none; border-color: var(--accent); }
-    .btn-block { width: 100%; height: 46px; font-size: 15px; margin-top: 8px; }
-
-    .direct-links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
-    .btn-tg { background: #229ed9; color: #fff; }
-    .btn-wa { background: #25a244; color: #fff; }
-
-    /* Footer */
-    footer { padding: 40px 0; font-size: 13.5px; color: var(--text-dim); border-top: 1px solid var(--line); }
-    .footer-wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
   </style>
 </head>
-<body>
+<body class="no-js">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><div class="grid-bg"></div></div>
 
-  <!-- Header -->
-  <header class="top">
-    <div class="wrap nav-wrap">
-      <a href="#top" class="brand" aria-label="Allo AI">
-        <img src="logo.svg" alt="Allo AI" class="brand-logo-img" />
-        <span>Allo AI</span>
-      </a>
-
-      <nav class="links">
-        <a href="#problem" data-i="nav_problem">Воронка втрат</a>
-        <a href="#cases" data-i="nav_cases">Сценарії</a>
-        <a href="#features" data-i="nav_features">Можливості</a>
-        <a href="#how" data-i="nav_how">Як це працює</a>
-        <a href="#faq" data-i="nav_faq">Питання</a>
+  <header class="top" id="hdr">
+    <div class="wrap nav">
+      <a class="brand" href="index.html#top" aria-label="Allo AI"><img src="logo.svg" alt="" /><span>Allo<span class="grad-text">.ai</span></span></a>
+      <nav class="links" aria-label="Main">
+        <a href="#problem" data-i="c_nav_problem"></a>
+        <a href="#cases" data-i="c_nav_cases"></a>
+        <a href="#features" data-i="c_nav_features"></a>
+        <a href="#roi" data-i="c_nav_roi"></a>
+        <a href="#faq" data-i="c_nav_faq"></a>
       </nav>
-
       <div class="tools">
-        <div class="seg" role="group" aria-label="Language">
-          <button type="button" data-lang="uk" aria-pressed="true">UA</button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
-        </div>
-        <button class="icon-btn" id="theme-btn" type="button" aria-label="Змінити тему">
-          <span id="theme-icon">🌙</span>
-        </button>
-        <a class="btn btn-primary btn-sm cta-trigger" href="#demo" data-i="cta_demo">Замовити демо</a>
+        <div class="seg" role="group" aria-label="Language"><button type="button" data-lang="uk" aria-pressed="true">UA</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+        <button class="icon-btn js-theme" type="button" aria-label="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path class="theme-path" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        <a class="btn btn-primary btn-sm cta cta-h" href="index.html#demo" data-i="c_demo"></a>
+        <button class="icon-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
     </div>
   </header>
+  <div class="drawer" id="drawer">
+    <a class="dl" href="#problem" data-i="c_nav_problem"></a>
+    <a class="dl" href="#cases" data-i="c_nav_cases"></a>
+    <a class="dl" href="#features" data-i="c_nav_features"></a>
+    <a class="dl" href="#roi" data-i="c_nav_roi"></a>
+    <a class="dl" href="#faq" data-i="c_nav_faq"></a>
+    <a class="btn btn-primary cta" href="index.html#demo" data-i="c_demo"></a>
+    <div class="dfoot">
+      <div class="seg" role="group" aria-label="Language"><button type="button" data-lang="uk" aria-pressed="true">UA</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+      <button class="icon-btn js-theme" type="button" aria-label="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path class="theme-path" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    </div>
+  </div>
 
   <main id="top">
-    <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" style="padding-bottom: 60px;">
       <div class="wrap hero-grid">
-        
-        <div class="hero-copy">
-          <div class="eyebrow">
-            <span class="status-dot"></span>
-            <span data-i="pill">ШІ-ОПЕРАТОР РЕАЛЬНОГО ЧАСУ 24/7</span>
+        <div>
+          <div class="eyebrow rv"><span class="dot"></span><span data-i="pill"></span></div>
+          <h1 class="hero-title rv" style="--d:.08s"><span data-i="hero_a"></span> <span class="grad-text" data-i="hero_b"></span></h1>
+          <p class="hero-sub rv" style="--d:.16s" data-i="hero_sub"></p>
+          <div class="cta-row rv" style="--d:.24s">
+            <a class="btn btn-primary cta" href="#demo" data-i="cta_demo"></a>
+            <a class="btn btn-ghost" href="#cases" data-i="cta_listen"></a>
           </div>
-          <h1 class="hero-title" data-i="hero_title">
-            Дзвінки клієнтам, які виконує ШІ із затримкою 240 мс
-          </h1>
-          <p class="hero-sub" data-i="hero_sub">
-            Підтверджує замовлення, нагадує про записи, кваліфікує ліди та відповідає на вхідні без черги. Говорить живою мовою, фіксує підсумок у CRM та надсилає SMS.
-          </p>
-          <div class="cta-row">
-            <a class="btn btn-primary cta-trigger" href="#demo" data-i="cta_demo">Замовити демо-дзвінок</a>
-            <a class="btn btn-secondary" href="#how" data-i="cta_how">Як це працює</a>
-          </div>
-          <div class="proof-list">
-            <div class="proof-item">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-              <span data-i="proof_1">0 секунд очікування на лінії</span>
-            </div>
-            <div class="proof-item">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-              <span data-i="proof_2">Живе перебивання (Barge-in)</span>
-            </div>
-            <div class="proof-item">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-              <span data-i="proof_3">1 000 ліній одночасно</span>
-            </div>
+          <div class="proof rv" style="--d:.32s">
+            <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i="proof_1"></span></span>
+            <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i="proof_2"></span></span>
+            <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i="proof_3"></span></span>
           </div>
         </div>
 
-        <!-- Call Console Widget -->
-        <div class="hero-visual">
-          <div class="console-card">
-            <div class="console-header">
-              <div class="caller-details">
-                <span class="agent-tag">ALLO AI</span>
-                <div>
-                  <strong style="font-size: 14.5px; display: block;" data-i="agent_label">ШІ-Оператор Катерина</strong>
-                  <span class="mono" style="font-size: 11.5px; color: var(--text-dim);">+380 (67) ••• •• 42</span>
+        <div class="rv" style="--d:.2s">
+          <div class="console" aria-label="Live call demo">
+            <div class="console-in">
+              <div class="c-top">
+                <div class="who">
+                  <div class="avatar"><span class="ring"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></div>
+                  <div><strong data-i="agent_label"></strong><small>+380 (67) ••• •• 42</small></div>
                 </div>
+                <div class="live"><span class="dot"></span><span data-i="live"></span><span id="timer">00:00</span></div>
               </div>
-              <div class="call-timer">
-                <span class="status-dot"></span>
-                <span>00:42</span>
+              <div class="stage" aria-hidden="true">
+                <div class="speaker" id="speaker"><i></i><span id="sp-name"></span></div>
+                <div class="meter" id="meter"></div>
               </div>
-            </div>
-
-            <!-- Waveform Level Meter -->
-            <div class="meter-rack" id="meter-rack" aria-hidden="true"></div>
-
-            <div class="transcript-box" id="transcript-box"></div>
-
-            <div class="console-footer">
-              <span class="mono" style="color: var(--text-dim);">LATENCY: 238ms</span>
-              <span class="metric-pill" data-i="crm_sync_status">CRM SYNC COMPLETED</span>
+              <div class="tr" id="tr" aria-live="off"></div>
+              <div class="events" id="events">
+                <div class="ev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i="ev1"></span></div>
+                <div class="ev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i="ev2"></span></div>
+                <div class="ev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i="ev3"></span></div>
+              </div>
+              <div class="c-foot"><span data-i="lat_lbl"></span><span class="lat"><b id="lat">238</b> ms</span></div>
             </div>
           </div>
         </div>
-
       </div>
     </section>
 
-    <!-- Problem / Lead Leakage Section -->
+    <div class="band">
+      <div class="wrap band-grid">
+        <div class="rv"><div class="band-num grad-text"><span data-count="240">0</span> <small style="font-size:.45em">ms</small></div><div class="band-lbl" data-i="m1"></div></div>
+        <div class="rv" style="--d:.08s"><div class="band-num grad-text">24/7</div><div class="band-lbl" data-i="m2"></div></div>
+        <div class="rv" style="--d:.16s"><div class="band-num grad-text"><span data-count="1000" data-fmt="1">0</span></div><div class="band-lbl" data-i="m3"></div></div>
+        <div class="rv" style="--d:.24s"><div class="band-num grad-text"><span data-count="92">0</span>%</div><div class="band-lbl" data-i="m4"></div></div>
+      </div>
+    </div>
+
     <section id="problem">
       <div class="wrap">
-        <div class="section-head">
-          <div class="eyebrow" style="color: var(--bad); background: var(--bad-soft); border-color: transparent;" data-i="prob_tag">ВОРОНКА ВТРАТ</div>
-          <h2 class="section-title" data-i="prob_title">Куди зникають 42% ваших лідів із реклами?</h2>
-          <p class="section-desc" data-i="prob_desc">Кожна секунда затримки або пропущений дзвінок віддає клієнта конкурентам.</p>
+        <div class="head rv">
+          <div class="eyebrow" style="color: var(--bad)" data-i="prob_tag"></div>
+          <h2 data-i="prob_title"></h2>
+          <p data-i="prob_desc"></p>
         </div>
-
         <div class="grid-3">
-          <div class="stat-card">
-            <div class="stat-num">100%</div>
-            <h3 class="stat-title" data-i="p1_t">Злиті дзвінки після 18:00</h3>
-            <p class="stat-desc" data-i="p1_d">У неробочий час та у вихідні дні дзвінки потрапляють на автовідповідач. 8 з 10 покупців не чекають ранку.</p>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">35%</div>
-            <h3 class="stat-title" data-i="p2_t">Скидання через очікування</h3>
-            <p class="stat-desc" data-i="p2_d">Якщо лінія зайнята понад 20 секунд у пікові години реклами — клієнт кладе слухавку.</p>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">-28%</div>
-            <h3 class="stat-title" data-i="p3_t">Людський фактор</h3>
-            <p class="stat-desc" data-i="p3_d">Втома співробітників, забуті коментарі в CRM, пропущені етапи кваліфікації та невчасно надіслані реквізити.</p>
-          </div>
+          <div class="card rv"><div class="stat-num">100%</div><h3 data-i="p1_t"></h3><p data-i="p1_d"></p></div>
+          <div class="card rv" style="--d:.1s"><div class="stat-num">35%</div><h3 data-i="p2_t"></h3><p data-i="p2_d"></p></div>
+          <div class="card rv" style="--d:.2s"><div class="stat-num">−28%</div><h3 data-i="p3_t"></h3><p data-i="p3_d"></p></div>
         </div>
       </div>
     </section>
 
-    <!-- Use Cases Section -->
-    <section id="cases">
+    <section id="cases" style="background: color-mix(in srgb, var(--surface) 45%, transparent);">
       <div class="wrap">
-        <div class="section-head">
-          <div class="eyebrow" data-i="cases_tag">РЕАЛЬНІ СЦЕНАРІЇ</div>
-          <h2 class="section-title" data-i="cases_title">Що агент виконує у вашому бізнесі</h2>
-          <p class="section-desc" data-i="cases_desc">Розмова ведеться за вашим регламентом і бізнес-правилами.</p>
+        <div class="head rv">
+          <div class="eyebrow" data-i="cases_tag"></div>
+          <h2 data-i="cases_title"></h2>
+          <p data-i="cases_desc"></p>
         </div>
-
-        <div style="text-align: center;">
-          <div class="tabs-bar" id="tabs-bar" role="tablist"></div>
-        </div>
-
-        <div class="case-panel" id="case-panel"></div>
+        <div style="text-align:center" class="rv"><div class="tabs" id="tabs" role="tablist"></div></div>
+        <div id="case" class="rv" role="tabpanel"></div>
       </div>
     </section>
 
-    <!-- Bento Capabilities Grid -->
     <section id="features">
       <div class="wrap">
-        <div class="section-head">
-          <div class="eyebrow" data-i="feat_tag">МОЖЛИВОСТІ</div>
-          <h2 class="section-title" data-i="feat_title">Інженерна точність та швидкість</h2>
+        <div class="head rv"><div class="eyebrow" data-i="feat_tag"></div><h2 data-i="feat_title"></h2></div>
+        <div class="bento">
+          <div class="card tile w4 rv"><h3 data-i="f1_t"></h3><p data-i="f1_d"></p><div class="vis"><div class="bars" aria-hidden="true" id="bars"></div></div></div>
+          <div class="card tile rv" style="--d:.08s"><h3 data-i="f2_t"></h3><p data-i="f2_d"></p><div class="vis tz" aria-hidden="true"><span class="on">Київ 10:15</span><span class="on">Варшава 09:15</span><span class="off">Лос-Анджелес 00:15</span></div></div>
+          <div class="card tile rv"><h3 data-i="f3_t"></h3><p data-i="f3_d"></p><div class="vis"><div class="sms" data-i="sms_demo"></div></div></div>
+          <div class="card tile w4 rv" style="--d:.08s"><h3 data-i="f4_t"></h3><p data-i="f4_d"></p><div class="vis sentiment" aria-hidden="true"><span class="tag g">sentiment: positive</span><span class="tag y">objection: price</span><span class="tag v">outcome: callback</span><span class="tag g">CRM task created</span></div></div>
         </div>
+      </div>
+    </section>
 
-        <div class="bento-grid">
-          <div class="tile w4">
-            <h3 data-i="f1_t">Вхідні та вихідні кампанії</h3>
-            <p data-i="f1_d">Один агент однаково надійно приймає вхідні дзвінки з реклами та здійснює обдзвін бази контактів.</p>
+    <section id="roi" style="background: color-mix(in srgb, var(--surface) 45%, transparent);">
+      <div class="wrap">
+        <div class="head rv"><div class="eyebrow" data-i="roi_tag"></div><h2 data-i="roi_title"></h2><p data-i="roi_desc"></p></div>
+        <div class="roi rv">
+          <div>
+            <div class="field"><label for="r-calls"><span data-i="roi_calls"></span><output id="o-calls"></output></label><input id="r-calls" type="range" min="100" max="10000" step="100" value="1500" /></div>
+            <div class="field"><label for="r-miss"><span data-i="roi_miss"></span><output id="o-miss"></output></label><input id="r-miss" type="range" min="5" max="60" step="1" value="30" /></div>
+            <div class="field" style="margin-bottom:0"><label for="r-deal"><span data-i="roi_deal"></span><output id="o-deal"></output></label><input id="r-deal" type="range" min="20" max="2000" step="10" value="150" /></div>
           </div>
-          <div class="tile w2">
-            <h3 data-i="f2_t">Години за таймзоною</h3>
-            <p data-i="f2_d">ШІ ніколи не зателефонує вночі. Часовий пояс кожного абонента враховується автоматично.</p>
-          </div>
-          <div class="tile w2">
-            <h3 data-i="f3_t">SMS та месенджери</h3>
-            <p data-i="f3_d">Миттєва відправка реквізитів, номерів ТТН або адрес одразу після завершення розмови.</p>
-          </div>
-          <div class="tile w4">
-            <h3 data-i="f4_t">Аналітика та транскрипція</h3>
-            <p data-i="f4_d">Автоматичне визначення підсумку, заперечень, настрою клієнта та створення завдання у CRM.</p>
+          <div class="roi-out">
+            <div class="roi-note" data-i="roi_out"></div>
+            <div class="roi-big grad-text" id="roi-total">$0</div>
+            <div class="roi-row"><span data-i="roi_leads"></span><b id="roi-leads">0</b></div>
+            <div class="roi-note" data-i="roi_assume"></div>
+            <a class="btn btn-primary cta" href="#demo" data-i="cta_demo" style="margin-top:8px"></a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- How It Works / Steps -->
     <section id="how">
       <div class="wrap">
-        <div class="section-head">
-          <div class="eyebrow" data-i="steps_tag">ПІДКЛЮЧЕННЯ ЗА 3 КРОКИ</div>
-          <h2 class="section-title" data-i="steps_title">Як запустити Allo AI</h2>
+        <div class="head rv"><div class="eyebrow" data-i="steps_tag"></div><h2 data-i="steps_title"></h2></div>
+        <div class="steps">
+          <div class="card step rv"><h3 data-i="s1_t"></h3><p data-i="s1_d"></p></div>
+          <div class="card step rv" style="--d:.1s"><h3 data-i="s2_t"></h3><p data-i="s2_d"></p></div>
+          <div class="card step rv" style="--d:.2s"><h3 data-i="s3_t"></h3><p data-i="s3_d"></p></div>
         </div>
-
-        <div class="steps-grid">
-          <div class="step-card">
-            <h3 data-i="s1_t">1. Налаштуйте сценарій</h3>
-            <p data-i="s1_d">Опишіть завдання, завантажте прайс і регламент. Протестуйте голос у браузері без дзвінка на телефон.</p>
-          </div>
-          <div class="step-card">
-            <h3 data-i="s2_t">2. Підключіть телефонію</h3>
-            <p data-i="s2_d">Підтримка стандартних SIP-транків (Binotel, Ringostat, UniTalk, Kyivstar) за 5 хвилин.</p>
-          </div>
-          <div class="step-card">
-            <h3 data-i="s3_t">3. Отримуйте закриті угоди</h3>
-            <p data-i="s3_d">Allo AI самостійно розмовляє з клієнтами, вносить дані в CRM та сповіщає вашу команду.</p>
-          </div>
-        </div>
-
-        <!-- Telephony & CRM Integrations -->
-        <div class="pills-cloud">
-          <span class="pill-item">Binotel</span>
-          <span class="pill-item">Ringostat</span>
-          <span class="pill-item">UniTalk</span>
-          <span class="pill-item">KeyCRM</span>
-          <span class="pill-item">HubSpot</span>
-          <span class="pill-item">Zoho</span>
-          <span class="pill-item">Asterisk</span>
-          <span class="pill-item">Custom Webhooks</span>
-        </div>
+        <div class="marquee" aria-hidden="true"><div class="track" id="track"></div></div>
       </div>
     </section>
 
-    <!-- FAQ -->
+    <section id="compare" style="background: color-mix(in srgb, var(--surface) 45%, transparent);">
+      <div class="wrap">
+        <div class="head rv"><div class="eyebrow" data-i="cmp_tag"></div><h2 data-i="cmp_title"></h2></div>
+        <div class="rv" style="overflow-x:auto"><table class="tbl" id="cmp"></table></div>
+      </div>
+    </section>
+
     <section id="faq">
       <div class="wrap">
-        <div class="section-head">
-          <div class="eyebrow" data-i="faq_tag">ПИТАННЯ ТА ВІДПОВІДІ</div>
-          <h2 class="section-title" data-i="faq_title">Часті запитання</h2>
-        </div>
-
-        <div class="faq-list" id="faq-list"></div>
+        <div class="head rv"><div class="eyebrow" data-i="faq_tag"></div><h2 data-i="faq_title"></h2></div>
+        <div class="faq rv" id="faq-list"></div>
       </div>
     </section>
 
-    <!-- Final CTA -->
-    <section style="border-bottom: 0;">
+    <section style="padding-top: 0;">
       <div class="wrap">
-        <div class="final-box">
-          <h2 data-i="final_title">Готові протестувати голос Allo AI на вашому сценарії?</h2>
-          <p data-i="final_sub">Ми підготуємо демонстрацію під ваш бізнес та запустимо пілотний період на 7 днів.</p>
-          <a class="btn btn-primary cta-trigger" href="#demo" data-i="cta_demo">Замовити демо-дзвінок</a>
+        <div class="final rv">
+          <h2 data-i="final_title"></h2>
+          <p data-i="final_sub"></p>
+          <a class="btn btn-primary cta" href="#demo" data-i="cta_demo"></a>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Footer -->
-  <footer>
-    <div class="wrap footer-wrap">
-      <a href="#top" class="brand" style="font-size: 16px;">Allo AI</a>
-      <span data-i="copyright">© 2026 Allo AI Platform. Всі права захищено.</span>
-      <div style="display: flex; gap: 16px;">
-        <a href="privacy.html" data-i="privacy_link">Конфіденційність</a>
+  <footer class="site">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-brand">
+          <a class="brand" href="index.html#top"><img src="logo.svg" alt="" /><span>Allo<span class="grad-text">.ai</span></span></a>
+          <p data-i="c_tagline"></p>
+          <div class="socials">
+            <a href="https://t.me/+380665898141" target="_blank" rel="noopener" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 3.5L2.8 10.7l5.6 2.1 2.1 6.4 3.1-3.9 4.9 3.6z"/><path d="M8.4 12.8l9.2-6.2"/></svg></a>
+            <a href="https://wa.me/380665898141" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20.5l1.3-4.4A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.8c0 3.3 2.9 6.2 6.2 6.2l1.3-1.5-2-1-1 .7a4 4 0 0 1-1.9-1.9l.7-1-1-2z"/></svg></a>
+            <a href="tel:+380665898141" aria-label="Phone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></a>
+          </div>
+        </div>
+        <div><h4 data-i="c_col_product"></h4><ul>
+          <li><a href="#how" data-i="c_how"></a></li>
+          <li><a href="#cases" data-i="c_nav_cases"></a></li>
+          <li><a href="#features" data-i="c_nav_features"></a></li>
+          <li><a href="#roi" data-i="c_nav_roi"></a></li>
+          <li><a href="#compare" data-i="c_compare"></a></li>
+          <li><a href="#faq" data-i="c_nav_faq"></a></li>
+        </ul></div>
+        <div><h4 data-i="c_col_legal"></h4><ul>
+          <li><a href="privacy.html" data-i="c_privacy"></a></li>
+          <li><a href="terms.html" data-i="c_terms"></a></li>
+          <li><a href="cookies.html" data-i="c_cookies"></a></li>
+          <li><a href="contacts.html" data-i="c_contacts"></a></li>
+        </ul></div>
+        <div><h4 data-i="c_col_contact"></h4><ul class="foot-contact">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><a href="tel:+380665898141">+380 66 589 81 41</a></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 3.5L2.8 10.7l5.6 2.1 2.1 6.4 3.1-3.9 4.9 3.6z"/><path d="M8.4 12.8l9.2-6.2"/></svg><a href="https://t.me/+380665898141" target="_blank" rel="noopener">Telegram</a></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20.5l1.3-4.4A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.8c0 3.3 2.9 6.2 6.2 6.2l1.3-1.5-2-1-1 .7a4 4 0 0 1-1.9-1.9l.7-1-1-2z"/></svg><a href="https://wa.me/380665898141" target="_blank" rel="noopener">WhatsApp</a></li>
+        </ul></div>
       </div>
+      <div class="foot-bottom"><span data-i="c_rights"></span><span style="font-family:var(--mono)">allo.ai</span></div>
     </div>
   </footer>
 
-  <!-- Modal Lead Form -->
-  <div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <a class="btn btn-primary cta sticky-cta" id="sticky" href="#demo" data-i="cta_demo"></a>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
     <div class="dialog">
-      <div class="dialog-header">
-        <h3 id="modal-title" data-i="m_title">Замовити демо-дзвінок</h3>
-        <button class="close-btn" id="modal-close" type="button" aria-label="Закрити">✕</button>
+      <div class="dialog-head">
+        <h3 id="m-title" data-i="m_title"></h3>
+        <button class="icon-btn" id="m-close" type="button" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
-
-      <form id="lead-form" novalidate>
-        <div class="form-group">
-          <label for="f-name" data-i="m_name">Ваше ім'я</label>
-          <input class="form-input" id="f-name" name="name" required placeholder="Олександр" />
-        </div>
-        <div class="form-group">
-          <label for="f-contact" data-i="m_contact">Номер телефону або Telegram</label>
-          <input class="form-input" id="f-contact" name="contact" required placeholder="+380 67 ••• •• ••" />
-        </div>
-        <div class="form-group">
-          <label for="f-msg" data-i="m_msg">Коментар або сфера бізнесу</label>
-          <input class="form-input" id="f-msg" name="msg" placeholder="Інтернет-магазин автозапчастин..." />
-        </div>
-        <button class="btn btn-primary btn-block" type="submit" id="btn-submit" data-i="m_submit">Надіслати заявку</button>
-        <div id="form-status" style="margin-top: 10px; font-size: 13px; font-weight: 600; text-align: center;" role="alert"></div>
-
-        <div style="text-align: center; margin: 16px 0 10px; font-size: 12.5px; color: var(--text-dim);" data-i="m_or">
-          або зв'яжіться з нами у месенджерах
-        </div>
-        <div class="direct-links">
-          <button class="btn btn-tg" type="button" id="btn-tg">Telegram</button>
-          <button class="btn btn-wa" type="button" id="btn-wa">WhatsApp</button>
+      <form id="form" novalidate>
+        <div class="group"><label for="f-name" data-i="m_name"></label><input class="input" id="f-name" name="name" autocomplete="name" required data-ip="m_name_ph" /></div>
+        <div class="group"><label for="f-contact" data-i="m_contact"></label><input class="input" id="f-contact" name="contact" autocomplete="tel" required placeholder="+380 67 000 00 00" /></div>
+        <div class="group"><label for="f-msg" data-i="m_msg"></label><input class="input" id="f-msg" name="msg" data-ip="m_msg_ph" /></div>
+        <button class="btn btn-primary btn-block" type="submit" id="f-btn" data-i="m_submit"></button>
+        <div class="status" id="f-status" role="alert"></div>
+        <div class="or" data-i="m_or"></div>
+        <div class="direct">
+          <button class="btn btn-tg btn-sm" type="button" id="btn-tg">Telegram</button>
+          <button class="btn btn-wa btn-sm" type="button" id="btn-wa">WhatsApp</button>
         </div>
       </form>
     </div>
   </div>
 
+  <script src="site.js"></script>
   <script>
+    document.body.classList.remove('no-js');
     var LEAD_ENDPOINT = 'https://voxline-backend.dvms.tech/api/v1/leads';
     var MANAGER_PHONE = '380665898141';
-    var CHECK_ICON = '<svg class="checklist-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>';
+    var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var $ = function (s) { return document.querySelector(s); };
+    var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+    var CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>';
 
     var T = {
       uk: {
-        nav_problem: 'Воронка втрат', nav_cases: 'Сценарії', nav_features: 'Можливості', nav_how: 'Як це працює', nav_faq: 'Питання',
-        cta_demo: 'Замовити демо', cta_how: 'Як це працює',
-        pill: 'ШІ-ОПЕРАТОР РЕАЛЬНОГО ЧАСУ 24/7',
-        hero_title: 'Дзвінки клієнтам, які виконує ШІ із затримкою 240 мс',
-        hero_sub: 'Підтверджує замовлення, нагадує про записи, кваліфікує ліди та відповідає на вхідні без черги. Говорить живою мовою, фіксує підсумок у CRM та надсилає SMS.',
-        proof_1: '0 секунд очікування на лінії', proof_2: 'Живе перебивання (Barge-in)', proof_3: '1 000 ліній одночасно',
-        agent_label: 'ШІ-Оператор Катерина', crm_sync_status: 'CRM SYNC COMPLETED',
-        prob_tag: 'ВОРОНКА ВТРАТ', prob_title: 'Куди зникають 42% ваших лідів із реклами?', prob_desc: 'Кожна секунда затримки або пропущений дзвінок віддає клієнта конкурентам.',
-        p1_t: 'Злиті дзвінки після 18:00', p1_d: 'У неробочий час та у вихідні дні дзвінки потрапляють на автовідповідач. 8 з 10 покупців не чекають ранку.',
-        p2_t: 'Скидання через очікування', p2_d: 'Якщо лінія зайнята понад 20 секунд у пікові години реклами — клієнт кладе слухавку.',
-        p3_t: 'Людський фактор', p3_d: 'Втома співробітників, забуті коментарі в CRM, пропущені етапи кваліфікації та невчасно надіслані реквізити.',
-        cases_tag: 'РЕАЛЬНІ СЦЕНАРІЇ', cases_title: 'Що агент виконує у вашому бізнесі', cases_desc: 'Розмова ведеться за вашим регламентом і бізнес-правилами.',
-        feat_tag: 'МОЖЛИВОСТІ', feat_title: 'Інженерна точність та швидкість',
-        f1_t: 'Вхідні та вихідні кампанії', f1_d: 'Один агент однаково надійно приймає вхідні дзвінки з реклами та здійснює обдзвін бази контактів.',
-        f2_t: 'Години за таймзоною', f2_d: 'ШІ ніколи не зателефонує вночі. Часовий пояс кожного абонента враховується автоматично.',
-        f3_t: 'SMS та месенджери', f3_d: 'Миттєва відправка реквізитів, номерів ТТН або адрес одразу після завершення розмови.',
-        f4_t: 'Аналітика та транскрипція', f4_d: 'Автоматичне визначення підсумку, заперечень, настрою клієнта та створення завдання у CRM.',
-        steps_tag: 'ПІДКЛЮЧЕННЯ ЗА 3 КРОКИ', steps_title: 'Як запустити Allo AI',
-        s1_t: '1. Налаштуйте сценарій', s1_d: 'Опишіть завдання, завантажте прайс і регламент. Протестуйте голос у браузері без дзвінка на телефон.',
-        s2_t: '2. Підключіть телефонію', s2_d: 'Підтримка стандартних SIP-транків (Binotel, Ringostat, UniTalk, Kyivstar) за 5 хвилин.',
-        s3_t: '3. Отримуйте закриті угоди', s3_d: 'Allo AI самостійно розмовляє з клієнтами, вносить дані в CRM та сповіщає вашу команду.',
-        faq_tag: 'ПИТАННЯ ТА ВІДПОВІДІ', faq_title: 'Часті запитання',
-        final_title: 'Готові протестувати голос Allo AI на вашому сценарії?', final_sub: 'Ми підготуємо демонстрацію під ваш бізнес та запустимо пілотний період на 7 днів.',
+        nav_problem: 'Втрати', nav_cases: 'Сценарії', nav_features: 'Можливості', nav_roi: 'Калькулятор', nav_faq: 'Питання',
+        cta_demo: 'Замовити демо-дзвінок', cta_demo_short: 'Демо', cta_listen: 'Послухати сценарії',
+        pill: 'ШІ-оператор реального часу 24/7',
+        hero_a: 'Алло? Це вже відповів', hero_b: 'ваш найкращий менеджер.',
+        hero_sub: 'Голосовий ШІ приймає й робить дзвінки із затримкою 240 мс: підтверджує замовлення, кваліфікує ліди, фіксує підсумок у CRM та надсилає SMS. Без черг, вихідних і втоми.',
+        proof_1: '0 секунд очікування на лінії', proof_2: 'Живе перебивання (barge-in)', proof_3: '1 000 ліній одночасно',
+        agent_label: 'ШІ-оператор Катерина', live: 'LIVE', spk_ai: 'Allo AI говорить', spk_cl: 'Клієнт говорить', spk_idle: 'Слухає',
+        ev1: 'Замовлення підтверджено', ev2: 'SMS надіслано', ev3: 'CRM оновлено', lat_lbl: 'Затримка відповіді',
+        m1: 'затримка відповіді', m2: 'без вихідних і перерв', m3: 'ліній одночасно', m4: 'клієнтів не помічають ШІ',
+        prob_tag: 'Воронка втрат', prob_title: 'Куди зникають 42% ваших лідів із реклами?', prob_desc: 'Кожна секунда затримки або пропущений дзвінок віддає клієнта конкурентам.',
+        p1_t: 'Злиті дзвінки після 18:00', p1_d: 'У неробочий час і на вихідних дзвінки потрапляють на автовідповідач. 8 з 10 покупців не чекають ранку.',
+        p2_t: 'Скидання через очікування', p2_d: 'Якщо лінія зайнята понад 20 секунд у пік реклами — клієнт кладе слухавку.',
+        p3_t: 'Людський фактор', p3_d: 'Втома, забуті нотатки в CRM, пропущена кваліфікація та невчасно надіслані реквізити.',
+        cases_tag: 'Реальні сценарії', cases_title: 'Що агент виконує у вашому бізнесі', cases_desc: 'Розмова ведеться за вашим регламентом і бізнес-правилами.',
+        feat_tag: 'Можливості', feat_title: 'Інженерна точність та швидкість',
+        f1_t: 'Вхідні та вихідні кампанії', f1_d: 'Один агент однаково надійно приймає дзвінки з реклами та обдзвонює базу контактів.',
+        f2_t: 'Години за таймзоною', f2_d: 'ШІ ніколи не зателефонує вночі: пояс кожного абонента враховується автоматично.',
+        f3_t: 'SMS та месенджери', f3_d: 'Реквізити, ТТН чи адреса надходять одразу після розмови.',
+        sms_demo: 'Nord: реквізити для замовлення №1042 — UA21 3052 99…',
+        f4_t: 'Аналітика та транскрипція', f4_d: 'Підсумок, заперечення, настрій клієнта та завдання в CRM — автоматично для кожного дзвінка.',
+        roi_tag: 'Калькулятор', roi_title: 'Скільки ви втрачаєте на пропущених дзвінках', roi_desc: 'Орієнтовна оцінка. Підставте свої цифри — результат оновлюється миттєво.',
+        roi_calls: 'Дзвінків на місяць', roi_miss: 'Пропущені або без відповіді', roi_deal: 'Середній чек',
+        roi_out: 'Потенційно повернена виручка / міс.', roi_leads: 'Повернених клієнтів на місяць',
+        roi_assume: 'Припущення: 25% з пропущених дзвінків — цільові ліди, Allo AI відповідає на 100% з них, конверсія в угоду 20%.',
+        currency: '$',
+        steps_tag: 'Підключення за 3 кроки', steps_title: 'Як запустити Allo AI',
+        s1_t: 'Налаштуйте сценарій', s1_d: 'Опишіть завдання, завантажте прайс і регламент. Протестуйте голос у браузері без дзвінка на телефон.',
+        s2_t: 'Підключіть телефонію', s2_d: 'Стандартні SIP-транки (Binotel, Ringostat, UniTalk, Kyivstar) — за 5 хвилин.',
+        s3_t: 'Отримуйте закриті угоди', s3_d: 'Allo AI сам розмовляє з клієнтами, вносить дані в CRM і сповіщає команду.',
+        cmp_tag: 'Порівняння', cmp_title: 'Allo AI проти звичних рішень',
+        faq_tag: 'Питання та відповіді', faq_title: 'Часті запитання',
+        final_title: 'Готові протестувати голос Allo AI на вашому сценарії?', final_sub: 'Підготуємо демонстрацію під ваш бізнес і запустимо пілотний період на 7 днів.',
         copyright: '© 2026 Allo AI Platform. Всі права захищено.', privacy_link: 'Конфіденційність',
-        m_title: 'Замовити демо-дзвінок', m_name: 'Ваше ім\'я', m_contact: 'Номер телефону або Telegram', m_msg: 'Коментар або сфера бізнесу',
-        m_submit: 'Надіслати заявку', m_or: 'або зв\'яжіться з нами у месенджерах'
+        m_title: 'Замовити демо-дзвінок', m_name: 'Ваше ім\'я', m_name_ph: 'Олександр', m_contact: 'Телефон або Telegram', m_msg: 'Сфера бізнесу (необов\'язково)', m_msg_ph: 'Інтернет-магазин автозапчастин…',
+        m_submit: 'Надіслати заявку', m_or: 'або напишіть нам у месенджер',
+        err_req: 'Вкажіть ім\'я та контакт.', sending: 'Надсилаємо…', ok: 'Дякуємо! Заявку отримано — зв\'яжемося найближчим часом.', fail: 'Не вдалося надіслати. Спробуйте ще раз або напишіть у месенджер.'
       },
       en: {
-        nav_problem: 'Leakage Funnel', nav_cases: 'Use Cases', nav_features: 'Features', nav_how: 'How It Works', nav_faq: 'FAQ',
-        cta_demo: 'Request Demo', cta_how: 'How It Works',
-        pill: 'REAL-TIME VOICE AI AGENT 24/7',
-        hero_title: 'Customer calls handled by AI with 240ms latency',
-        hero_sub: 'Confirms orders, schedules bookings, qualifies leads and answers incoming calls without queues. Speaks natural language, syncs deals to CRM, and sends SMS.',
-        proof_1: '0 seconds queue wait time', proof_2: 'Live interruption (Barge-in)', proof_3: '1,000 concurrent lines',
-        agent_label: 'AI Operator Catherine', crm_sync_status: 'CRM SYNC COMPLETED',
-        prob_tag: 'LEAD LEAKAGE', prob_title: 'Where do 42% of your advertising leads go?', prob_desc: 'Every second of queue delay or missed call hands customers directly to competitors.',
-        p1_t: 'Calls lost after 6:00 PM', p1_d: 'After hours and on weekends, incoming calls hit voicemail. 8 out of 10 buyers will not wait until morning.',
-        p2_t: 'Queue dropouts', p2_d: 'If your lines are busy for over 20 seconds during ad spikes — the customer simply hangs up.',
-        p3_t: 'Human error & fatigue', p3_d: 'Tired staff, forgotten CRM notes, missed qualification stages, and delayed payment details.',
-        cases_tag: 'USE CASES', cases_title: 'What Allo AI handles for your business', cases_desc: 'Conversations follow your exact business logic and rules.',
-        feat_tag: 'CAPABILITIES', feat_title: 'Engineering precision & velocity',
-        f1_t: 'Inbound & outbound campaigns', f1_d: 'One agent handles incoming ad traffic and executes high-volume customer contact list campaigns.',
-        f2_t: 'Timezone-aware scheduling', f2_d: 'AI never calls at night. Each customer timezone is evaluated dynamically before dialing.',
-        f3_t: 'SMS & messaging sync', f3_d: 'Instant dispatch of invoices, tracking numbers, or booking details immediately after the call.',
-        f4_t: 'Deep sentiment analytics', f4_d: 'Automated outcome tagging, objection recording, sentiment analysis, and task creation in CRM.',
-        steps_tag: '3-STEP SETUP', steps_title: 'How to launch Allo AI',
-        s1_t: '1. Configure script', s1_d: 'Define goals, upload product catalogs and rules. Test the agent voice in browser playground.',
-        s2_t: '2. Connect telephony', s2_d: 'Integrate standard SIP trunks (Twilio, Asterisk, Binotel, UniTalk) in under 5 minutes.',
-        s3_t: '3. Receive closed deals', s3d: 'Allo AI conducts calls, logs data to CRM, and sends structured summaries to your team.',
-        faq_tag: 'FAQ', faq_title: 'Frequently Asked Questions',
-        final_title: 'Ready to test Allo AI on your exact scenario?', final_sub: 'We will configure a live demo tailored to your company and activate a 7-day pilot.',
+        nav_problem: 'Losses', nav_cases: 'Use cases', nav_features: 'Features', nav_roi: 'Calculator', nav_faq: 'FAQ',
+        cta_demo: 'Request a demo call', cta_demo_short: 'Demo', cta_listen: 'Hear the scenarios',
+        pill: 'Real-time voice AI agent 24/7',
+        hero_a: 'Hello? Your best sales rep', hero_b: 'just picked up.',
+        hero_sub: 'Voice AI that answers and makes calls with 240 ms latency: confirms orders, qualifies leads, logs the outcome to your CRM and sends SMS. No queues, no days off, no fatigue.',
+        proof_1: '0 seconds on hold', proof_2: 'Live interruption (barge-in)', proof_3: '1,000 concurrent lines',
+        agent_label: 'AI operator Catherine', live: 'LIVE', spk_ai: 'Allo AI speaking', spk_cl: 'Customer speaking', spk_idle: 'Listening',
+        ev1: 'Order confirmed', ev2: 'SMS sent', ev3: 'CRM updated', lat_lbl: 'Response latency',
+        m1: 'response latency', m2: 'no days off, no breaks', m3: 'concurrent lines', m4: 'of callers don\'t notice it\'s AI',
+        prob_tag: 'Lead leakage', prob_title: 'Where do 42% of your ad leads go?', prob_desc: 'Every second of delay or missed call hands the customer to a competitor.',
+        p1_t: 'Calls lost after 6 PM', p1_d: 'After hours and on weekends calls hit voicemail. 8 out of 10 buyers won\'t wait until morning.',
+        p2_t: 'Queue drop-offs', p2_d: 'If your lines are busy for 20+ seconds during an ad spike, the customer hangs up.',
+        p3_t: 'Human factor', p3_d: 'Fatigue, forgotten CRM notes, skipped qualification and late payment details.',
+        cases_tag: 'Real scenarios', cases_title: 'What the agent handles for your business', cases_desc: 'Every conversation follows your exact rules and business logic.',
+        feat_tag: 'Capabilities', feat_title: 'Engineering precision and speed',
+        f1_t: 'Inbound & outbound campaigns', f1_d: 'One agent takes ad-driven inbound calls and dials your contact base with equal reliability.',
+        f2_t: 'Timezone-aware calling', f2_d: 'The AI never calls at night: each contact\'s timezone is checked before dialing.',
+        f3_t: 'SMS & messengers', f3_d: 'Payment details, tracking numbers or addresses arrive right after the call.',
+        sms_demo: 'Nord: payment details for order #1042 — UA21 3052 99…',
+        f4_t: 'Analytics & transcripts', f4_d: 'Outcome, objections, sentiment and a CRM task — automatically for every call.',
+        roi_tag: 'Calculator', roi_title: 'What missed calls cost you', roi_desc: 'A rough estimate. Plug in your numbers — the result updates instantly.',
+        roi_calls: 'Calls per month', roi_miss: 'Missed or unanswered', roi_deal: 'Average deal value',
+        roi_out: 'Potentially recovered revenue / month', roi_leads: 'Recovered customers per month',
+        roi_assume: 'Assumes 25% of missed calls are real leads, Allo AI answers 100% of them, and 20% close.',
+        currency: '$',
+        steps_tag: '3-step setup', steps_title: 'How to launch Allo AI',
+        s1_t: 'Configure the script', s1_d: 'Describe the goal, upload your price list and rules. Test the voice in your browser, no phone needed.',
+        s2_t: 'Connect telephony', s2_d: 'Standard SIP trunks (Binotel, Ringostat, UniTalk, Kyivstar) in about 5 minutes.',
+        s3_t: 'Collect closed deals', s3_d: 'Allo AI talks to customers, logs data to your CRM and notifies your team.',
+        cmp_tag: 'Comparison', cmp_title: 'Allo AI vs. the usual options',
+        faq_tag: 'Q&A', faq_title: 'Frequently asked questions',
+        final_title: 'Ready to test Allo AI on your exact scenario?', final_sub: 'We\'ll prepare a demo for your business and start a 7-day pilot.',
         copyright: '© 2026 Allo AI Platform. All rights reserved.', privacy_link: 'Privacy Policy',
-        m_title: 'Request a Demo Call', m_name: 'Your Name', m_contact: 'Phone Number or Telegram', m_msg: 'Comment or Business Type',
-        m_submit: 'Submit Request', m_or: 'or message our manager directly'
+        m_title: 'Request a demo call', m_name: 'Your name', m_name_ph: 'Alex', m_contact: 'Phone or Telegram', m_msg: 'Business type (optional)', m_msg_ph: 'Online car-parts store…',
+        m_submit: 'Send request', m_or: 'or message us directly',
+        err_req: 'Please enter your name and a contact.', sending: 'Sending…', ok: 'Thank you! Request received — we\'ll get back to you shortly.', fail: 'Could not send. Please try again or message us directly.'
       }
     };
 
-    var CASES_DATA = {
+    var CASES = {
       uk: [
-        {
-          tab: 'Підтвердження замовлень',
-          title: 'Підтвердження 100% замовлень за перші 30 секунд',
-          desc: 'Агент телефонує одразу після оформлення кошика, звіряє товари, адресу доставки й надсилає SMS.',
-          bullets: ['Автоматичне підставлення номеру та суми замовлення', 'Фіксація побажань щодо часу доставки у CRM', 'Миттєве надсилання SMS із реквізитами'],
-          dialogue: [
-            { who: 'Allo AI', time: '0:02', text: 'Вітаю, Олено! Це магазин «Nord». Підтверджуємо замовлення №1042: доставка завтра після 14:00. Усе вірно?' },
-            { who: 'Клієнт', time: '0:11', text: 'Так, але надішліть, будь ласка, реквізити для оплати в SMS.' },
-            { who: 'Allo AI', time: '0:18', text: 'Звісно! Реквізити вже надіслано на ваш номер. Дякуємо за замовлення!' }
-          ]
-        },
-        {
-          tab: 'Записи та візити',
-          title: 'Нагадування про візити та скорочення неявок на 45%',
-          desc: 'Агент нагадує про запис за добу, підтверджує присутність або пропонує зручний перенос.',
-          bullets: ['Синхронізація з графіком лікарів та CRM', 'Миттєве звільнення вікна у разі скасування', 'Зниження навантаження на адміністраторів'],
-          dialogue: [
-            { who: 'Allo AI', time: '0:02', text: 'Доброго дня! Нагадуємо про візит до клініки завтра о 14:00. Чи плануєте бути?' },
-            { who: 'Клієнт', time: '0:09', text: 'Так, обов\'язково буду.' },
-            { who: 'Allo AI', time: '0:15', text: 'Чудово! Чекаємо на вас. Надіслав схему проїзду в повідомленні.' }
-          ]
-        },
-        {
-          tab: 'Вечірні ліди',
-          title: 'Жоден нічний клієнт не піде до конкурентів',
-          desc: 'Allo AI підхоплює дзвінки після 18:00, проводить кваліфікацію та фіксує заявку в CRM.',
-          bullets: ['Миттєва відповідь на 1-й секунді без черги', 'Кваліфікація бюджету та потреби клієнта', 'Створена угода у CRM чекає менеджера на ранок'],
-          dialogue: [
-            { who: 'Клієнт', time: '0:02', text: 'Добрий вечір! Чи працюєте ви зараз? Хочу дізнатися вартість.' },
-            { who: 'Allo AI', time: '0:08', text: 'Вітаю! Наш офіс відкриється о 9:00, але я можу розрахувати вартість та зареєструвати заявку просто зараз.' }
-          ]
-        }
+        { tab: 'Підтвердження замовлень', title: 'Підтвердження 100% замовлень за перші 30 секунд', desc: 'Агент телефонує одразу після оформлення, звіряє товари й адресу та надсилає SMS.',
+          bullets: ['Автоматична підстановка номера й суми замовлення', 'Побажання щодо доставки одразу в CRM', 'Миттєве SMS із реквізитами'],
+          dlg: [['ai', 'Вітаю, Олено! Це магазин «Nord». Підтверджуємо замовлення №1042: доставка завтра після 14:00. Усе вірно?'], ['cl', 'Так, але надішліть, будь ласка, реквізити для оплати в SMS.'], ['ai', 'Звісно! Реквізити вже надіслано на ваш номер. Дякуємо за замовлення!']] },
+        { tab: 'Записи та візити', title: 'Нагадування про візити і на 45% менше неявок', desc: 'Агент нагадує про запис за добу, підтверджує присутність або пропонує перенос.',
+          bullets: ['Синхронізація з графіком і CRM', 'Звільнення вікна при скасуванні', 'Менше рутини в адміністраторів'],
+          dlg: [['ai', 'Доброго дня! Нагадуємо про візит до клініки завтра о 14:00. Плануєте бути?'], ['cl', 'Так, обов\'язково буду.'], ['ai', 'Чудово! Чекаємо на вас. Схему проїзду надіслав у повідомленні.']] },
+        { tab: 'Вечірні ліди', title: 'Жоден вечірній клієнт не піде до конкурентів', desc: 'Allo AI відповідає після 18:00, кваліфікує запит і фіксує заявку в CRM.',
+          bullets: ['Відповідь на першій секунді, без черги', 'Кваліфікація бюджету й потреби', 'Угода в CRM чекає менеджера зранку'],
+          dlg: [['cl', 'Добрий вечір! Ви зараз працюєте? Хочу дізнатися вартість.'], ['ai', 'Вітаю! Офіс відкриється о 9:00, але я можу порахувати вартість і зареєструвати заявку просто зараз.']] }
       ],
       en: [
-        {
-          tab: 'Order Confirmation',
-          title: 'Confirm 100% of orders within 30 seconds',
-          desc: 'AI calls immediately after checkout, verifies items and address, and sends SMS details.',
-          bullets: ['Automatic merge of order number and items', 'Delivery window updates recorded to CRM', 'Instant SMS confirmation sent to customer'],
-          dialogue: [
-            { who: 'Allo AI', time: '0:02', text: 'Hello Elena! Nord Store confirming order #1042: delivery tomorrow after 2 PM. Is everything correct?' },
-            { who: 'Customer', time: '0:11', text: 'Yes, but please text me payment details via SMS.' },
-            { who: 'Allo AI', time: '0:18', text: 'Done! Payment details have been texted to your number. Thank you!' }
-          ]
-        },
-        {
-          tab: 'Appointments & Clinics',
-          title: 'Remind about bookings and cut no-shows by 45%',
-          desc: 'AI reminds patients in advance, confirms attendance, or reschedules appointments.',
-          bullets: ['Direct sync with staff calendars & CRM', 'Instant slot release upon cancellation', 'Eliminates repetitive admin phone calls'],
-          dialogue: [
-            { who: 'Allo AI', time: '0:02', text: 'Hello! Reminding you about your clinic appointment tomorrow at 2:00 PM. Will you attend?' },
-            { who: 'Customer', time: '0:09', text: 'Yes, I will definitely be there.' },
-            { who: 'Allo AI', time: '0:15', text: 'Great! Looking forward to seeing you. Directions have been texted.' }
-          ]
-        },
-        {
-          tab: 'After-Hours Leads',
-          title: 'Never lose evening customers to competitors',
-          desc: 'Allo AI answers calls after 6:00 PM and on weekends, qualifies budget, and logs deals.',
-          bullets: ['Instant pickup on the 1st second', 'Lead urgency and budget qualification', 'Structured CRM deal waiting in the morning'],
-          dialogue: [
-            { who: 'Customer', time: '0:02', text: 'Good evening! Are you open right now? I need a quote.' },
-            { who: 'Allo AI', time: '0:08', text: 'Hello! Our office opens at 9 AM, but I can calculate your quote and register the request right now.' }
-          ]
-        }
+        { tab: 'Order confirmation', title: 'Confirm 100% of orders within 30 seconds', desc: 'The AI calls right after checkout, verifies items and address, and texts the details.',
+          bullets: ['Order number and total filled in automatically', 'Delivery preferences saved to CRM', 'Instant SMS with payment details'],
+          dlg: [['ai', 'Hello Elena! Nord Store confirming order #1042: delivery tomorrow after 2 PM. Is everything correct?'], ['cl', 'Yes, but please text me the payment details.'], ['ai', 'Done! Payment details have been texted to your number. Thank you!']] },
+        { tab: 'Appointments', title: 'Booking reminders and 45% fewer no-shows', desc: 'The AI reminds clients a day ahead, confirms attendance or reschedules.',
+          bullets: ['Syncs with calendars and CRM', 'Frees the slot on cancellation', 'Less repetitive admin work'],
+          dlg: [['ai', 'Hello! Reminding you about your clinic appointment tomorrow at 2:00 PM. Will you attend?'], ['cl', 'Yes, I\'ll definitely be there.'], ['ai', 'Great! See you then. Directions are in your messages.']] },
+        { tab: 'After-hours leads', title: 'Never lose an evening customer to a competitor', desc: 'Allo AI answers after 6 PM, qualifies the request and logs the deal in CRM.',
+          bullets: ['Answers on the first second, no queue', 'Qualifies budget and need', 'Deal waits in CRM for the morning'],
+          dlg: [['cl', 'Good evening! Are you open? I need a quote.'], ['ai', 'Hello! Our office opens at 9 AM, but I can calculate a quote and register your request right now.']] }
       ]
     };
 
-    var FAQ_DATA = {
+    var FAQ = {
       uk: [
-        ['Чи помітять клієнти, що це штучний інтелект?', 'Завдяки затримці відгуку 240 мс та здатності розпізнавати перебивання (Barge-in), понад 92% клієнтів ведуть розмову як зі звичайним ввічливим співробітником.'],
-        ['Як підключити мій існуючий номер телефону?', 'Allo AI підключається до будь-якої віртуальної АТС (Binotel, Ringostat, UniTalk, Kyivstar) через стандартний SIP-транк за 5 хвилин.'],
-        ['Чи можна навчити агента на нашій специфіці?', 'Так. Ви завантажуєте регламент, прайс-лист, часті запитання та правила роботи з запереченнями у базу знань.'],
-        ['Як дані передаються в нашу CRM?', 'Після завершення розмови аудіозапис, текстовий транскрипт та розпізнані поля автоматично передаються у KeyCRM, HubSpot або через Webhook.']
+        ['Чи помітять клієнти, що це ШІ?', 'Завдяки затримці 240 мс і розпізнаванню перебивання (barge-in) понад 92% клієнтів спілкуються як зі звичайним ввічливим співробітником.'],
+        ['Як підключити мій номер телефону?', 'Allo AI підключається до будь-якої віртуальної АТС (Binotel, Ringostat, UniTalk, Kyivstar) через стандартний SIP-транк за 5 хвилин.'],
+        ['Чи можна навчити агента на нашій специфіці?', 'Так. Ви завантажуєте регламент, прайс, відповіді на часті запитання та правила роботи із запереченнями в базу знань.'],
+        ['Як дані потрапляють у CRM?', 'Після розмови запис, транскрипт і розпізнані поля автоматично передаються в KeyCRM, HubSpot або через Webhook.']
       ],
       en: [
-        ['Will customers notice they are speaking to AI?', 'With sub-240ms latency and real-time interruption (Barge-in), over 92% of customers converse naturally as with a polite human agent.'],
-        ['How do I connect my existing phone numbers?', 'Allo AI connects to any IP telephony provider (Twilio, Asterisk, Ringostat, Binotel) via standard SIP trunking in 5 minutes.'],
-        ['Can I train the agent on our specific script and prices?', 'Yes. Upload your product catalog, knowledge base, objections handling, and business rules directly in the dashboard.'],
-        ['How is data synchronized with our CRM?', 'Audio recordings, transcripts, call outcomes, and extracted parameters automatically sync to KeyCRM, HubSpot, or custom webhooks.']
+        ['Will customers notice it\'s AI?', 'With 240 ms latency and real-time barge-in handling, over 92% of callers talk as with a polite human agent.'],
+        ['How do I connect my phone number?', 'Allo AI connects to any virtual PBX (Binotel, Ringostat, UniTalk, Kyivstar) via a standard SIP trunk in about 5 minutes.'],
+        ['Can I train it on our scripts and prices?', 'Yes. Upload your regulations, price list, FAQ and objection-handling rules to the knowledge base.'],
+        ['How does data reach our CRM?', 'After the call, the recording, transcript and extracted fields sync to KeyCRM, HubSpot or via webhook.']
       ]
     };
 
-    var currentLang = 'uk';
-    var activeCaseIndex = 0;
+    var CMP = {
+      uk: { head: ['', 'Автовідповідач / IVR', 'Колл-центр', 'Allo AI'], rows: [
+        ['Відповідь на дзвінок', ['n', 'Меню та очікування'], ['p', 'У робочий час'], ['y', 'Миттєво, 24/7']],
+        ['Живий діалог і перебивання', ['n', 'Ні'], ['y', 'Так'], ['y', 'Так']],
+        ['Масштаб у пік', ['p', 'Обмежено лініями'], ['n', 'Потрібно наймати'], ['y', 'До 1 000 ліній']],
+        ['Підсумок у CRM', ['n', 'Вручну'], ['p', 'Залежить від людини'], ['y', 'Автоматично']],
+        ['Вихідний обдзвін за таймзоною', ['n', 'Ні'], ['p', 'Вручну'], ['y', 'Автоматично']]
+      ] },
+      en: { head: ['', 'Voicemail / IVR', 'Call center', 'Allo AI'], rows: [
+        ['Answers the call', ['n', 'Menus and waiting'], ['p', 'Business hours'], ['y', 'Instantly, 24/7']],
+        ['Live dialogue & interruption', ['n', 'No'], ['y', 'Yes'], ['y', 'Yes']],
+        ['Scale at peak', ['p', 'Limited by lines'], ['n', 'Requires hiring'], ['y', 'Up to 1,000 lines']],
+        ['Summary in CRM', ['n', 'Manual'], ['p', 'Depends on the person'], ['y', 'Automatic']],
+        ['Timezone-aware outbound', ['n', 'No'], ['p', 'Manual'], ['y', 'Automatic']]
+      ] }
+    };
 
+    var lang = 'uk', caseIdx = 0;
+
+    function renderDialog(list) {
+      return list.map(function (m) {
+        return '<div class="msg ' + m[0] + '"><b>' + (m[0] === 'ai' ? 'Allo AI' : (lang === 'uk' ? 'Клієнт' : 'Customer')) + '</b>' + m[1] + '</div>';
+      }).join('');
+    }
     function renderCases() {
-      var cases = CASES_DATA[currentLang];
-      var activeCase = cases[activeCaseIndex];
-      
-      // Tabs
-      document.getElementById('tabs-bar').innerHTML = cases.map(function(c, idx) {
-        return '<button class="tab-btn" type="button" role="tab" aria-selected="' + (idx === activeCaseIndex) + '" data-idx="' + idx + '">' + c.tab + '</button>';
+      var cs = CASES[lang], c = cs[caseIdx];
+      $('#tabs').innerHTML = cs.map(function (x, i) {
+        return '<button class="tab" type="button" role="tab" aria-selected="' + (i === caseIdx) + '" data-i="' + i + '">' + x.tab + '</button>';
       }).join('');
-
-      document.querySelectorAll('#tabs-bar .tab-btn').forEach(function(b) {
-        b.addEventListener('click', function() {
-          activeCaseIndex = +b.getAttribute('data-idx');
-          renderCases();
-        });
-      });
-
-      // Panel
-      document.getElementById('case-panel').innerHTML =
-        '<div>' +
-          '<h3>' + activeCase.title + '</h3>' +
-          '<p>' + activeCase.desc + '</p>' +
-          '<ul class="checklist">' +
-            activeCase.bullets.map(function(b) { return '<li>' + CHECK_ICON + '<span>' + b + '</span></li>'; }).join('') +
-          '</ul>' +
-        '</div>' +
-        '<div class="case-dialogue">' +
-          activeCase.dialogue.map(function(d) {
-            return '<div class="utterance' + (d.who !== 'Allo AI' ? ' caller' : '') + '">' +
-              '<time>' + d.time + '</time>' +
-              '<div><strong>' + d.who + '</strong><p>' + d.text + '</p></div>' +
-            '</div>';
-          }).join('') +
-        '</div>';
+      $$('#tabs .tab').forEach(function (b) { b.onclick = function () { caseIdx = +b.dataset.i; renderCases(); }; });
+      $('#case').innerHTML = '<div class="case"><div><h3>' + c.title + '</h3><p>' + c.desc + '</p><ul class="checks">' +
+        c.bullets.map(function (b) { return '<li>' + CHECK + '<span>' + b + '</span></li>'; }).join('') +
+        '</ul></div><div class="dialog-box">' + renderDialog(c.dlg) + '</div></div>';
     }
-
     function renderFaq() {
-      var faqs = FAQ_DATA[currentLang];
-      document.getElementById('faq-list').innerHTML = faqs.map(function(item, idx) {
-        return '<details class="faq-item"' + (idx === 0 ? ' open' : '') + '>' +
-          '<summary class="faq-q">' + item[0] + '</summary>' +
-          '<div class="faq-a">' + item[1] + '</div>' +
-        '</details>';
+      $("#faq-list").innerHTML = FAQ[lang].map(function (q, i) {
+        return '<details' + (i === 0 ? ' open' : '') + '><summary>' + q[0] + '</summary><div class="a">' + q[1] + '</div></details>';
       }).join('');
     }
-
-    function renderHeroDialogue() {
-      var d = CASES_DATA[currentLang][0].dialogue;
-      document.getElementById('transcript-box').innerHTML = d.map(function(item) {
-        return '<div class="utterance' + (item.who !== 'Allo AI' ? ' caller' : '') + '">' +
-          '<time>' + item.time + '</time>' +
-          '<div><strong>' + item.who + '</strong><p>' + item.text + '</p></div>' +
-        '</div>';
-      }).join('');
+    var MK = '<svg class="mk" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">';
+    var MARK = { y: MK + '<path d="M20 6L9 17l-5-5"/></svg>', n: MK + '<path d="M6 6l12 12M18 6L6 18"/></svg>', p: MK + '<path d="M5 12h14"/></svg>' };
+    function renderCmp() {
+      var d = CMP[lang];
+      $('#cmp').innerHTML = '<thead><tr>' + d.head.map(function (h, i) { return '<th' + (i === 3 ? ' class="us"' : '') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        d.rows.map(function (r) {
+          return '<tr><td>' + r[0] + '</td>' + r.slice(1).map(function (c, i) {
+            return '<td data-label="' + d.head[i + 1] + '" class="' + (i === 2 ? 'us ' : '') + c[0] + '">' + MARK[c[0]] + '<span style="color:var(--text)">' + c[1] + '</span></td>';
+          }).join('') + '</tr>';
+        }).join('') + '</tbody>';
     }
-
-    function applyLanguage(lang) {
-      currentLang = lang;
-      document.documentElement.lang = lang;
-      var dict = T[lang];
-
-      document.querySelectorAll('[data-i]').forEach(function(el) {
-        var key = el.getAttribute('data-i');
-        if (dict[key]) el.textContent = dict[key];
-      });
-
-      document.querySelectorAll('[data-lang]').forEach(function(btn) {
-        btn.setAttribute('aria-pressed', String(btn.getAttribute('data-lang') === lang));
-      });
-
-      renderCases();
-      renderFaq();
-      renderHeroDialogue();
+    function applyLang(l) {
+      lang = l; document.documentElement.lang = l;
+      var d = T[l];
+      $$('[data-i]').forEach(function (el) { if (d[el.dataset.i] !== undefined) el.textContent = d[el.dataset.i]; });
+      $$('[data-ip]').forEach(function (el) { el.placeholder = d[el.dataset.ip]; });
+      $$('[data-lang]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === l)); });
+      renderCases(); renderFaq(); renderCmp(); calcRoi(); restartDemo();
     }
+    /* language and theme switches live in site.js; it announces language changes */
+    document.addEventListener('allo:lang', function (e) { applyLang(e.detail); });
 
-    // Language switcher buttons
-    document.querySelectorAll('[data-lang]').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        applyLanguage(btn.getAttribute('data-lang'));
+    /* header + sticky cta */
+    window.addEventListener('scroll', function () {
+      $('#hdr').classList.toggle('scrolled', scrollY > 8);
+      $('#sticky').classList.toggle('show', scrollY > 520 && !modal.classList.contains('open') && document.querySelector('footer.site').getBoundingClientRect().top > innerHeight);
+    }, { passive: true });
+
+    /* reveal + counters */
+    function countUp(el) {
+      var to = +el.dataset.count, fmt = el.dataset.fmt, t0 = performance.now();
+      function f(n) { return fmt ? n.toLocaleString(lang === 'uk' ? 'uk-UA' : 'en-US') : String(n); }
+      if (REDUCED) { el.textContent = f(to); return; }
+      (function tick(now) {
+        var p = Math.min(1, (now - t0) / 1400), e = 1 - Math.pow(1 - p, 3);
+        el.textContent = f(Math.round(to * e));
+        if (p < 1) requestAnimationFrame(tick);
+      })(t0);
+    }
+    var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        $$('[data-count]').forEach(function (c) { if (e.target.contains(c) && !c.dataset.done) { c.dataset.done = 1; countUp(c); } });
+        io.unobserve(e.target);
       });
+    }, { threshold: .15 }) : null;
+    $$('.rv').forEach(function (el) { io ? io.observe(el) : el.classList.add('in'); });
+    if (!io) $$('[data-count]').forEach(countUp);
+
+    /* spotlight on cards */
+    document.addEventListener('pointermove', function (e) {
+      var c = e.target.closest && e.target.closest('.card');
+      if (!c) return;
+      var r = c.getBoundingClientRect();
+      c.style.setProperty('--mx', (e.clientX - r.left) + 'px'); c.style.setProperty('--my', (e.clientY - r.top) + 'px');
     });
 
-    // Level meter equalizer bars (deterministic math)
-    var meterEl = document.getElementById('meter-rack');
-    var meterHTML = '';
-    for (var i = 0; i < 42; i++) {
-      var scale = (Math.sin(i * 1.6) + Math.sin(i * 0.7 + 1.2) + 2) / 4;
-      meterHTML += '<span class="meter-bar" style="--s:' + (0.18 + scale * 0.82).toFixed(2) + '"></span>';
+    /* feature bars + integrations marquee */
+    $('#bars').innerHTML = Array.apply(null, Array(28)).map(function (_, i) {
+      return '<i style="animation-delay:-' + ((i * 0.37) % 1.6).toFixed(2) + 's;animation-duration:' + (1.1 + (i % 5) * 0.2).toFixed(1) + 's"></i>';
+    }).join('');
+    var INTEG = ['Binotel', 'Ringostat', 'UniTalk', 'Kyivstar', 'KeyCRM', 'HubSpot', 'Zoho', 'Asterisk', 'Webhooks', 'SIP'];
+    $('#track').innerHTML = INTEG.concat(INTEG).map(function (n) { return '<span class="chip">' + n + '</span>'; }).join('');
+
+    /* ROI calculator */
+    function money(n) { return T[lang].currency + Math.round(n).toLocaleString(lang === 'uk' ? 'uk-UA' : 'en-US'); }
+    function calcRoi() {
+      var c = +$('#r-calls').value, m = +$('#r-miss').value, d = +$('#r-deal').value;
+      var leads = c * (m / 100) * 0.25 * 0.2;
+      $('#o-calls').textContent = c.toLocaleString(); $('#o-miss').textContent = m + '%'; $('#o-deal').textContent = money(d);
+      $('#roi-total').textContent = money(leads * d); $('#roi-leads').textContent = Math.round(leads);
+      ['calls', 'miss', 'deal'].forEach(function (k) {
+        var r = $('#r-' + k); r.style.setProperty('--p', ((r.value - r.min) / (r.max - r.min) * 100) + '%');
+      });
     }
-    meterEl.innerHTML = meterHTML;
+    ['#r-calls', '#r-miss', '#r-deal'].forEach(function (s) { $(s).addEventListener('input', calcRoi); });
 
-    // Theme Switcher
-    var themeBtn = document.getElementById('theme-btn');
-    var themeIcon = document.getElementById('theme-icon');
-    themeBtn.addEventListener('click', function() {
-      var current = document.documentElement.getAttribute('data-theme');
-      var next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      themeIcon.textContent = next === 'dark' ? '🌙' : '☀️';
-    });
-
-    // Modal Form handlers
-    var modal = document.getElementById('demo-modal');
-    function openModal() { modal.hidden = false; modal.classList.add('open'); document.body.classList.add('modal-open'); }
-    function closeModal() { modal.classList.remove('open'); modal.hidden = true; document.body.classList.remove('modal-open'); }
-
-    document.querySelectorAll('.cta-trigger').forEach(function(a) {
-      a.addEventListener('click', function(e) { e.preventDefault(); openModal(); });
-    });
-    document.getElementById('modal-close').addEventListener('click', closeModal);
-    modal.addEventListener('mousedown', function(e) { if (e.target === modal) closeModal(); });
-
-    document.getElementById('lead-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      var name = document.getElementById('f-name').value.trim();
-      var contact = document.getElementById('f-contact').value.trim();
-      var msg = document.getElementById('f-msg').value.trim();
-      var status = document.getElementById('form-status');
-
-      if (!name || contact.length < 3) {
-        status.style.color = 'var(--bad)';
-        status.textContent = currentLang === 'uk' ? 'Вкажіть ім\'я та контакт!' : 'Please enter your name and contact!';
-        return;
+    /* hero live-call demo */
+    var meter = $('#meter'), tr = $('#tr'), N = 52, bars = [], speaking = null, lvl = 0, demoRun = 0, secs = 0, timerId = 0;
+    meter.innerHTML = Array(N + 1).join('<span></span>'); bars = $$('#meter span');
+    (function loop(t) {
+      lvl += ((speaking ? 1 : 0) - lvl) * .18;
+      bars.forEach(function (b, i) {
+        var env = Math.sin(i / N * Math.PI);
+        var v = (Math.sin(t / 120 + i * .8) + Math.sin(t / 61 + i * 1.7) + 2) / 4;
+        b.style.height = (6 + lvl * env * v * 92) + '%';
+      });
+      if (!REDUCED) requestAnimationFrame(loop);
+    })(0);
+    function setSpeaker(s) {
+      speaking = s; meter.className = 'meter' + (s ? ' ' + s : '');
+      $('#speaker').className = 'speaker' + (s ? ' ' + s : '');
+      var d = T[lang]; $('#sp-name').textContent = s === 'agent' ? d.spk_ai : s === 'caller' ? d.spk_cl : d.spk_idle;
+    }
+    function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+    function fmt2(n) { return (n < 10 ? '0' : '') + n; }
+    function ev(n) { var e = $$('#events .ev')[n - 1]; if (e) e.classList.add('done'); }
+    async function typeLine(who, text, id) {
+      $$('#tr .ln').forEach(function (l) { l.classList.add('old'); });
+      var ln = document.createElement('div'); ln.className = 'ln ' + who;
+      var words = text.split(' ');
+      ln.innerHTML = '<b>' + (who === 'ai' ? 'Allo AI' : (lang === 'uk' ? 'Клієнт' : 'Customer')) + '</b><p>' +
+        words.map(function (w) { return '<span class="w">' + w + '</span>'; }).join(' ') + '</p>';
+      tr.appendChild(ln);
+      var ws = $$('#tr .ln:last-child .w');
+      for (var i = 0; i < ws.length; i++) {
+        if (id !== demoRun) return false;
+        ws[i].classList.add('on');
+        if (!REDUCED) await sleep(who === "ai" ? 170 : 150);
       }
+      return true;
+    }
+    async function runDemo() {
+      var id = ++demoRun, lines = CASES[lang][0].dlg;
+      tr.innerHTML = ''; $$('#events .ev').forEach(function (e) { e.classList.remove('done'); });
+      setSpeaker(null); secs = 0; $('#timer').textContent = '00:00';
+      clearInterval(timerId); timerId = setInterval(function () { secs++; $('#timer').textContent = fmt2(Math.floor(secs / 60)) + ':' + fmt2(secs % 60); }, 1000);
+      await sleep(REDUCED ? 0 : 900);
+      for (var i = 0; i < lines.length; i++) {
+        if (id !== demoRun) return;
+        var who = lines[i][0];
+        if (who === 'ai') $('#lat').textContent = 226 + Math.floor(Math.random() * 28);
+        setSpeaker(who === 'ai' ? 'agent' : 'caller');
+        if (!(await typeLine(who, lines[i][1], id))) return;
+        setSpeaker(null);
+        if (i === 1) ev(1);
+        if (i === 2) ev(2);
+        await sleep(REDUCED ? 0 : 650);
+      }
+      if (id !== demoRun) return;
+      await sleep(REDUCED ? 0 : 500); ev(3); clearInterval(timerId);
+      await sleep(REDUCED ? 1e9 : 5200);
+      if (id === demoRun) runDemo();
+    }
+    function restartDemo() { runDemo(); }
 
-      var btn = document.getElementById('btn-submit');
-      btn.disabled = true;
-      btn.textContent = currentLang === 'uk' ? 'Надсилаємо…' : 'Sending…';
-
-      fetch(LEAD_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, contact: contact, message: msg, lang: currentLang })
-      }).then(function() {
-        status.style.color = 'var(--ok)';
-        status.textContent = currentLang === 'uk' ? 'Дякуємо! Заявку отримано.' : 'Thank you! Request received.';
-      }).catch(function() {
-        status.style.color = 'var(--ok)';
-        status.textContent = currentLang === 'uk' ? 'Заявку збережено!' : 'Request saved!';
-      });
+    /* modal */
+    var modal = $('#modal'), lastFocus = null;
+    function openModal() { lastFocus = document.activeElement; modal.classList.add('open'); document.body.classList.add('modal-open'); $('#sticky').classList.remove('show'); setTimeout(function () { $('#f-name').focus(); }, 30); }
+    function closeModal() { modal.classList.remove('open'); document.body.classList.remove('modal-open'); if (lastFocus) lastFocus.focus(); }
+    $$('.cta').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); openModal(); }); });
+    $('#m-close').onclick = closeModal;
+    modal.addEventListener('mousedown', function (e) { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function (e) {
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape') return closeModal();
+      if (e.key === 'Tab') {
+        var f = $$('#modal button, #modal input, #modal a'); var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     });
 
-    document.getElementById('btn-tg').addEventListener('click', function() {
-      window.open('https://t.me/+' + MANAGER_PHONE, '_blank');
+    $('#form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = $('#f-name').value.trim(), contact = $('#f-contact').value.trim(), msg = $('#f-msg').value.trim();
+      var st = $('#f-status'), btn = $('#f-btn'), d = T[lang];
+      if (!name || contact.length < 3) { st.style.color = 'var(--bad)'; st.textContent = d.err_req; return; }
+      btn.disabled = true; btn.textContent = d.sending; st.textContent = '';
+      fetch(LEAD_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, contact: contact, message: msg, lang: lang }) })
+        .then(function (r) {
+          if (!r.ok) throw new Error(r.status);
+          st.style.color = 'var(--ok)'; st.textContent = d.ok; $('#form').reset();
+        })
+        .catch(function () { st.style.color = 'var(--bad)'; st.textContent = d.fail; })
+        .then(function () { btn.disabled = false; btn.textContent = d.m_submit; });
     });
-    document.getElementById('btn-wa').addEventListener('click', function() {
-      window.open('https://wa.me/' + MANAGER_PHONE, '_blank');
-    });
+    $('#btn-tg').onclick = function () { window.open('https://t.me/+' + MANAGER_PHONE, '_blank', 'noopener'); };
+    $('#btn-wa').onclick = function () { window.open('https://wa.me/' + MANAGER_PHONE, '_blank', 'noopener'); };
 
-    // Initial render
-    applyLanguage('uk');
+    applyLang(window.AlloSite.lang);
   </script>
 </body>
 </html>
